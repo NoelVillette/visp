@@ -84,7 +84,7 @@ int main()
 {
   vpImage<unsigned char> I;
 #if defined(_WIN32)
-  std::string filename("C:/temp/ViSP-images/Klimt/Klimt.ppm");
+  std::string filename("C:/Temp/visp-images/Klimt/Klimt.ppm");
 #else // UNIX
   std::string filename("/local/soft/ViSP/ViSP-images/Klimt/Klimt.ppm");
 #endif
@@ -153,6 +153,9 @@ public:
   static void readPNG(vpImage<unsigned char> &I, const std::string &filename, int backend = IO_DEFAULT_BACKEND);
   static void readPNG(vpImage<vpRGBa> &I, const std::string &filename, int backend = IO_DEFAULT_BACKEND);
 
+  static void readEXR(vpImage<float> &I, const std::string &filename, int backend = IO_DEFAULT_BACKEND);
+  static void readEXR(vpImage<vpRGBf> &I, const std::string &filename, int backend = IO_DEFAULT_BACKEND);
+
   static void writePFM(const vpImage<float> &I, const std::string &filename);
   static void writePFM_HDR(const vpImage<float> &I, const std::string &filename);
   static void writePFM_HDR(const vpImage<vpRGBf> &I, const std::string &filename);
@@ -171,5 +174,8 @@ public:
 
   static void writePNG(const vpImage<unsigned char> &I, const std::string &filename, int backend = IO_DEFAULT_BACKEND);
   static void writePNG(const vpImage<vpRGBa> &I, const std::string &filename, int backend = IO_DEFAULT_BACKEND);
+
+  static void writeEXR(const vpImage<float> &I, const std::string &filename, int backend = IO_DEFAULT_BACKEND);
+  static void writeEXR(const vpImage<vpRGBf> &I, const std::string &filename, int backend = IO_DEFAULT_BACKEND);
 };
 #endif

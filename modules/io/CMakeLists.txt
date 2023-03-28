@@ -69,6 +69,9 @@ endif()
 # Simd lib is private
 include_directories(${SIMDLIB_INCLUDE_DIRS})
 
+# TinyEXR lib is private
+include_directories(${TINYEXR_INCLUDE_DIRS})
+
 # OpenCV
 if(USE_OPENCV)
   # On win32 since OpenCV 2.4.7 and on OSX with OpenCV 2.4.10 we cannot use OpenCV_LIBS to set ViSP 3rd party libraries.
@@ -190,6 +193,7 @@ vp_add_tests()
 vp_set_source_file_compile_flag(src/tools/vpParseArgv.cpp -Wno-strict-overflow)
 vp_set_source_file_compile_flag(src/image/vpImageIo.cpp -Wno-missing-field-initializers) # since stb_image_write.h update from v1.13 to v1.16
 vp_set_source_file_compile_flag(src/image/private/vpImageIoStb.cpp -Wno-missing-field-initializers -Wno-strict-overflow)
+vp_set_source_file_compile_flag(src/image/private/vpImageIoTinyEXR.cpp -Wno-strict-overflow -Wno-sign-compare -Wno-type-limits -Wno-unused-but-set-variable)
 
 if(USE_OPENCV)
   vp_set_source_file_compile_flag(src/image/private/vpImageIoLibjpeg.cpp -Wno-float-equal)

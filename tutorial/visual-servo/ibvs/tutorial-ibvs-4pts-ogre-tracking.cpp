@@ -216,9 +216,11 @@ int main()
     }
   } catch (const vpException &e) {
     std::cout << "Catch a ViSP exception: " << e << std::endl;
+    return EXIT_FAILURE
   } catch (...) {
     std::cout << "Catch an exception " << std::endl;
-    return 1;
+    return EXIT_FAILURE;
   }
+  return EXIT_SUCCESS;
 #endif
 }

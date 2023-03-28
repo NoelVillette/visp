@@ -33,7 +33,10 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y libx11-dev libdc1394-dev libv4l-dev liblapack-dev libopenblas-dev libeigen3-dev libopencv-dev lcov gcovr
 
-    - name: Clone ViSP-images
+    - name: Clone visp-images
+      env:
+        BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+      # https://remarkablemark.org/blog/2022/09/25/check-git-branch-exists-in-remote-repository/
       run: |
         git clone --depth 1 https://github.com/lagadic/visp-images ${HOME}/visp-images
         echo "VISP_INPUT_IMAGE_PATH=$HOME" >> $GITHUB_ENV
