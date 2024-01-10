@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Benchmark image resize.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
@@ -45,6 +45,11 @@
 #include <visp3/core/vpImageTools.h>
 #include <visp3/core/vpIoTools.h>
 #include <visp3/io/vpImageIo.h>
+
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGCODECS) && defined(HAVE_OPENCV_IMGPROC)
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+#endif
 
 static const std::string ipath = vpIoTools::getViSPImagesDataPath();
 static std::string imagePathColor = vpIoTools::createFilePath(ipath, "Klimt/Klimt.ppm");
@@ -250,7 +255,7 @@ TEST_CASE("Bicubic image resize (ViSP)", "[benchmark]")
   }
 }
 
-#if (VISP_HAVE_OPENCV_VERSION >= 0x020101)
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGCODECS) && defined(HAVE_OPENCV_IMGPROC)
 TEST_CASE("Nearest Neighbor image resize (OpenCV)", "[benchmark]")
 {
   SECTION("unsigned char")
@@ -368,15 +373,15 @@ int main(int argc, char *argv[])
   // Build a new parser on top of Catch's
   using namespace Catch::clara;
   auto cli = session.cli()         // Get Catch's composite command line parser
-             | Opt(runBenchmark)   // bind variable to a new option, with a hint string
-                   ["--benchmark"] // the option names it will respond to
-             ("run benchmark?")    // description string for the help output
-             | Opt(imagePathColor, "imagePathColor")["--imagePathColor"]("Path to color image") |
-             Opt(imagePathGray, "imagePathColor")["--imagePathGray"] |
-             Opt(g_resize_width, "g_resize_width")["--width"]("Resize width") |
-             Opt(g_resize_height, "g_resize_height")["--height"]("Resize height");
+    | Opt(runBenchmark)   // bind variable to a new option, with a hint string
+    ["--benchmark"] // the option names it will respond to
+    ("run benchmark?")    // description string for the help output
+    | Opt(imagePathColor, "imagePathColor")["--imagePathColor"]("Path to color image") |
+    Opt(imagePathGray, "imagePathColor")["--imagePathGray"] |
+    Opt(g_resize_width, "g_resize_width")["--width"]("Resize width") |
+    Opt(g_resize_height, "g_resize_height")["--height"]("Resize height");
 
-  // Now pass the new composite back to Catch so it uses that
+// Now pass the new composite back to Catch so it uses that
   session.cli(cli);
 
   // Let Catch (using Clara) parse the command line
@@ -386,12 +391,12 @@ int main(int argc, char *argv[])
     vpImage<vpRGBa> I_color;
     vpImageIo::read(I_color, imagePathColor);
     std::cout << "imagePathColor:\n\t" << imagePathColor << "\n\t" << I_color.getWidth() << "x" << I_color.getHeight()
-              << std::endl;
+      << std::endl;
 
     vpImage<unsigned char> I_gray;
     vpImageIo::read(I_gray, imagePathGray);
     std::cout << "imagePathGray:\n\t" << imagePathGray << "\n\t" << I_gray.getWidth() << "x" << I_gray.getHeight()
-              << std::endl;
+      << std::endl;
     std::cout << "Resize to: " << g_resize_width << "x" << g_resize_height << std::endl;
 
     int numFailed = session.run();

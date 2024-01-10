@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Test for UDP server.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example testUDPServer.cpp
@@ -49,12 +49,12 @@
 
 namespace
 {
-struct DataType {
+struct vpDataType_t {
   double double_val;
   int int_val;
 
-  DataType() : double_val(0.0), int_val(0) {}
-  DataType(double dbl, int i) : double_val(dbl), int_val(i) {}
+  vpDataType_t() : double_val(0.0), int_val(0) {}
+  vpDataType_t(double dbl, int i) : double_val(dbl), int_val(i) {}
 };
 } // namespace
 
@@ -70,7 +70,7 @@ int main()
     // Receive and send custom data type
     int res = server.receive(msg, hostInfo);
     if (res) {
-      DataType data_type;
+      vpDataType_t data_type;
       memcpy(&data_type.double_val, msg.c_str(), sizeof(data_type.double_val));
       memcpy(&data_type.int_val, msg.c_str() + sizeof(data_type.double_val), sizeof(data_type.int_val));
       std::cout << "Server received double_val: " << data_type.double_val << " ; int_val: " << data_type.int_val

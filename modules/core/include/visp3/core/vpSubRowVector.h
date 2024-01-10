@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -29,12 +28,8 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Description:
- * Mask on a vpRowVector .
- *
- * Authors:
- * Laneurit Jean
- *
- *****************************************************************************/
+ * Mask on a vpRowVector.
+ */
 
 #ifndef _vpSubRowVector_h_
 #define _vpSubRowVector_h_
@@ -42,41 +37,37 @@
 #include <visp3/core/vpRowVector.h>
 
 /*!
-  \file vpSubRowVector.h
-
-  \brief Definition of the vpSubRowVector class
-*/
+ * \file vpSubRowVector.h
+ *
+ * \brief Definition of the vpSubRowVector class
+ */
 
 /*!
-  \class vpSubRowVector
-  \ingroup group_core_matrices
-  This class provides a mask on a vpRowVector. It has internally a
-  pointer to the parent vpRowVector.
-  All properties of vpRowVector are available with
-  a vpSubRowVector.
-
-  \author Jean Laneurit (IRISA - INRIA Rennes)
-
-  \sa vpMatrix vpColvector vpRowVector
-*/
-
+ * \class vpSubRowVector
+ * \ingroup group_core_matrices
+ * This class provides a mask on a vpRowVector. It has internally a
+ * pointer to the parent vpRowVector.
+ * All properties of vpRowVector are available with
+ * a vpSubRowVector.
+ *
+ * \sa vpMatrix vpColVector vpRowVector
+ */
 class VISP_EXPORT vpSubRowVector : public vpRowVector
 {
-
 private:
-  //! Copy constructor unavaible
+  //! Copy constructor unavailable
   vpSubRowVector(const vpSubRowVector & /* m */);
 
 protected:
-  //! Number of row of parent vpColvector at initialization
-  unsigned int pColNum;
-  //! Parent vpColvector
-  vpRowVector *parent;
+  //! Number of row of parent vpColVector at initialization
+  unsigned int m_pColNum;
+  //! Parent vpColVector
+  vpRowVector *m_parent;
 
 public:
   vpSubRowVector();
   vpSubRowVector(vpRowVector &v, const unsigned int &offset, const unsigned int &ncols);
-  virtual ~vpSubRowVector();
+  virtual ~vpSubRowVector() override;
 
   void checkParentStatus() const;
 

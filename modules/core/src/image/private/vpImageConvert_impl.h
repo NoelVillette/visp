@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2021 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Image conversion tools.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpImageConvert_impl.h
@@ -40,6 +40,11 @@
 
 #ifndef vpIMAGECONVERT_impl_H
 #define vpIMAGECONVERT_impl_H
+
+#if defined(VISP_HAVE_OPENMP)
+#include <omp.h>
+#include <array>
+#endif
 
 #include <visp3/core/vpImage.h>
 #include <visp3/core/vpMath.h>
@@ -52,21 +57,41 @@
  */
 void vp_createDepthHistogram(const vpImage<float> &src_depth, vpImage<unsigned char> &dest_depth)
 {
-  dest_depth.resize(src_depth.getHeight(), src_depth.getWidth());
   uint32_t histogram[0x10000];
   memset(histogram, 0, sizeof(histogram));
 
-#ifdef VISP_HAVE_OPENMP
+#if defined(VISP_HAVE_OPENMP)
+  int nThreads = omp_get_max_threads();
+  std::vector<std::array<uint32_t, 0x10000> > histograms(nThreads);
+  for (int i = 0; i < nThreads; i++) {
+    histograms[i].fill(0);
+  }
+
+#pragma omp parallel for num_threads(nThreads)
+  for (int i = 0; i < static_cast<int>(src_depth.getSize()); ++i) {
+    if (!vpMath::isNaN(src_depth.bitmap[i])) {
+      ++(histograms[omp_get_thread_num()][static_cast<uint32_t>(src_depth.bitmap[i])]);
+    }
+  }
+
 #pragma omp parallel for
-#endif
+  for (int i = 0; i < 0x10000; i++) {
+    for (int j = 0; j < nThreads; j++) {
+      histogram[i] += histograms[j][i];
+    }
+  }
+#else
   for (int i = 0; i < static_cast<int>(src_depth.getSize()); ++i) {
     if (!vpMath::isNaN(src_depth.bitmap[i])) {
       ++histogram[static_cast<uint32_t>(src_depth.bitmap[i])];
     }
   }
+#endif
 
   for (int i = 2; i < 0x10000; ++i)
     histogram[i] += histogram[i - 1]; // Build a cumulative histogram for the indices in [1,0xFFFF]
+
+  dest_depth.resize(src_depth.getHeight(), src_depth.getWidth());
 
 #ifdef VISP_HAVE_OPENMP
 #pragma omp parallel for
@@ -75,9 +100,10 @@ void vp_createDepthHistogram(const vpImage<float> &src_depth, vpImage<unsigned c
     uint16_t d = static_cast<uint16_t>(src_depth.bitmap[i]);
     if (d) {
       unsigned char f =
-          static_cast<unsigned char>(histogram[d] * 255 / histogram[0xFFFF]); // 0-255 based on histogram location
+        static_cast<unsigned char>(histogram[d] * 255 / histogram[0xFFFF]); // 0-255 based on histogram location
       dest_depth.bitmap[i] = f;
-    } else {
+    }
+    else {
       dest_depth.bitmap[i] = 0;
     }
   }
@@ -91,19 +117,37 @@ void vp_createDepthHistogram(const vpImage<float> &src_depth, vpImage<unsigned c
  */
 void vp_createDepthHistogram(const vpImage<uint16_t> &src_depth, vpImage<unsigned char> &dest_depth)
 {
-  dest_depth.resize(src_depth.getHeight(), src_depth.getWidth());
   uint32_t histogram[0x10000];
   memset(histogram, 0, sizeof(histogram));
 
-#ifdef VISP_HAVE_OPENMP
+#if defined(VISP_HAVE_OPENMP)
+  int nThreads = omp_get_max_threads();
+  std::vector<std::array<uint32_t, 0x10000> > histograms(nThreads);
+  for (int i = 0; i < nThreads; i++) {
+    histograms[i].fill(0);
+  }
+
+#pragma omp parallel for num_threads(nThreads)
+  for (int i = 0; i < static_cast<int>(src_depth.getSize()); ++i) {
+    ++(histograms[omp_get_thread_num()][static_cast<uint32_t>(src_depth.bitmap[i])]);
+  }
+
 #pragma omp parallel for
-#endif
+  for (int i = 0; i < 0x10000; i++) {
+    for (int j = 0; j < nThreads; j++) {
+      histogram[i] += histograms[j][i];
+    }
+  }
+#else
   for (int i = 0; i < static_cast<int>(src_depth.getSize()); ++i) {
     ++histogram[static_cast<uint32_t>(src_depth.bitmap[i])];
   }
+#endif
 
   for (int i = 2; i < 0x10000; ++i)
     histogram[i] += histogram[i - 1]; // Build a cumulative histogram for the indices in [1,0xFFFF]
+
+  dest_depth.resize(src_depth.getHeight(), src_depth.getWidth());
 
 #ifdef VISP_HAVE_OPENMP
 #pragma omp parallel for
@@ -112,9 +156,10 @@ void vp_createDepthHistogram(const vpImage<uint16_t> &src_depth, vpImage<unsigne
     uint16_t d = src_depth.bitmap[i];
     if (d) {
       unsigned char f =
-          static_cast<unsigned char>(histogram[d] * 255 / histogram[0xFFFF]); // 0-255 based on histogram location
+        static_cast<unsigned char>(histogram[d] * 255 / histogram[0xFFFF]); // 0-255 based on histogram location
       dest_depth.bitmap[i] = f;
-    } else {
+    }
+    else {
       dest_depth.bitmap[i] = 0;
     }
   }
@@ -155,7 +200,8 @@ void vp_createDepthHistogram(const vpImage<float> &src_depth, vpImage<vpRGBa> &d
       dest_depth.bitmap[i].G = 0;
       dest_depth.bitmap[i].B = f;
       dest_depth.bitmap[i].A = vpRGBa::alpha_default;
-    } else {
+    }
+    else {
       dest_depth.bitmap[i].R = 20;
       dest_depth.bitmap[i].G = 5;
       dest_depth.bitmap[i].B = 0;
@@ -197,7 +243,8 @@ void vp_createDepthHistogram(const vpImage<uint16_t> &src_depth, vpImage<vpRGBa>
       dest_depth.bitmap[i].G = 0;
       dest_depth.bitmap[i].B = f;
       dest_depth.bitmap[i].A = vpRGBa::alpha_default;
-    } else {
+    }
+    else {
       dest_depth.bitmap[i].R = 20;
       dest_depth.bitmap[i].G = 5;
       dest_depth.bitmap[i].B = 0;

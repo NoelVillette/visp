@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * Kalman filtering.
- *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
 
 #ifndef vpLinearKalmanFilterInstantiation_h
 #define vpLinearKalmanFilterInstantiation_h
@@ -61,11 +55,12 @@ public:
   /*!
     Selector used to set the Kalman filter state model.
   */
-  typedef enum {
-    /*! Consider the state as a constant velocity model with white
-        noise. Measures available are the successive positions of the
-        target. To know more about this state model, see
-        initStateConstVel_MeasurePos(). */
+  typedef enum
+  {
+/*! Consider the state as a constant velocity model with white
+    noise. Measures available are the successive positions of the
+    target. To know more about this state model, see
+    initStateConstVel_MeasurePos(). */
     stateConstVel_MeasurePos,
     /*! Consider the state as a constant velocity model with colored noise
         measurements as acceleration terms. Measured available are the
@@ -87,10 +82,8 @@ public:
     By default the state model is unknown and set to
     vpLinearKalmanFilterInstantiation::unknown.
   */
-  vpLinearKalmanFilterInstantiation() : model(unknown){};
+  vpLinearKalmanFilterInstantiation() : model(unknown) { };
 
-  /*! Destructor that does nothng. */
-  virtual ~vpLinearKalmanFilterInstantiation(){};
   /*!
     Return the current state model.
    */

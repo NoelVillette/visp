@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,8 @@
  * Description:
  * Example of Histogram manipulation.
  *
- * Author:
- * Fabien Spindler
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file histogram.cpp
@@ -79,7 +77,7 @@ void usage(const char *name, const char *badparam, std::string ipath, std::strin
 {
   fprintf(stdout, "\n\
 Read an image on the disk, display it using X11, display some\n\
-features (line, circle, caracters) in overlay and finaly write \n\
+features (line, circle, characters) in overlay and finally write \n\
 the image and the overlayed features in an image on the disk.\n\
 \n\
 SYNOPSIS\n\
@@ -139,7 +137,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath, std::string &op
       opath = optarg_;
       break;
     case 'h':
-      usage(argv[0], NULL, ipath, opath, user);
+      usage(argv[0], nullptr, ipath, opath, user);
       return false;
       break;
 
@@ -152,7 +150,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath, std::string &op
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL, ipath, opath, user);
+    usage(argv[0], nullptr, ipath, opath, user);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -210,7 +208,7 @@ int main(int argc, const char **argv)
         // Create the dirname
         vpIoTools::makeDirectory(dirname);
       } catch (...) {
-        usage(argv[0], NULL, ipath, opath, username);
+        usage(argv[0], nullptr, ipath, opath, username);
         std::cerr << std::endl << "ERROR:" << std::endl;
         std::cerr << "  Cannot create " << dirname << std::endl;
         std::cerr << "  Check your -o " << opath << " option " << std::endl;
@@ -219,7 +217,7 @@ int main(int argc, const char **argv)
     }
 
     // Compare ipath and env_ipath. If they differ, we take into account
-    // the input path comming from the command line option
+    // the input path coming from the command line option
     if (opt_ipath.empty()) {
       if (ipath != env_ipath) {
         std::cout << std::endl << "WARNING: " << std::endl;
@@ -231,7 +229,7 @@ int main(int argc, const char **argv)
 
     // Test if an input path is set
     if (opt_ipath.empty() && env_ipath.empty()) {
-      usage(argv[0], NULL, ipath, opath, username);
+      usage(argv[0], nullptr, ipath, opath, username);
       std::cerr << std::endl << "ERROR:" << std::endl;
       std::cerr << "  Use -i <visp image path> option or set VISP_INPUT_IMAGE_PATH " << std::endl
                 << "  environment variable to specify the location of the " << std::endl

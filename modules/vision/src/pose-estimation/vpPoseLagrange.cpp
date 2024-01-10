@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * Pose computation.
- *
- * Authors:
- * Eric Marchand
- * Francois Chaumette
- *
- *****************************************************************************/
+ */
 
 #include <visp3/vision/vpPose.h>
 
@@ -43,10 +37,10 @@
 #define DEBUG_LEVEL2 0
 
 /**********************************************************************/
-/*	FONCTION 		:    CalculTranslation       */
-/*	ROLE  			: Calcul de la translation entre la   */
+/*  FONCTION     :    CalculTranslation       */
+/*  ROLE        : Calcul de la translation entre la   */
 /*                                camera et l'outil connaissant la    */
-/*                                rotation			      */
+/*                                rotation            */
 /**********************************************************************/
 
 static void calculTranslation(vpMatrix &a, vpMatrix &b, unsigned int nl, unsigned int nc1, unsigned int nc3,
@@ -73,8 +67,8 @@ static void calculTranslation(vpMatrix &a, vpMatrix &b, unsigned int nl, unsigne
 
     vpMatrix cta;
     vpMatrix ctb;
-    cta = ct * a; /* C^T A	*/
-    ctb = ct * b; /* C^T B	*/
+    cta = ct * a; /* C^T A  */
+    ctb = ct * b; /* C^T B  */
 
 #if (DEBUG_LEVEL2)
     {
@@ -110,10 +104,11 @@ static void calculTranslation(vpMatrix &a, vpMatrix &b, unsigned int nl, unsigne
 
     for (i = 0; i < nc1; i++)
       x2[i + nc3] = X3[i];
-  } catch (...) {
+  }
+  catch (...) {
 
-    // en fait il y a des dizaines de raisons qui font que cette fonction
-    // rende une erreur (matrice pas inversible, pb de memoire etc...)
+ // en fait il y a des dizaines de raisons qui font que cette fonction
+ // rende une erreur (matrice pas inversible, pb de memoire etc...)
     vpERROR_TRACE(" ");
     throw;
   }
@@ -123,8 +118,8 @@ static void calculTranslation(vpMatrix &a, vpMatrix &b, unsigned int nl, unsigne
 //   FONCTION LAGRANGE :
 //   -------------------
 // Resolution d'un systeme lineaire de la forme A x1 + B x2 = 0
-//  		sous la contrainte || x1 || = 1
-//  		ou A est de dimension nl x nc1 et B nl x nc2
+//      sous la contrainte || x1 || = 1
+//      ou A est de dimension nl x nc1 et B nl x nc2
 //*********************************************************************
 
 //#define EPS 1.e-5
@@ -205,7 +200,7 @@ static void lagrange(vpMatrix &a, vpMatrix &b, vpColVector &x1, vpColVector &x2)
     //    vpMatrix v ;
     e.svd(x1, ata); // destructif sur e
     // calcul du vecteur propre de E correspondant a la valeur propre min.
-    /* calcul de SVmax	*/
+    /* calcul de SVmax  */
     imin = 0;
     // FC : Pourquoi calculer SVmax ??????
     //     double  svm = 0.0;
@@ -213,7 +208,7 @@ static void lagrange(vpMatrix &a, vpMatrix &b, vpColVector &x1, vpColVector &x2)
     //    {
     //      if (x1[i] > svm) { svm = x1[i]; imin = i; }
     //    }
-    //    svm *= EPS;	/* pour le rang	*/
+    //    svm *= EPS;  /* pour le rang  */
 
     for (i = 0; i < x1.getRows(); i++)
       if (x1[i] < x1[imin])
@@ -236,7 +231,8 @@ static void lagrange(vpMatrix &a, vpMatrix &b, vpColVector &x1, vpColVector &x2)
       std::cout << " V : " << std::endl << ata << std::endl;
     }
 #endif
-  } catch (...) {
+  }
+  catch (...) {
     vpERROR_TRACE(" ");
     throw;
   }
@@ -247,17 +243,6 @@ static void lagrange(vpMatrix &a, vpMatrix &b, vpColVector &x1, vpColVector &x2)
 
 //#undef EPS
 
-/*!
-  \brief  Compute the pose of a planar object using Lagrange approach.
-
-  \param cMo : Estimated pose. No initialisation is requested to estimate cMo.
-  \param p_isPlan : if different from NULL, indicates if the object is planar or not.
-  \param p_a : if different from NULL, the a coefficient of the plan formed by the points.
-  \param p_b : if different from NULL, the b coefficient of the plan formed by the points.
-  \param p_c : if different from NULL, the c coefficient of the plan formed by the points.
-  \param p_d : if different from NULL, the d coefficient of the plan formed by the points.
-*/
-
 void vpPose::poseLagrangePlan(vpHomogeneousMatrix &cMo, bool *p_isPlan, double *p_a, double *p_b, double *p_c, double *p_d)
 {
 #if (DEBUG_LEVEL1)
@@ -265,35 +250,29 @@ void vpPose::poseLagrangePlan(vpHomogeneousMatrix &cMo, bool *p_isPlan, double *
 #endif
   // determination of the plane equation a X + b Y + c Z + d = 0
   double a, b, c, d;
-  
+
   // Checking if coplanar has already been called and if the plan coefficients have been given
-  if((p_isPlan != NULL) && (p_a != NULL) && (p_b != NULL) && (p_c != NULL) && (p_d != NULL))
-  {
-    if(*p_isPlan)
-    {
-      // All the pointers towards the plan coefficients are different from NULL => using them in the rest of the method
+  if ((p_isPlan != nullptr) && (p_a != nullptr) && (p_b != nullptr) && (p_c != nullptr) && (p_d != nullptr)) {
+    if (*p_isPlan) {
+      // All the pointers towards the plan coefficients are different from nullptr => using them in the rest of the method
       a = *p_a;
       b = *p_b;
       c = *p_c;
       d = *p_d;
     }
-    else
-    {
+    else {
       // The call to coplanar that was performed outside vpPose::poseLagrangePlan indicated that the points are not coplanar.
       throw vpException(vpException::fatalError, "Called vpPose::poseLagrangePlan but the call to vpPose::coplanar done outside the method indicated that the points are not coplanar");
     }
   }
-  else
-  {
-    // At least one of the coefficient is a NULL pointer => calling coplanar by ourselves
+  else {
+    // At least one of the coefficient is a nullptr pointer => calling coplanar by ourselves
     int coplanarType;
     bool areCoplanar = coplanar(coplanarType, &a, &b, &c, &d);
-    if(!areCoplanar)
-    {
+    if (!areCoplanar) {
       throw vpException(vpException::fatalError, "Called vpPose::poseLagrangePlan but call to vpPose::coplanar indicates that the points are not coplanar");
     }
   }
-  
 
   if (c < 0.0) { // imposing c >= 0
     a = -a;
@@ -321,7 +300,8 @@ void vpPose::poseLagrangePlan(vpHomogeneousMatrix &cMo, bool *p_isPlan, double *
     r1[0] = n1;
     r1[1] = -a * b / n1;
     r1[2] = -a * c / n1;
-  } else {
+  }
+  else {
     r1[0] = -a * b / n2;
     r1[1] = n2;
     r1[2] = -b * c / n2;
@@ -405,7 +385,7 @@ void vpPose::poseLagrangePlan(vpHomogeneousMatrix &cMo, bool *p_isPlan, double *
   }
 #endif
 
-  if (X2[5] < 0.0) { /* to obtain Zo > 0	*/
+  if (X2[5] < 0.0) { /* to obtain Zo > 0  */
     for (unsigned int i = 0; i < 3; i++)
       X1[i] = -X1[i];
     for (unsigned int i = 0; i < 6; i++)
@@ -417,7 +397,7 @@ void vpPose::poseLagrangePlan(vpHomogeneousMatrix &cMo, bool *p_isPlan, double *
   }
   for (unsigned int i = 0; i < 3; i++) {
     X2[i] -= (s * X1[i]);
-  } /* X1^T X2 = 0	*/
+  } /* X1^T X2 = 0  */
 
   // s = 0.0;
   // for (i=0;i<3;i++)  {s += (X2[i]*X2[i]);}
@@ -434,13 +414,13 @@ void vpPose::poseLagrangePlan(vpHomogeneousMatrix &cMo, bool *p_isPlan, double *
     //                  (*it).get_oZ() << std::endl;
     //      }
     throw(vpException(vpException::divideByZeroError, "Division by zero in Lagrange pose computation "
-                                                      "(planar plane case)"));
+                      "(planar plane case)"));
   }
 
   s = 1.0 / sqrt(s);
   for (unsigned int i = 0; i < 3; i++) {
     X2[i] *= s;
-  } /* X2^T X2 = 1	*/
+  } /* X2^T X2 = 1  */
 
   calculTranslation(A, B, nl, 3, 3, X1, X2);
 
@@ -455,7 +435,7 @@ void vpPose::poseLagrangePlan(vpHomogeneousMatrix &cMo, bool *p_isPlan, double *
   cMf[0][2] = (X1[1] * X2[2]) - (X1[2] * X2[1]);
   cMf[1][2] = (X1[2] * X2[0]) - (X1[0] * X2[2]);
   cMf[2][2] = (X1[0] * X2[1]) - (X1[1] * X2[0]);
-  /* calcul de la matrice de passage	*/
+  /* calcul de la matrice de passage  */
   for (unsigned int i = 0; i < 3; i++) {
     cMf[i][0] = X1[i];
     cMf[i][1] = X2[i];
@@ -557,7 +537,7 @@ void vpPose::poseLagrangeNonPlan(vpHomogeneousMatrix &cMo)
     }
 #endif
 
-    if (X2[8] < 0.0) { /* car Zo > 0	*/
+    if (X2[8] < 0.0) { /* car Zo > 0  */
       X1 *= -1;
       X2 *= -1;
     }
@@ -567,7 +547,7 @@ void vpPose::poseLagrangeNonPlan(vpHomogeneousMatrix &cMo)
     }
     for (i = 0; i < 3; i++) {
       X2[i] -= (s * X1[i]);
-    } /* X1^T X2 = 0	*/
+    } /* X1^T X2 = 0  */
 
     // s = 0.0;
     // for (i=0;i<3;i++)  {s += (X2[i]*X2[i]);}
@@ -585,13 +565,13 @@ void vpPose::poseLagrangeNonPlan(vpHomogeneousMatrix &cMo)
       //      }
       // vpERROR_TRACE(" division par zero " ) ;
       throw(vpException(vpException::divideByZeroError, "Division by zero in Lagrange pose computation (non "
-                                                        "planar plane case)"));
+                        "planar plane case)"));
     }
 
     s = 1.0 / sqrt(s);
     for (i = 0; i < 3; i++) {
       X2[i] *= s;
-    } /* X2^T X2 = 1	*/
+    } /* X2^T X2 = 1  */
 
     X2[3] = (X1[1] * X2[2]) - (X1[2] * X2[1]);
     X2[4] = (X1[2] * X2[0]) - (X1[0] * X2[2]);
@@ -606,7 +586,8 @@ void vpPose::poseLagrangeNonPlan(vpHomogeneousMatrix &cMo)
       cMo[i][3] = X2[i + 6];
     }
 
-  } catch (...) {
+  }
+  catch (...) {
     throw; // throw the original exception
   }
 

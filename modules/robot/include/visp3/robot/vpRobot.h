@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Generic virtual robot.
  *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef vpRobot_H
 #define vpRobot_H
@@ -62,7 +59,8 @@ public:
   /*!
     Robot control states.
   */
-  typedef enum {
+  typedef enum
+  {
     STATE_STOP,                 //!< Stops robot motion especially in velocity and acceleration control.
     STATE_VELOCITY_CONTROL,     //!< Initialize the velocity controller.
     STATE_POSITION_CONTROL,     //!< Initialize the position controller.
@@ -73,7 +71,8 @@ public:
   /*!
     Robot control frames.
   */
-  typedef enum {
+  typedef enum
+  {
     REFERENCE_FRAME,               /*!< Corresponds to a fixed reference frame
                 attached to the robot structure. */
     ARTICULAR_FRAME,               /*!< Corresponds to the joint state. This value is deprecated.
@@ -137,6 +136,15 @@ public:
 
   double getMaxTranslationVelocity(void) const;
   double getMaxRotationVelocity(void) const;
+
+  /*!
+   * Return robot degrees of freedom number.
+   */
+  int getNDof() const
+  {
+    return nDof;
+  }
+
   //! Get the robot position (frame has to be specified).
   virtual void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &position) = 0;
 

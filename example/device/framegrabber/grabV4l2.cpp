@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -32,7 +32,7 @@
  * Acquire images using 1394 device with cfox (MAC OSX) and display it
  * using GTK or GTK.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <stdlib.h>
 #include <visp3/core/vpConfig.h>
@@ -212,7 +212,7 @@ bool getOptions(int argc, const char **argv, unsigned &fps, unsigned &input, uns
       verbose = true;
       break;
     case 'h':
-      usage(argv[0], NULL, fps, input, scale, niter, device, pixelformat, image_type, opath);
+      usage(argv[0], nullptr, fps, input, scale, niter, device, pixelformat, image_type, opath);
       return false;
       break;
 
@@ -225,7 +225,7 @@ bool getOptions(int argc, const char **argv, unsigned &fps, unsigned &input, uns
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL, fps, input, scale, niter, device, pixelformat, image_type, opath);
+    usage(argv[0], nullptr, fps, input, scale, niter, device, pixelformat, image_type, opath);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -302,9 +302,9 @@ int main(int argc, const char **argv)
 
 // We open a window using either X11 or GTK.
 // Its size is automatically defined by the image (I) size
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
     vpDisplayX display;
-#elif defined VISP_HAVE_GTK
+#elif defined(VISP_HAVE_GTK)
     vpDisplayGTK display;
 #endif
 
@@ -312,7 +312,7 @@ int main(int argc, const char **argv)
       // Display the image
       // The image class has a member that specify a pointer toward
       // the display that has been initialized in the display declaration
-      // therefore is is no longuer necessary to make a reference to the
+      // therefore is is no longer necessary to make a reference to the
       // display variable.
       if (opt_image_type == grey_image) {
         display.init(Ig, 100, 100, "V4L2 grey images framegrabbing");

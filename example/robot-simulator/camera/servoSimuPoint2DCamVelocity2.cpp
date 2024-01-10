@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,11 +31,7 @@
  * Description:
  * Simulation of a 2D visual servoing on a point.
  *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example servoSimuPoint2DCamVelocity2.cpp
@@ -118,7 +114,7 @@ bool getOptions(int argc, const char **argv)
 
     switch (c) {
     case 'h':
-      usage(argv[0], NULL);
+      usage(argv[0], nullptr);
       return false;
 
     default:
@@ -129,7 +125,7 @@ bool getOptions(int argc, const char **argv)
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL);
+    usage(argv[0], nullptr);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;

@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -32,7 +32,7 @@
  * Interface for the Servolens lens attached to the camera fixed on the
  * Afma4 robot.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
 
@@ -240,7 +240,7 @@ void vpServolens::init() const
   cmd = "VW0";
   this->write(cmd.c_str());
 
-  /* L'experience montre qu'une petite tempo est utile.		*/
+  /* L'experience montre qu'une petite tempo est utile. */
   vpTime::wait(500);
 }
 
@@ -715,7 +715,7 @@ bool vpServolens::read(char *c, long timeout_s) const
   FD_ZERO(&readfds);
   FD_SET(static_cast<unsigned int>(this->remfd), &readfds);
 
-  if (select(FD_SETSIZE, &readfds, (fd_set *)NULL, (fd_set *)NULL, &timeout) > 0) {
+  if (select(FD_SETSIZE, &readfds, (fd_set *)nullptr, (fd_set *)nullptr, &timeout) > 0) {
     ssize_t n = ::read(this->remfd, c, 1); /* read one character at a time */
     if (n != 1)
       return false;

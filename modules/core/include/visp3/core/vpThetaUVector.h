@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,14 +29,10 @@
  *
  * Description:
  * Theta U parameterization for the rotation.
- *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+ */
 
-#ifndef vpTHETAUVECTOR_H
-#define vpTHETAUVECTOR_H
+#ifndef _vpThetaUVector_h_
+#define _vpThetaUVector_h_
 
 /*!
   \file vpThetaUVector.h
@@ -118,9 +113,7 @@ class vpQuaternionVector;
   \endcode
   Or you can also initialize the vector from a list of doubles if ViSP is build with c++11 enabled:
   \code
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   tu = {M_PI_4, M_PI_2, M_PI};
-#endif
   \endcode
 
   To get the values [rad] use:
@@ -131,8 +124,8 @@ class vpQuaternionVector;
   \endcode
 
   The code below shows first how to initialize a \f$\theta {\bf u}\f$
-  vector, than how to contruct a rotation matrix from a vpThetaUVector
-  and finaly how to extract the theta U angles from the build rotation
+  vector, than how to construct a rotation matrix from a vpThetaUVector
+  and finally how to extract the theta U angles from the build rotation
   matrix.
 
   \code
@@ -195,8 +188,6 @@ public:
   explicit vpThetaUVector(const std::vector<double> &tu);
 
   vpThetaUVector(double tux, double tuy, double tuz);
-  //! Destructor.
-  virtual ~vpThetaUVector(){};
 
   // convert an homogeneous matrix into Theta U vector
   vpThetaUVector buildFrom(const vpHomogeneousMatrix &M);
@@ -225,9 +216,7 @@ public:
   vpThetaUVector &operator=(double x);
   vpThetaUVector operator*(const vpThetaUVector &tu_b) const;
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpThetaUVector &operator=(const std::initializer_list<double> &list);
-#endif
 };
 
 #endif

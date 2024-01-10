@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +29,7 @@
  *
  * Description:
  * Point feature.
- *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+ */
 
 #ifndef vpPoint_H
 #define vpPoint_H
@@ -60,10 +55,10 @@ class vpHomogeneousMatrix;
   A 3D point has the followings parameters:
   - **in the object frame**: the normalized 3D coordinates oX, oY, oZ, oW of the point. These
   parameters registered in vpForwardProjection::oP internal 4-dim vector are set using the constructors vpPoint(double
- oX, double oY, double oZ), vpPoint(const vpColVector &oP) and vpPoint(const std::vector<double> &oP) or the fonctions
+  oX, double oY, double oZ), vpPoint(const vpColVector &oP) and vpPoint(const std::vector<double> &oP) or the functions
   setWorldCoordinates(double oX, double oY, double oZ),
   setWorldCoordinates(const vpColVector &oP) and setWorldCoordinates(const std::vector<double> &oP).
- To get theses parameters use get_oP().
+  To get theses parameters use get_oP().
 
   - **in the camera frame**: the normalized coordinates cX, cY, cZ, 1 of the point. These
   parameters registered in vpTracker::cP internal 4-dim vector are computed using
@@ -73,9 +68,9 @@ class vpHomogeneousMatrix;
 
   - **in the image plane**: the 2D normalized coordinates (x, y, 1) corresponding
   to the perspective projection of the point. These parameters are registered in vpTracker::p internal 3-dim vector and
- computed using projection() and projection(const vpColVector &cP, vpColVector &p) const. They could be retrieved using
- get_x() and get_y(). They correspond to 2D normalized point parameters with values expressed in meters. To get theses
- parameters use get_p().
+  computed using projection() and projection(const vpColVector &cP, vpColVector &p) const. They could be retrieved using
+  get_x() and get_y(). They correspond to 2D normalized point parameters with values expressed in meters. To get theses
+  parameters use get_p().
 
 */
 class VISP_EXPORT vpPoint : public vpForwardProjection
@@ -87,23 +82,21 @@ public:
   vpPoint(double oX, double oY, double oZ);
   explicit vpPoint(const vpColVector &oP);
   explicit vpPoint(const std::vector<double> &oP);
-  //! Destructor.
-  virtual ~vpPoint() {}
 
 public:
   // Compute the 3D coordinates _cP  (camera frame)
-  void changeFrame(const vpHomogeneousMatrix &cMo, vpColVector &cP) const;
-  void changeFrame(const vpHomogeneousMatrix &cMo);
+  void changeFrame(const vpHomogeneousMatrix &cMo, vpColVector &cP) const override;
+  void changeFrame(const vpHomogeneousMatrix &cMo) override;
 
   void display(const vpImage<unsigned char> &I, const vpCameraParameters &cam, const vpColor &color = vpColor::green,
-               unsigned int thickness = 1);
+               unsigned int thickness = 1) override;
   void display(const vpImage<vpRGBa> &I, const vpCameraParameters &cam, const vpColor &color = vpColor::green,
                unsigned int thickness = 1);
   void display(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cMo, const vpCameraParameters &cam,
-               const vpColor &color = vpColor::green, unsigned int thickness = 1);
+               const vpColor &color = vpColor::green, unsigned int thickness = 1) override;
   void display(const vpImage<vpRGBa> &I, const vpHomogeneousMatrix &cMo, const vpCameraParameters &cam,
                const vpColor &color = vpColor::green, unsigned int thickness = 1);
-  vpPoint *duplicate() const;
+  vpPoint *duplicate() const override;
 
   // Get coordinates
   double get_X() const;
@@ -124,17 +117,12 @@ public:
   void getWorldCoordinates(std::vector<double> &oP);
 
   friend VISP_EXPORT std::ostream &operator<<(std::ostream &os, const vpPoint &vpp);
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
-  vpPoint &operator=(const vpPoint &vpp) = default;
-#else
-  vpPoint &operator=(const vpPoint &vpp);
-#endif
 
   //! Projection onto the image plane of a point. Input: the 3D coordinates in
   //! the camera frame _cP, output : the 2D coordinates _p.
-  void projection(const vpColVector &_cP, vpColVector &_p) const;
+  void projection(const vpColVector &_cP, vpColVector &_p) const override;
 
-  void projection();
+  void projection() override;
 
   // Set coordinates
   void set_X(double cX);
@@ -150,12 +138,12 @@ public:
   void set_w(double w);
 
   void setWorldCoordinates(double oX, double oY, double oZ);
-  void setWorldCoordinates(const vpColVector &oP);
+  void setWorldCoordinates(const vpColVector &oP) override;
   void setWorldCoordinates(const std::vector<double> &oP);
 
 protected:
   //! Basic construction.
-  void init();
+  void init() override;
 };
 
 #endif

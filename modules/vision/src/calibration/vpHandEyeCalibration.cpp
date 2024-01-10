@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * Hand-eye calibration.
- *
- * Authors:
- * Francois Chaumette
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
 
 #include <cmath>  // std::fabs
 #include <limits> // numeric_limits
@@ -400,19 +394,6 @@ int vpHandEyeCalibration::calibrationRotationTsaiOld(const std::vector<vpHomogen
 
   x = Ap * A.t() * B;
   vpColVector x2 = x; /* pour calcul residu */
-
-  //     {
-  //       // Residual
-  //       vpColVector residual;
-  //       residual = A*x-B;
-  //       std::cout << "Residual: " << std::endl << residual << std::endl;
-
-  //       double res = 0;
-  //       for (int i=0; i < residual.getRows(); i++)
-  // 	res += residual[i]*residual[i];
-  //       res = sqrt(res/residual.getRows());
-  //       printf("Mean residual = %lf\n",res);
-  //     }
 
   // extraction of theta and U
   double theta;
@@ -809,7 +790,7 @@ int vpHandEyeCalibration::calibrationVVS(const std::vector<vpHomogeneousMatrix> 
   } // end while
 #if DEBUG_LEVEL2
   {
-    printf(" Iteration number for NL hand-eye minimisation : %d\n", it);
+    printf(" Iteration number for NL hand-eye minimization : %d\n", it);
     vpThetaUVector ePc(eRc);
     std::cout << "theta U (deg): " << vpMath::deg(ePc[0]) << " " << vpMath::deg(ePc[1]) << " " << vpMath::deg(ePc[2])
               << std::endl;
@@ -836,20 +817,6 @@ int vpHandEyeCalibration::calibrationVVS(const std::vector<vpHomogeneousMatrix> 
 #define HE_PROCRUSTES_OT 5
 #define HE_PROCRUSTES_NT 6
 
-/*!
-  Compute extrinsic camera parameters : the constant transformation from
-  the effector to the camera frames (eMc).
-
-  \param[in] cMo : vector of homogeneous matrices representing the transformation
-  between the camera and the scene.
-  \param[in] rMe : vector of homogeneous matrices representing the transformation
-  between the effector (where the camera is fixed) and the reference
-  coordinates (base of the manipulator). Must be the same size as cMo.
-  \param[out] eMc : homogeneous matrix representing the transformation
-  between the effector and the camera (output)
-
-  \return 0 if calibration succeed, -1 if the system is not full rank, 1 if the algorithm doesn't converge.
-*/
 int vpHandEyeCalibration::calibrate(const std::vector<vpHomogeneousMatrix> &cMo,
                                     const std::vector<vpHomogeneousMatrix> &rMe, vpHomogeneousMatrix &eMc)
 {

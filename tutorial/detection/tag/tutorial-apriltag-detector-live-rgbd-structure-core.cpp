@@ -114,9 +114,9 @@ int main(int argc, const char **argv)
     vpImage<float> depthMap;
     vpImageConvert::createDepthHistogram(I_depth_raw, I_depth);
 
-    vpDisplay *d1 = NULL;
-    vpDisplay *d2 = NULL;
-    vpDisplay *d3 = NULL;
+    vpDisplay *d1 = nullptr;
+    vpDisplay *d2 = nullptr;
+    vpDisplay *d3 = nullptr;
     if (!display_off) {
 #ifdef VISP_HAVE_X11
       d1 = new vpDisplayX(I_color, 100, 30, "Pose from Homography");
@@ -126,7 +126,7 @@ int main(int argc, const char **argv)
       d1 = new vpDisplayGDI(I_color, 100, 30, "Pose from Homography");
       d2 = new vpDisplayGDI(I_color2, I_color.getWidth() + 120, 30, "Pose from RGBD fusion");
       d3 = new vpDisplayGDI(I_depth, 100, I_color.getHeight() + 70, "Depth");
-#elif defined(VISP_HAVE_OPENCV)
+#elif defined(HAVE_OPENCV_HIGHGUI)
       d1 = new vpDisplayOpenCV(I_color, 100, 30, "Pose from Homography");
       d2 = new vpDisplayOpenCV(I_color2, I_color.getWidth() + 120, 30, "Pose from RGBD fusion");
       d3 = new vpDisplayOpenCV(I_depth, 100, I_color.getHeight() + 70, "Depth");

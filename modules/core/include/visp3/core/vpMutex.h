@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +29,7 @@
  *
  * Description:
  * Mutex protection.
- *
- * Authors:
- * Celine Teuliere
- *
- *****************************************************************************/
+ */
 
 #ifndef _vpMutex_h_
 #define _vpMutex_h_
@@ -77,16 +72,16 @@ public:
   vpMutex() : m_mutex()
   {
 #if defined(VISP_HAVE_PTHREAD)
-    pthread_mutex_init(&m_mutex, NULL);
+    pthread_mutex_init(&m_mutex, nullptr);
 #elif defined(_WIN32)
 #ifdef WINRT_8_1
-    m_mutex = CreateMutexEx(NULL, NULL, 0, NULL);
+    m_mutex = CreateMutexEx(nullptr, nullptr, 0, nullptr);
 #else
-    m_mutex = CreateMutex(NULL,                   // default security attributes
+    m_mutex = CreateMutex(nullptr,                   // default security attributes
                           FALSE,                  // initially not owned
-                          NULL);                  // unnamed mutex
+                          nullptr);                  // unnamed mutex
 #endif
-    if (m_mutex == NULL) {
+    if (m_mutex == nullptr) {
       std::cout << "CreateMutex error: " << GetLastError() << std::endl;
       return;
     }

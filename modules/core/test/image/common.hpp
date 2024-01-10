@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Common functions for color conversion and image resize tests.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef common_HPP
 #define common_HPP
@@ -40,12 +40,8 @@
 #include <visp3/core/vpImageConvert.h>
 #include <visp3/core/vpImageMorphology.h>
 
-#if VISP_HAVE_OPENCV_VERSION >= 0x020101
-#if VISP_HAVE_OPENCV_VERSION >= 0x030000
-#include <opencv2/core.hpp>
-#else
+#if defined(VISP_HAVE_OPENCV)
 #include <opencv2/core/core.hpp>
-#endif
 #endif
 
 namespace common_tools
@@ -132,8 +128,8 @@ unsigned char getPixelClamped(const vpImage<unsigned char> &I, float x, float y)
 {
   int j = vpMath::round(x);
   int i = vpMath::round(y);
-  j = (std::max)(0, (std::min)(j, static_cast<int>(I.getWidth()) - 1));
-  i = (std::max)(0, (std::min)(i, static_cast<int>(I.getHeight()) - 1));
+  j = std::max<int>(0, std::min<int>(j, static_cast<int>(I.getWidth()) - 1));
+  i = std::max<int>(0, std::min<int>(i, static_cast<int>(I.getHeight()) - 1));
 
   return I[i][j];
 }
@@ -142,8 +138,8 @@ vpRGBa getPixelClamped(const vpImage<vpRGBa> &I, float x, float y)
 {
   int j = vpMath::round(x);
   int i = vpMath::round(y);
-  j = (std::max)(0, (std::min)(j, static_cast<int>(I.getWidth()) - 1));
-  i = (std::max)(0, (std::min)(i, static_cast<int>(I.getHeight()) - 1));
+  j = std::max<int>(0, std::min<int>(j, static_cast<int>(I.getWidth()) - 1));
+  i = std::max<int>(0, std::min<int>(i, static_cast<int>(I.getHeight()) - 1));
 
   return I[i][j];
 }
@@ -153,11 +149,11 @@ float lerp(float A, float B, float t) { return A * (1.0f - t) + B * t; }
 void resizeBilinear(const vpImage<unsigned char> &I, vpImage<unsigned char> &Ires, unsigned int i, unsigned int j,
                     int u0, int v0, float xFrac, float yFrac)
 {
-  int u1 = (std::min)(static_cast<int>(I.getWidth()) - 1, u0 + 1);
+  int u1 = std::min<int>(static_cast<int>(I.getWidth()) - 1, u0 + 1);
   int v1 = v0;
 
   int u2 = u0;
-  int v2 = (std::min)(static_cast<int>(I.getHeight()) - 1, v0 + 1);
+  int v2 = std::min<int>(static_cast<int>(I.getHeight()) - 1, v0 + 1);
 
   int u3 = u1;
   int v3 = v2;
@@ -173,11 +169,11 @@ void resizeBilinear(const vpImage<unsigned char> &I, vpImage<unsigned char> &Ire
 void resizeBilinear(const vpImage<vpRGBa> &I, vpImage<vpRGBa> &Ires, unsigned int i, unsigned int j, int u0, int v0,
                     float xFrac, float yFrac)
 {
-  int u1 = (std::min)(static_cast<int>(I.getWidth()) - 1, u0 + 1);
+  int u1 = std::min<int>(static_cast<int>(I.getWidth()) - 1, u0 + 1);
   int v1 = v0;
 
   int u2 = u0;
-  int v2 = (std::min)(static_cast<int>(I.getHeight()) - 1, v0 + 1);
+  int v2 = std::min<int>(static_cast<int>(I.getHeight()) - 1, v0 + 1);
 
   int u3 = u1;
   int v3 = v2;
@@ -217,10 +213,12 @@ void resizeRef(const vpImage<unsigned char> &Isrc, vpImage<unsigned char> &Idst,
 
       if (method == 0) { // nearest neighbor
         Idst[i][j] = getPixelClamped(Isrc, u, v);
-      } else if (method == 1) { // bilinear
+      }
+      else if (method == 1) { // bilinear
         resizeBilinear(Isrc, Idst, i, j, u0, v0, xFrac, yFrac);
-      } else { // bicubic
-        // no bicubic ref test for now
+      }
+      else { // bicubic
+     // no bicubic ref test for now
       }
     }
   }
@@ -244,10 +242,12 @@ void resizeRef(const vpImage<vpRGBa> &Isrc, vpImage<vpRGBa> &Idst, int method)
 
       if (method == 0) { // nearest neighbor
         Idst[i][j] = getPixelClamped(Isrc, u, v);
-      } else if (method == 1) { // bilinear
+      }
+      else if (method == 1) { // bilinear
         resizeBilinear(Isrc, Idst, i, j, u0, v0, xFrac, yFrac);
-      } else { // bicubic
-        // no bicubic ref test for now
+      }
+      else { // bicubic
+     // no bicubic ref test for now
       }
     }
   }
@@ -407,7 +407,8 @@ void imageErosionRef(vpImage<unsigned char> &I,
       for (unsigned int j = 0; j < J.getWidth(); j++) {
         J[i][j] = null_value;
       }
-    } else {
+    }
+    else {
       J[i][0] = null_value;
       memcpy(J[i] + 1, I[i - 1], sizeof(unsigned char) * I.getWidth());
       J[i][J.getWidth() - 1] = null_value;
@@ -415,7 +416,7 @@ void imageErosionRef(vpImage<unsigned char> &I,
   }
 
   if (connexity == vpImageMorphology::CONNEXITY_4) {
-    unsigned int offset[5] = {1, J.getWidth(), J.getWidth() + 1, J.getWidth() + 2, J.getWidth() * 2 + 1};
+    unsigned int offset[5] = { 1, J.getWidth(), J.getWidth() + 1, J.getWidth() + 2, J.getWidth() * 2 + 1 };
 
     for (unsigned int i = 0; i < I.getHeight(); i++) {
       unsigned char *ptr_curr_J = J.bitmap + i * J.getWidth();
@@ -424,15 +425,16 @@ void imageErosionRef(vpImage<unsigned char> &I,
       for (unsigned int j = 0; j < I.getWidth(); j++) {
         unsigned char min_value = null_value;
         for (int k = 0; k < 5; k++) {
-          min_value = (std::min)(min_value, *(ptr_curr_J + j + offset[k]));
+          min_value = std::min<unsigned char>(min_value, *(ptr_curr_J + j + offset[k]));
         }
 
         *(ptr_curr_I + j) = min_value;
       }
     }
-  } else {
-    // CONNEXITY_8
-    unsigned int offset[9] = {0,
+  }
+  else {
+ // CONNEXITY_8
+    unsigned int offset[9] = { 0,
                               1,
                               2,
                               J.getWidth(),
@@ -440,7 +442,7 @@ void imageErosionRef(vpImage<unsigned char> &I,
                               J.getWidth() + 2,
                               J.getWidth() * 2,
                               J.getWidth() * 2 + 1,
-                              J.getWidth() * 2 + 2};
+                              J.getWidth() * 2 + 2 };
 
     for (unsigned int i = 0; i < I.getHeight(); i++) {
       unsigned char *ptr_curr_J = J.bitmap + i * J.getWidth();
@@ -449,7 +451,7 @@ void imageErosionRef(vpImage<unsigned char> &I,
       for (unsigned int j = 0; j < I.getWidth(); j++) {
         unsigned char min_value = null_value;
         for (int k = 0; k < 9; k++) {
-          min_value = (std::min)(min_value, *(ptr_curr_J + j + offset[k]));
+          min_value = std::min<unsigned char>(min_value, *(ptr_curr_J + j + offset[k]));
         }
 
         *(ptr_curr_I + j) = min_value;
@@ -476,7 +478,8 @@ void imageDilatationRef(vpImage<unsigned char> &I,
       for (unsigned int j = 0; j < J.getWidth(); j++) {
         J[i][j] = null_value;
       }
-    } else {
+    }
+    else {
       J[i][0] = null_value;
       memcpy(J[i] + 1, I[i - 1], sizeof(unsigned char) * I.getWidth());
       J[i][J.getWidth() - 1] = null_value;
@@ -484,7 +487,7 @@ void imageDilatationRef(vpImage<unsigned char> &I,
   }
 
   if (connexity == vpImageMorphology::CONNEXITY_4) {
-    unsigned int offset[5] = {1, J.getWidth(), J.getWidth() + 1, J.getWidth() + 2, J.getWidth() * 2 + 1};
+    unsigned int offset[5] = { 1, J.getWidth(), J.getWidth() + 1, J.getWidth() + 2, J.getWidth() * 2 + 1 };
 
     for (unsigned int i = 0; i < I.getHeight(); i++) {
       unsigned char *ptr_curr_J = J.bitmap + i * J.getWidth();
@@ -493,15 +496,16 @@ void imageDilatationRef(vpImage<unsigned char> &I,
       for (unsigned int j = 0; j < I.getWidth(); j++) {
         unsigned char max_value = null_value;
         for (int k = 0; k < 5; k++) {
-          max_value = (std::max)(max_value, *(ptr_curr_J + j + offset[k]));
+          max_value = std::max<unsigned char>(max_value, *(ptr_curr_J + j + offset[k]));
         }
 
         *(ptr_curr_I + j) = max_value;
       }
     }
-  } else {
-    // CONNEXITY_8
-    unsigned int offset[9] = {0,
+  }
+  else {
+ // CONNEXITY_8
+    unsigned int offset[9] = { 0,
                               1,
                               2,
                               J.getWidth(),
@@ -509,7 +513,7 @@ void imageDilatationRef(vpImage<unsigned char> &I,
                               J.getWidth() + 2,
                               J.getWidth() * 2,
                               J.getWidth() * 2 + 1,
-                              J.getWidth() * 2 + 2};
+                              J.getWidth() * 2 + 2 };
 
     for (unsigned int i = 0; i < I.getHeight(); i++) {
       unsigned char *ptr_curr_J = J.bitmap + i * J.getWidth();
@@ -518,7 +522,7 @@ void imageDilatationRef(vpImage<unsigned char> &I,
       for (unsigned int j = 0; j < I.getWidth(); j++) {
         unsigned char max_value = null_value;
         for (int k = 0; k < 9; k++) {
-          max_value = (std::max)(max_value, *(ptr_curr_J + j + offset[k]));
+          max_value = std::max<unsigned char>(max_value, *(ptr_curr_J + j + offset[k]));
         }
 
         *(ptr_curr_I + j) = max_value;
@@ -542,7 +546,8 @@ void magicSquare(vpImage<unsigned char> &magic_square, int N)
 
     if (magic_square[newi][newj]) {
       i++;
-    } else {
+    }
+    else {
       i = newi;
       j = newj;
     }
@@ -618,14 +623,15 @@ void BGRaToRGBaRef(unsigned char *bgra, unsigned char *rgba, unsigned int width,
   }
 }
 
-#if VISP_HAVE_OPENCV_VERSION >= 0x020101
+#if defined(VISP_HAVE_OPENCV)
 void fill(cv::Mat &img)
 {
   for (int i = 0; i < img.rows; i++) {
     for (int j = 0; j < img.cols; j++) {
       if (img.type() == CV_8UC1) {
         img.at<uchar>(i, j) = static_cast<uchar>(i * img.cols + j);
-      } else if (img.type() == CV_8UC3) {
+      }
+      else if (img.type() == CV_8UC3) {
         img.at<cv::Vec3b>(i, j)[0] = static_cast<uchar>((i * img.cols + j) * 3);
         img.at<cv::Vec3b>(i, j)[1] = static_cast<uchar>((i * img.cols + j) * 3 + 1);
         img.at<cv::Vec3b>(i, j)[2] = static_cast<uchar>((i * img.cols + j) * 3 + 2);

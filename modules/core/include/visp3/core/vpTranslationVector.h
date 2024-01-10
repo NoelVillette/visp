@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * Translation vector.
- *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
 
 #ifndef vpTRANSLATIONVECTOR_H
 #define vpTRANSLATIONVECTOR_H
@@ -79,9 +73,7 @@
   \endcode
   Or you can also initialize the vector from a list of doubles if ViSP is build with c++11 enabled:
   \code
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   t = {0, 0.1, 0.5};
-#endif
   \endcode
 
   To get the values [meters] use:
@@ -123,7 +115,7 @@ public:
       Default constructor.
       The translation vector is initialized to zero.
     */
-  vpTranslationVector() : vpArray2D<double>(3, 1), m_index(0){};
+  vpTranslationVector() : vpArray2D<double>(3, 1), m_index(0) { }
   vpTranslationVector(double tx, double ty, double tz);
   vpTranslationVector(const vpTranslationVector &tv);
   explicit vpTranslationVector(const vpHomogeneousMatrix &M);
@@ -135,7 +127,6 @@ public:
   vpTranslationVector buildFrom(const vpPoseVector &p);
   vpTranslationVector buildFrom(const vpColVector &v);
 
-  vp_deprecated double euclideanNorm() const;
   double frobeniusNorm() const;
 
   // operators
@@ -157,9 +148,7 @@ public:
   vpTranslationVector &operator=(const vpColVector &tv);
   vpTranslationVector &operator=(const vpTranslationVector &tv);
   vpTranslationVector &operator=(double x);
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpTranslationVector &operator=(const std::initializer_list<double> &list);
-#endif
 
   //! Operator that allows to set a value of an element \f$t_i\f$: t[i] = x
   inline double &operator[](unsigned int n) { return *(data + n); }
@@ -180,7 +169,7 @@ public:
     (void)ncols;
     (void)flagNullify;
     throw(vpException(vpException::fatalError, "Cannot resize a translation vector"));
-  };
+  }
 
   void set(double tx, double ty, double tz);
 
@@ -196,6 +185,15 @@ public:
   static vpTranslationVector mean(const std::vector<vpTranslationVector> &vec_t);
   static vpMatrix skew(const vpTranslationVector &tv);
   static void skew(const vpTranslationVector &tv, vpMatrix &M);
+
+#if defined(VISP_BUILD_DEPRECATED_FUNCTIONS)
+  /*!
+      @name Deprecated functions
+  */
+  //@{
+  vp_deprecated double euclideanNorm() const;
+  //}
+#endif
 
 protected:
   unsigned int m_index; // index used for operator<< and operator, to fill a vector

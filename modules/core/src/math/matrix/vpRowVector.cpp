@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Operation on row vectors.
  *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpRowVector.cpp
@@ -61,7 +58,8 @@ vpRowVector &vpRowVector::operator=(const vpRowVector &v)
   if (colNum != k) {
     try {
       resize(k);
-    } catch (...) {
+    }
+    catch (...) {
       throw;
     }
   }
@@ -124,7 +122,6 @@ vpRowVector &vpRowVector::operator=(double x)
   return *this;
 }
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
 vpRowVector &vpRowVector::operator=(vpRowVector &&other)
 {
   if (this != &other) {
@@ -139,9 +136,9 @@ vpRowVector &vpRowVector::operator=(vpRowVector &&other)
 
     other.rowNum = 0;
     other.colNum = 0;
-    other.rowPtrs = NULL;
+    other.rowPtrs = nullptr;
     other.dsize = 0;
-    other.data = NULL;
+    other.data = nullptr;
   }
 
   return *this;
@@ -171,7 +168,6 @@ vpRowVector &vpRowVector::operator=(const std::initializer_list<double> &list)
   std::copy(list.begin(), list.end(), data);
   return *this;
 }
-#endif
 
 bool vpRowVector::operator==(const vpRowVector &v) const
 {
@@ -567,11 +563,11 @@ vpRowVector::vpRowVector(const std::vector<float> &v) : vpArray2D<double>(1, (un
 
   \param v : Input row vector used for initialization.
   \param c : column index in \e v that corresponds to the first element of the
-  row vector to contruct. \param ncols : Number of columns of the constructed
+  row vector to construct. \param ncols : Number of columns of the constructed
   row vector.
 
   The sub-vector starting from v[c] element and ending on v[c+ncols-1] element
-  is used to initialize the contructed row vector.
+  is used to initialize the constructed row vector.
 
   \sa init()
 */
@@ -580,7 +576,6 @@ vpRowVector::vpRowVector(const vpRowVector &v, unsigned int c, unsigned int ncol
   init(v, c, ncols);
 }
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
 vpRowVector::vpRowVector(vpRowVector &&v) : vpArray2D<double>()
 {
   rowNum = v.rowNum;
@@ -591,14 +586,13 @@ vpRowVector::vpRowVector(vpRowVector &&v) : vpArray2D<double>()
 
   v.rowNum = 0;
   v.colNum = 0;
-  v.rowPtrs = NULL;
+  v.rowPtrs = nullptr;
   v.dsize = 0;
-  v.data = NULL;
+  v.data = nullptr;
 }
-#endif
 
 /*!
-  Normalise the vector given as input parameter and return the normalized
+  Normalize the vector given as input parameter and return the normalized
   vector:
 
   \f[
@@ -702,7 +696,8 @@ void vpRowVector::reshape(vpMatrix &M, const unsigned int &nrows, const unsigned
   try {
     if ((M.getRows() != nrows) || (M.getCols() != ncols))
       M.resize(nrows, ncols);
-  } catch (...) {
+  }
+  catch (...) {
     throw;
   }
   for (unsigned int i = 0; i < nrows; i++)
@@ -890,7 +885,7 @@ void vpRowVector::stack(const vpRowVector &A, const vpRowVector &B, vpRowVector 
 */
 double vpRowVector::mean(const vpRowVector &v)
 {
-  if (v.data == NULL || v.size() == 0) {
+  if (v.data == nullptr || v.size() == 0) {
     throw(vpException(vpException::dimensionError, "Cannot compute mean value of an empty row vector"));
   }
 
@@ -907,7 +902,7 @@ double vpRowVector::mean(const vpRowVector &v)
 */
 double vpRowVector::median(const vpRowVector &v)
 {
-  if (v.data == NULL || v.size() == 0) {
+  if (v.data == nullptr || v.size() == 0) {
     throw(vpException(vpException::dimensionError, "Cannot compute mean value of an empty row vector"));
   }
 
@@ -921,7 +916,7 @@ double vpRowVector::median(const vpRowVector &v)
 */
 double vpRowVector::stdev(const vpRowVector &v, bool useBesselCorrection)
 {
-  if (v.data == NULL || v.size() == 0) {
+  if (v.data == nullptr || v.size() == 0) {
     throw(vpException(vpException::dimensionError, "Cannot compute mean value of an empty row vector"));
   }
 
@@ -948,7 +943,7 @@ double vpRowVector::stdev(const vpRowVector &v, bool useBesselCorrection)
   \param s Stream used for the printing.
 
   \param length The suggested width of each row vector element.
-  The actual width grows in order to accomodate the whole integral part,
+  The actual width grows in order to accommodate the whole integral part,
   and shrinks if the whole extent is not needed for all the numbers.
   \param intro The introduction which is printed before the vector.
   Can be set to zero (or omitted), in which case
@@ -992,7 +987,8 @@ int vpRowVector::print(std::ostream &s, unsigned int length, char const *intro) 
     if (p == std::string::npos) {
       maxBefore = vpMath::maximum(maxBefore, thislen);
       // maxAfter remains the same
-    } else {
+    }
+    else {
       maxBefore = vpMath::maximum(maxBefore, p);
       maxAfter = vpMath::maximum(maxAfter, thislen - p - 1);
     }
@@ -1002,7 +998,7 @@ int vpRowVector::print(std::ostream &s, unsigned int length, char const *intro) 
   // increase totalLength according to maxBefore
   totalLength = vpMath::maximum(totalLength, maxBefore);
   // decrease maxAfter according to totalLength
-  maxAfter = (std::min)(maxAfter, totalLength - maxBefore);
+  maxAfter = std::min<size_type>(maxAfter, totalLength - maxBefore);
   if (maxAfter == 1)
     maxAfter = 0;
 
@@ -1025,7 +1021,8 @@ int vpRowVector::print(std::ostream &s, unsigned int length, char const *intro) 
       if (p != std::string::npos) {
         s.width((std::streamsize)maxAfter);
         s << values[j].substr(p, maxAfter).c_str();
-      } else {
+      }
+      else {
         assert(maxAfter > 1);
         s.width((std::streamsize)maxAfter);
         s << ".0";
@@ -1086,20 +1083,9 @@ double vpRowVector::sumSquare() const
 }
 
 /*!
-  \deprecated This function is deprecated. You should rather use frobeniusNorm().
+  Compute and return the Frobenius norm \f$ ||v|| = \sqrt{ \sum{v_{i}^2}} \f$.
 
-  Compute and return the Euclidean norm also called Fronebius norm \f$ ||v|| = \sqrt{ \sum{v_{i}^2}} \f$.
-
-  \return The Euclidean norm if the vector is initialized, 0 otherwise.
-
-  \sa frobeniusNorm()
-*/
-double vpRowVector::euclideanNorm() const { return frobeniusNorm(); }
-
-/*!
-  Compute and return the Fronebius norm \f$ ||v|| = \sqrt{ \sum{v_{i}^2}} \f$.
-
-  \return The Fronebius norm if the vector is initialized, 0 otherwise.
+  \return The Frobenius norm if the vector is initialized, 0 otherwise.
 */
 double vpRowVector::frobeniusNorm() const
 {
@@ -1108,16 +1094,29 @@ double vpRowVector::frobeniusNorm() const
   return sqrt(norm);
 }
 
+#if defined(VISP_BUILD_DEPRECATED_FUNCTIONS)
+/*!
+  \deprecated This function is deprecated. You should rather use frobeniusNorm().
+
+  Compute and return the Euclidean norm also called Frobenius norm \f$ ||v|| = \sqrt{ \sum{v_{i}^2}} \f$.
+
+  \return The Euclidean norm if the vector is initialized, 0 otherwise.
+
+  \sa frobeniusNorm()
+*/
+double vpRowVector::euclideanNorm() const { return frobeniusNorm(); }
+#endif
+
 /*!
   Initialize the row vector from a part of an input row vector \e v.
 
   \param v : Input row vector used for initialization.
   \param c : column index in \e v that corresponds to the first element of the
-  row vector to contruct. \param ncols : Number of columns of the constructed
+  row vector to construct. \param ncols : Number of columns of the constructed
   row vector.
 
   The sub-vector starting from v[c] element and ending on v[c+ncols-1] element
-  is used to initialize the contructed row vector.
+  is used to initialize the constructed row vector.
 
   The following code shows how to use this function:
 \code
@@ -1151,7 +1150,7 @@ void vpRowVector::init(const vpRowVector &v, unsigned int c, unsigned int ncols)
     throw(vpException(vpException::dimensionError, "Bad column dimension (%d > %d) used to initialize vpRowVector",
                       cncols, v.getCols()));
   resize(ncols);
-  if (this->rowPtrs == NULL) // Fix coverity scan: explicit null dereferenced
+  if (this->rowPtrs == nullptr) // Fix coverity scan: explicit null dereferenced
     return;                  // Noting to do
   for (unsigned int i = 0; i < ncols; i++)
     (*this)[i] = v[i + c];
@@ -1194,10 +1193,11 @@ std::ostream &vpRowVector::cppPrint(std::ostream &os, const std::string &matrixN
   for (unsigned int j = 0; j < this->getCols(); ++j) {
     if (!octet) {
       os << matrixName << "[" << j << "] = " << (*this)[j] << "; " << std::endl;
-    } else {
+    }
+    else {
       for (unsigned int k = 0; k < sizeof(double); ++k) {
         os << "((unsigned char*)&(" << matrixName << "[" << j << "]) )[" << k << "] = 0x" << std::hex
-           << (unsigned int)((unsigned char *)&((*this)[j]))[k] << "; " << std::endl;
+          << (unsigned int)((unsigned char *)&((*this)[j]))[k] << "; " << std::endl;
       }
     }
   }

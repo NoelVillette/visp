@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,8 +29,7 @@
  *
  * Description:
  * Matrix manipulation.
- *
- *****************************************************************************/
+ */
 
 #ifndef vpMatrix_H
 #define vpMatrix_H
@@ -118,10 +116,8 @@ M:
 
 int main()
 {
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpMatrix M( {-1, -2, -3}, {4, 5.5, 6.0f} );
   std::cout << "M:\n" << M << std::endl;
-#endif
 }
   \endcode
   You can also create and initialize a matrix this way:
@@ -130,9 +126,7 @@ int main()
 
 int main()
 {
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpMatrix M(2, 3, {-1, -2, -3, 4, 5.5, 6.0f} );
-#endif
 }
   \endcode
 
@@ -140,10 +134,8 @@ int main()
   \code
 int main()
 {
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpMatrix M;
   M = { {-1, -2, -3}, {4, 5.5, 6.0f} };
-#endif
 }
   \endcode
 
@@ -157,7 +149,8 @@ public:
     Method used to compute the determinant of a square matrix.
     \sa det()
   */
-  typedef enum {
+  typedef enum
+  {
     LU_DECOMPOSITION /*!< LU decomposition method. */
   } vpDetMethod;
 
@@ -166,7 +159,7 @@ public:
     Basic constructor of a matrix of double. Number of columns and rows are
     zero.
   */
-  vpMatrix() : vpArray2D<double>(0, 0) {}
+  vpMatrix() : vpArray2D<double>(0, 0) { }
 
   /*!
     Constructor that initialize a matrix of double with 0.
@@ -174,7 +167,7 @@ public:
     \param r : Matrix number of rows.
     \param c : Matrix number of columns.
   */
-  vpMatrix(unsigned int r, unsigned int c) : vpArray2D<double>(r, c) {}
+  vpMatrix(unsigned int r, unsigned int c) : vpArray2D<double>(r, c) { }
 
   /*!
     Constructor that initialize a matrix of double with \e val.
@@ -183,7 +176,7 @@ public:
     \param c : Matrix number of columns.
     \param val : Each element of the matrix is set to \e val.
   */
-  vpMatrix(unsigned int r, unsigned int c, double val) : vpArray2D<double>(r, c, val) {}
+  vpMatrix(unsigned int r, unsigned int c, double val) : vpArray2D<double>(r, c, val) { }
   vpMatrix(const vpMatrix &M, unsigned int r, unsigned int c, unsigned int nrows, unsigned int ncols);
 
   /*!
@@ -198,19 +191,14 @@ vpRotationMatrix R;
 vpMatrix M(R);
 \endcode
    */
-  vpMatrix(const vpArray2D<double> &A) : vpArray2D<double>(A) {}
+  vpMatrix(const vpArray2D<double> &A) : vpArray2D<double>(A) { }
 
-  vpMatrix(const vpMatrix &A) : vpArray2D<double>(A) {}
+  vpMatrix(const vpMatrix &A) : vpArray2D<double>(A) { }
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpMatrix(vpMatrix &&A);
   explicit vpMatrix(const std::initializer_list<double> &list);
   explicit vpMatrix(unsigned int nrows, unsigned int ncols, const std::initializer_list<double> &list);
   explicit vpMatrix(const std::initializer_list<std::initializer_list<double> > &lists);
-#endif
-
-  //! Destructor (Memory de-allocation)
-  virtual ~vpMatrix() {}
 
   /*!
     Removes all elements from the matrix (which are destroyed),
@@ -218,14 +206,14 @@ vpMatrix M(R);
   */
   void clear()
   {
-    if (data != NULL) {
+    if (data != nullptr) {
       free(data);
-      data = NULL;
+      data = nullptr;
     }
 
-    if (rowPtrs != NULL) {
+    if (rowPtrs != nullptr) {
       free(rowPtrs);
-      rowPtrs = NULL;
+      rowPtrs = nullptr;
     }
     rowNum = colNum = dsize = 0;
   }
@@ -283,13 +271,11 @@ vpMatrix M(R);
   vpMatrix &operator<<(double val);
   vpMatrix &operator,(double val);
   vpMatrix &operator=(const vpArray2D<double> &A);
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpMatrix &operator=(const vpMatrix &A);
   vpMatrix &operator=(vpMatrix &&A);
 
   vpMatrix &operator=(const std::initializer_list<double> &list);
   vpMatrix &operator=(const std::initializer_list<std::initializer_list<double> > &lists);
-#endif
   vpMatrix &operator=(double x);
   //@}
 
@@ -347,13 +333,13 @@ vpMatrix M(R);
   // return the determinant of the matrix.
   double det(vpDetMethod method = LU_DECOMPOSITION) const;
   double detByLU() const;
-#ifdef VISP_HAVE_EIGEN3
+#if defined(VISP_HAVE_EIGEN3)
   double detByLUEigen3() const;
 #endif
 #if defined(VISP_HAVE_LAPACK)
   double detByLULapack() const;
 #endif
-#if (VISP_HAVE_OPENCV_VERSION >= 0x020101)
+#if defined(VISP_HAVE_OPENCV)
   double detByLUOpenCV() const;
 #endif
 
@@ -450,7 +436,7 @@ vpMatrix M(R);
 #if defined(VISP_HAVE_LAPACK)
   vpMatrix inverseByLULapack() const;
 #endif
-#if (VISP_HAVE_OPENCV_VERSION >= 0x020101)
+#if defined(VISP_HAVE_OPENCV)
   vpMatrix inverseByLUOpenCV() const;
 #endif
 
@@ -461,7 +447,7 @@ vpMatrix M(R);
 #if defined(VISP_HAVE_LAPACK)
   vpMatrix inverseByCholeskyLapack() const;
 #endif
-#if (VISP_HAVE_OPENCV_VERSION >= 0x020101)
+#if defined(VISP_HAVE_OPENCV)
   vpMatrix inverseByCholeskyOpenCV() const;
 #endif
 
@@ -510,7 +496,7 @@ vpMatrix M(R);
   int pseudoInverseEigen3(vpMatrix &Ap, vpColVector &sv, int rank_in, vpMatrix &imA, vpMatrix &imAt,
                           vpMatrix &kerAt) const;
 #endif
-#if (VISP_HAVE_OPENCV_VERSION >= 0x020101)
+#if defined(VISP_HAVE_OPENCV)
   vpMatrix pseudoInverseOpenCV(double svThreshold = 1e-6) const;
   unsigned int pseudoInverseOpenCV(vpMatrix &Ap, double svThreshold = 1e-6) const;
   unsigned int pseudoInverseOpenCV(vpMatrix &Ap, vpColVector &sv, double svThreshold = 1e-6) const;
@@ -548,7 +534,7 @@ vpMatrix M(R);
 #if defined(VISP_HAVE_LAPACK)
   void svdLapack(vpColVector &w, vpMatrix &V);
 #endif
-#if (VISP_HAVE_OPENCV_VERSION >= 0x020101) // Require opencv >= 2.1.1
+#if defined(VISP_HAVE_OPENCV) // Require opencv >= 2.1.1
   void svdOpenCV(vpColVector &w, vpMatrix &V);
 #endif
   //@}
@@ -572,7 +558,7 @@ vpMatrix M(R);
   /** @name Eigen values  */
 
   //@{
-  // compute the eigen values using Lapack
+  // Compute the eigen values using Lapack.
   vpColVector eigenValues() const;
   void eigenValues(vpColVector &evalue, vpMatrix &evector) const;
   //@}
@@ -582,7 +568,6 @@ vpMatrix M(R);
   //-------------------------------------------------
   /** @name Norms  */
   //@{
-  double euclideanNorm() const;
   double frobeniusNorm() const;
   double inducedL2Norm() const;
   double infinityNorm() const;
@@ -677,13 +662,6 @@ vpMatrix M(R);
   static vpMatrix kron(const vpMatrix &m1, const vpMatrix &m2);
   //@}
 
-  //-------------------------------------------------
-  // 2D Convolution Static Public Member Functions
-  //-------------------------------------------------
-  /** @name 2D Convolution with Static Public Member Functions  */
-  static vpMatrix conv2(const vpMatrix &M, const vpMatrix &kernel, const std::string &mode = "full");
-  static void conv2(const vpMatrix &M, const vpMatrix &kernel, vpMatrix &res, const std::string &mode = "full");
-
   //---------------------------------
   // Covariance computation Static Public Member Functions
   //---------------------------------
@@ -770,7 +748,7 @@ vpMatrix M(R);
     \sa saveMatrix(), saveMatrixYAML(), loadMatrixYAML()
   */
   static inline bool loadMatrix(const std::string &filename, vpArray2D<double> &M, bool binary = false,
-                                char *header = NULL)
+                                char *header = nullptr)
   {
     return vpArray2D<double>::load(filename, M, binary, header);
   }
@@ -844,7 +822,7 @@ vpMatrix M(R);
 
     \sa saveMatrixYAML(), saveMatrix(), loadMatrix()
   */
-  static inline bool loadMatrixYAML(const std::string &filename, vpArray2D<double> &M, char *header = NULL)
+  static inline bool loadMatrixYAML(const std::string &filename, vpArray2D<double> &M, char *header = nullptr)
   {
     return vpArray2D<double>::loadYAML(filename, M, header);
   }
@@ -1000,15 +978,18 @@ vpMatrix M(R);
   //@}
 
 #if defined(VISP_BUILD_DEPRECATED_FUNCTIONS)
+
+  vp_deprecated double euclideanNorm() const;
+
   /*!
     @name Deprecated functions
   */
   //@{
   /*!
-     \deprecated Only provided for compatibilty with ViSP previous releases.
+     \deprecated Only provided for compatibility with ViSP previous releases.
      This function does nothing.
    */
-  vp_deprecated void init() {}
+  vp_deprecated void init() { }
 
   /*!
      \deprecated You should rather use stack(const vpMatrix &A)

@@ -118,7 +118,7 @@ int main()
     vpDisplayX d(I, 0, 0, "Camera view at desired position");
 #elif defined(VISP_HAVE_GDI)
     vpDisplayGDI d(I, 0, 0, "Camera view at desired position");
-#elif defined(VISP_HAVE_OPENCV)
+#elif defined(HAVE_OPENCV_HIGHGUI)
     vpDisplayOpenCV d(I, 0, 0, "Camera view at desired position");
 #else
     std::cout << "No image viewer is available..." << std::endl;
@@ -216,7 +216,7 @@ int main()
     }
   } catch (const vpException &e) {
     std::cout << "Catch a ViSP exception: " << e << std::endl;
-    return EXIT_FAILURE
+    return EXIT_FAILURE;
   } catch (...) {
     std::cout << "Catch an exception " << std::endl;
     return EXIT_FAILURE;

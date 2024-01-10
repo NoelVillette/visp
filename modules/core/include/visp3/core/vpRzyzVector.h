@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,15 +30,10 @@
  * Description:
  * Euler angles parameterization for the rotation.
  * Rzyz(phi,theta,psi) = Rot(z,phi)Rot(y,theta)Rot(z,psi)
- *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
 
-#ifndef vpRzyzVector_h
-#define vpRzyzVector_h
+#ifndef _vpRzyzVector_h_
+#define _vpRzyzVector_h_
 
 /*!
   \file vpRzyzVector.h
@@ -129,9 +123,7 @@ class vpThetaUVector;
   \endcode
   Or you can also initialize the vector from a list of doubles if ViSP is build with c++11 enabled:
   \code
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   rzyz = {M_PI_4, M_PI_2, M_PI};
-#endif
   \endcode
 
   To get the values [rad] use:
@@ -142,8 +134,8 @@ class vpThetaUVector;
   \endcode
 
   The code below shows first how to initialize this representation of
-  Euler angles, than how to contruct a rotation matrix from a
-  vpRzyzVector and finaly how to extract the vpRzyzVector Euler angles
+  Euler angles, than how to construct a rotation matrix from a
+  vpRzyzVector and finally how to extract the vpRzyzVector Euler angles
   from the build rotation matrix.
 
   \code
@@ -195,9 +187,6 @@ public:
   explicit vpRzyzVector(const vpColVector &rzyz);
   explicit vpRzyzVector(const std::vector<double> &rzyz);
 
-  //! Destructor.
-  virtual ~vpRzyzVector(){};
-
   // convert a rotation matrix into Rzyz vector
   vpRzyzVector buildFrom(const vpRotationMatrix &R);
 
@@ -210,9 +199,7 @@ public:
 
   vpRzyzVector &operator=(const vpColVector &rzyz);
   vpRzyzVector &operator=(double x);
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpRzyzVector &operator=(const vpRzyzVector &rzyz) = default;
   vpRzyzVector &operator=(const std::initializer_list<double> &list);
-#endif
 };
 #endif

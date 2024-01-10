@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Single laser scanner point.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 #ifndef vpScanPoint_h
 #define vpScanPoint_h
 
@@ -76,7 +73,7 @@ class /* VISP_EXPORT */ vpScanPoint // Note that here VISP_EXPORT should not
 {
 public:
   /*! Default constructor. */
-  inline vpScanPoint() : rDist(0), hAngle(0), vAngle(0) {}
+  inline vpScanPoint() : rDist(0), hAngle(0), vAngle(0) { }
   /*! Copy constructor. */
   inline vpScanPoint(const vpScanPoint &scanpoint) : rDist(0), hAngle(0), vAngle(0)
   {
@@ -97,7 +94,7 @@ public:
     this->vAngle = v_angle;
   }
   /*! Destructor that does nothing. */
-  inline virtual ~vpScanPoint(){};
+  inline virtual ~vpScanPoint() { };
   /*!
     Set the polar point coordinates.
     \param r_dist : Radial distance in meter.
@@ -146,9 +143,7 @@ public:
   */
   inline double getZ() const { return (rDist * cos(this->hAngle) * sin(this->vAngle)); }
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpScanPoint &operator=(const vpScanPoint &) = default;
-#endif
 
   friend inline std::ostream &operator<<(std::ostream &s, const vpScanPoint &p);
 
@@ -159,9 +154,6 @@ public:
   */
   friend inline bool operator==(const vpScanPoint &sp1, const vpScanPoint &sp2)
   {
-    // return ( ( sp1.getRadialDist() == sp2.getRadialDist() )
-    //	      && ( sp1.getHAngle() == sp2.getHAngle() )
-    //	      && ( sp1.getVAngle() == sp2.getVAngle() ) );
     double rd1 = sp1.getRadialDist();
     double ha1 = sp1.getHAngle();
     double va1 = sp1.getVAngle();

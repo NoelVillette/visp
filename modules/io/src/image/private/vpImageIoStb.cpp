@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,13 +29,16 @@
  *
  * Description:
  * stb backend for JPEG and PNG image I/O operations.
- *
- *****************************************************************************/
+ */
 
 /*!
   \file vpImageIo.cpp
   \brief stb backend for JPEG and PNG image I/O operations.
 */
+
+#include <visp3/core/vpConfig.h>
+
+#if defined(VISP_HAVE_STBIMAGE)
 
 #include "vpImageIoBackend.h"
 
@@ -58,7 +60,7 @@ void readStb(vpImage<unsigned char> &I, const std::string &filename)
 {
   int width = 0, height = 0, channels = 0;
   unsigned char *image = stbi_load(filename.c_str(), &width, &height, &channels, STBI_grey);
-  if (image == NULL) {
+  if (image == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Can't read the image: %s", filename.c_str()));
   }
   I.init(image, static_cast<unsigned int>(height), static_cast<unsigned int>(width), true);
@@ -69,7 +71,7 @@ void readStb(vpImage<vpRGBa> &I, const std::string &filename)
 {
   int width = 0, height = 0, channels = 0;
   unsigned char *image = stbi_load(filename.c_str(), &width, &height, &channels, STBI_rgb_alpha);
-  if (image == NULL) {
+  if (image == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Can't read the image: %s", filename.c_str()));
   }
   I.init(reinterpret_cast<vpRGBa *>(image), static_cast<unsigned int>(height), static_cast<unsigned int>(width), true);
@@ -113,3 +115,5 @@ void writePNGStb(const vpImage<vpRGBa> &I, const std::string &filename)
     throw(vpImageException(vpImageException::ioError, "PNG write error: %s", filename.c_str()));
   }
 }
+
+#endif

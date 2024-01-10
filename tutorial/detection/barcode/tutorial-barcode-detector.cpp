@@ -22,12 +22,12 @@ int main(int argc, const char **argv)
     vpDisplayX d(I);
 #elif defined(VISP_HAVE_GDI)
     vpDisplayGDI d(I);
-#elif defined(VISP_HAVE_OPENCV)
+#elif defined(HAVE_OPENCV_HIGHGUI)
     vpDisplayOpenCV d(I);
 #endif
 
     //! [Create base detector]
-    vpDetectorBase *detector = NULL;
+    vpDetectorBase *detector = nullptr;
     //! [Create base detector]
 
 #if (defined(VISP_HAVE_ZBAR) && defined(VISP_HAVE_DMTX))

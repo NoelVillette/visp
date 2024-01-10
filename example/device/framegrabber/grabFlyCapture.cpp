@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -29,14 +29,14 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Description:
- * Acquire images using OpenCV cv::VideoCapture.
+ * Acquire images using FlyCapture SDK.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example grabFlyCapture.cpp
 
-  \brief Example of framegrabbing using OpenCV cv::VideoCapture class.
+  \brief Example of framegrabbing using vpFlyCaptureGrabber class.
 
 */
 
@@ -141,7 +141,7 @@ bool getOptions(int argc, const char **argv, bool &display, bool &click, bool &s
       opath = optarg_;
       break;
     case 'h':
-      usage(argv[0], NULL, icamera, opath);
+      usage(argv[0], nullptr, icamera, opath);
       return false;
       break;
 
@@ -154,7 +154,7 @@ bool getOptions(int argc, const char **argv, bool &display, bool &click, bool &s
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL, icamera, opath);
+    usage(argv[0], nullptr, icamera, opath);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -189,13 +189,13 @@ int main(int argc, const char **argv)
     std::cout << "Camera serial: " << g.getCameraSerial(g.getCameraIndex()) << std::endl;
     std::cout << "Image size   : " << I.getWidth() << " " << I.getHeight() << std::endl;
 
-    vpDisplay *display = NULL;
+    vpDisplay *display = nullptr;
     if (opt_display) {
 #if defined(VISP_HAVE_X11)
       display = new vpDisplayX(I);
 #elif defined(VISP_HAVE_GDI)
       display = new vpDisplayGDI(I);
-#elif defined(VISP_HAVE_OPENCV)
+#elif defined(HAVE_OPENCV_HIGHGUI)
       display = new vpDisplayOpenCV(I);
 #else
       std::cout << "No image viewer is available..." << std::endl;

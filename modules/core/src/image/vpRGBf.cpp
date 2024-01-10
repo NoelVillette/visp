@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * 32-bit floating point RGB pixel.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpRGBf.cpp
@@ -69,7 +69,6 @@ vpRGBf &vpRGBf::operator=(const vpRGBf &v)
   return *this;
 }
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
 /*!
   Move operator.
 */
@@ -80,7 +79,6 @@ vpRGBf &vpRGBf::operator=(const vpRGBf &&v)
   this->B = std::move(v.B);
   return *this;
 }
-#endif
 
 /*!
   Cast a vpColVector in a vpRGBf
@@ -88,7 +86,7 @@ vpRGBf &vpRGBf::operator=(const vpRGBf &&v)
   \param v : Input vector. v[0], v[1], v[2] are to make into
   relation with respectively R, G and B.
 
-  \exception vpException::dimensionError : If v is not a 3-dimentional vector.
+  \exception vpException::dimensionError : If v is not a 3-dimensional vector.
 */
 vpRGBf &vpRGBf::operator=(const vpColVector &v)
 {
@@ -96,9 +94,9 @@ vpRGBf &vpRGBf::operator=(const vpColVector &v)
     vpERROR_TRACE("Bad vector dimension");
     throw(vpException(vpException::dimensionError, "Bad vector dimension"));
   }
-  R = (float) v[0];
-  G = (float) v[1];
-  B = (float) v[2];
+  R = (float)v[0];
+  G = (float)v[1];
+  B = (float)v[2];
   return *this;
 }
 
@@ -107,7 +105,7 @@ vpRGBf &vpRGBf::operator=(const vpColVector &v)
 
   \return true if the values are exactly the same, false otherwise.
 */
-bool vpRGBf::operator==(const vpRGBf &v)
+bool vpRGBf::operator==(const vpRGBf &v) const
 {
   if (std::fabs(R - v.R) > std::numeric_limits<float>::epsilon())
     return false;
@@ -123,7 +121,7 @@ bool vpRGBf::operator==(const vpRGBf &v)
 
   \return true if the values are different, false if they are exactly the same.
 */
-bool vpRGBf::operator!=(const vpRGBf &v)
+bool vpRGBf::operator!=(const vpRGBf &v) const
 {
   return (std::fabs(R - v.R) > std::numeric_limits<float>::epsilon() ||
           std::fabs(G - v.G) > std::numeric_limits<float>::epsilon() ||

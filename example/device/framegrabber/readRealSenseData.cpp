@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -28,13 +28,19 @@
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *****************************************************************************/
+*****************************************************************************/
+
+/*!
+  \example readRealSenseData.cpp
+
+  \brief Example that show how to replay realsense data saved with saveRealSenseData.cpp
+*/
 
 #include <iostream>
 
 #include <visp3/core/vpConfig.h>
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11) && (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI))
+#if (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI))
 #include <condition_variable>
 #include <fstream>
 #include <mutex>
@@ -45,9 +51,7 @@
 #include <pcl/common/common.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/visualization/cloud_viewer.h>
-#endif
 
-#if defined(VISP_HAVE_PCL) && (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
 #define USE_PCL_VIEWER
 #endif
 
@@ -120,7 +124,7 @@ bool getOptions(int argc, char **argv, std::string &input_directory, bool &click
       break;
 
     case 'h':
-      usage(argv[0], NULL);
+      usage(argv[0], nullptr);
       return false;
       break;
 
@@ -133,7 +137,7 @@ bool getOptions(int argc, char **argv, std::string &input_directory, bool &click
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL);
+    usage(argv[0], nullptr);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg << std::endl << std::endl;
     return false;
@@ -149,7 +153,7 @@ bool cancelled = false, update_pointcloud = false;
 class ViewerWorker
 {
 public:
-  explicit ViewerWorker(std::mutex &mutex) : m_mutex(mutex) {}
+  explicit ViewerWorker(std::mutex &mutex) : m_mutex(mutex) { }
 
   void run()
   {
@@ -183,7 +187,8 @@ public:
           viewer->addPointCloud<pcl::PointXYZ>(local_pointcloud, "sample cloud");
           viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
           first_init = false;
-        } else {
+        }
+        else {
           viewer->updatePointCloud<pcl::PointXYZ>(local_pointcloud, "sample cloud");
         }
       }
@@ -281,7 +286,8 @@ bool readData(int cpt, const std::string &input_directory, vpImage<vpRGBa> &I_co
         point_cloud->points[(size_t)(i * width + j)].z = z;
       }
     }
-  } else {
+  }
+  else {
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(filename_pointcloud, *point_cloud) == -1) {
       std::cerr << "Cannot read PCD: " << filename_pointcloud << std::endl;
     }

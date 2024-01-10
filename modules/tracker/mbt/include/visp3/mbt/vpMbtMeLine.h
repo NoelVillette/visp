@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,18 +29,12 @@
  *
  * Description:
  * Implementation of a line used by the model-based tracker.
- *
- * Authors:
- * Nicolas Melchior
- * Romain Tallonneau
- * Eric Marchand
- *
- *****************************************************************************/
+ */
 
 /*!
- \file vpMbtMeLine.h
- \brief Implementation of a line used by the model-based tracker.
-*/
+ * \file vpMbtMeLine.h
+ * \brief Implementation of a line used by the model-based tracker.
+ */
 
 #ifndef vpMbtMeLine_HH
 #define vpMbtMeLine_HH
@@ -53,10 +46,9 @@
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 /*!
-  \class vpMbtMeLine
-  \brief Implementation of a line used by the model-based tracker.
-  \ingroup group_mbt_features
-
+ * \class vpMbtMeLine
+ * \brief Implementation of a line used by the model-based tracker.
+ * \ingroup group_mbt_features
  */
 class VISP_EXPORT vpMbtMeLine : public vpMeTracker
 {
@@ -74,37 +66,37 @@ public:
 
 public:
   vpMbtMeLine();
-  virtual ~vpMbtMeLine();
+  virtual ~vpMbtMeLine() override;
 
   void computeProjectionError(const vpImage<unsigned char> &_I, double &_sumErrorRad, unsigned int &_nbFeatures,
                               const vpMatrix &SobelX, const vpMatrix &SobelY, bool display, unsigned int length,
                               unsigned int thickness);
 
-  void display(const vpImage<unsigned char> & /*I*/, vpColor /*col*/) { ; }
+  void display(const vpImage<unsigned char> & /* I */, const vpColor &/* col */, unsigned int /* thickness */) { ; }
   using vpMeTracker::display;
 
   /*!
-  Get the a coefficient of the line corresponding to \f$ i \; cos(\theta) + j
-  \; sin(\theta) - \rho = 0 \f$
-
-  \return : The a coefficient of the moving edge
- */
+   * Get the a coefficient of the line corresponding to \f$ i \; cos(\theta) + j
+   * \; sin(\theta) - \rho = 0 \f$
+   *
+   * \return : The a coefficient of the moving edge
+   */
   inline double get_a() const { return this->a; }
 
   /*!
-  Get the a coefficient of the line corresponding to \f$ i \; cos(\theta) + j
-  \; sin(\theta) - \rho = 0 \f$
-
-  \return : The b coefficient of the moving edge
- */
+   * Get the a coefficient of the line corresponding to \f$ i \; cos(\theta) + j
+   * \; sin(\theta) - \rho = 0 \f$
+   *
+   * \return : The b coefficient of the moving edge
+   */
   inline double get_b() const { return this->b; }
 
   /*!
-  Get the a coefficient of the line corresponding to \f$ i \; cos(\theta) + j
-  \; sin(\theta) - \rho = 0 \f$
-
-  \return : The c coefficient of the moving edge
- */
+   * Get the a coefficient of the line corresponding to \f$ i \; cos(\theta) + j
+   * \; sin(\theta) - \rho = 0 \f$
+   *
+   * \return : The c coefficient of the moving edge
+   */
   inline double get_c() const { return this->c; }
 
   void initTracking(const vpImage<unsigned char> &I, const vpImagePoint &ip1, const vpImagePoint &ip2, double rho,
@@ -119,7 +111,7 @@ public:
 private:
   void bubbleSortI();
   void bubbleSortJ();
-  virtual void sample(const vpImage<unsigned char> &image, bool doNotTrack = false);
+  void sample(const vpImage<unsigned char> &image, bool doNotTrack = false) override;
   void seekExtremities(const vpImage<unsigned char> &I);
   void setExtremities();
   void suppressPoints(const vpImage<unsigned char> &I);

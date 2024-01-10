@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,11 +31,7 @@
  * Description:
  * RGBA pixel.
  *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpRGBa.cpp
@@ -74,7 +70,6 @@ vpRGBa &vpRGBa::operator=(const vpRGBa &v)
   return *this;
 }
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
 /*!
   Move operator.
 */
@@ -86,7 +81,6 @@ vpRGBa &vpRGBa::operator=(const vpRGBa &&v)
   this->A = std::move(v.A);
   return *this;
 }
-#endif
 
 /*!
   Cast a vpColVector in a vpRGBa
@@ -95,7 +89,7 @@ vpRGBa &vpRGBa::operator=(const vpRGBa &&v)
   relation with respectively R, G, B and A.
 
   \exception vpException::dimensionError : If v is not a 4 four
-  dimention vector.
+  dimension vector.
 */
 vpRGBa &vpRGBa::operator=(const vpColVector &v)
 {
@@ -115,25 +109,16 @@ vpRGBa &vpRGBa::operator=(const vpColVector &v)
 
   \return true if the values are the same, false otherwise.
 */
-bool vpRGBa::operator==(const vpRGBa &v)
+bool vpRGBa::operator==(const vpRGBa &v) const
 {
-  if (R != v.R)
-    return false;
-  if (G != v.G)
-    return false;
-  if (B != v.B)
-    return false;
-  if (A != v.A)
-    return false;
-
-  return true;
+  return R == v.R && G == v.G && B == v.B && A == v.A;
 }
 /*!
   Compare two color pixels.
 
   \return true if the images are different, false if they are the same.
 */
-bool vpRGBa::operator!=(const vpRGBa &v) { return (R != v.R || G != v.G || B != v.B || A != v.A); }
+bool vpRGBa::operator!=(const vpRGBa &v) const { return (R != v.R || G != v.G || B != v.B || A != v.A); }
 
 /*!
   subtraction operator : "this" - v.

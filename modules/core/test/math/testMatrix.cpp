@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Test some vpMatrix functionalities.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example testMatrix.cpp
@@ -417,7 +414,7 @@ int main(int argc, char *argv[])
       unsigned int nb = ctest ? 10 : 100; // 10000;
       const unsigned int size = ctest ? 10 : 100;
 
-      vpMatrix m_big(nb * size, 6);
+      vpMatrix m_big(nb *size, 6);
       std::vector<vpMatrix> submatrices(nb);
       for (size_t cpt = 0; cpt < submatrices.size(); cpt++) {
         vpMatrix m(size, 6);
@@ -565,7 +562,7 @@ int main(int argc, char *argv[])
 
       vpMatrix m_big_stack_static = generateRandomMatrix(ctest ? 100 : 1000, ctest ? 10 : 100, -1000.0, 1000.0);
       std::cout << "m_big_stack_static: " << m_big_stack_static.getRows() << "x" << m_big_stack_static.getCols()
-                << std::endl;
+        << std::endl;
 
       vpMatrix m_big_stack_static_row, m_big_stack_static_row_tmp;
       t = vpTime::measureTimeMs();
@@ -578,8 +575,8 @@ int main(int argc, char *argv[])
 
       if (!equalMatrix(m_big_stack_static, m_big_stack_static_row)) {
         std::cerr << "Problem with vpMatrix::stack(vpMatrix, vpRowVector, "
-                     "vpMatrix)!"
-                  << std::endl;
+          "vpMatrix)!"
+          << std::endl;
         return EXIT_FAILURE;
       }
 
@@ -598,8 +595,8 @@ int main(int argc, char *argv[])
 
       if (!equalMatrix(m_big_stack_static, m_big_stack_static_col)) {
         std::cerr << "Problem with vpMatrix::stack(vpMatrix, vpColVector, "
-                     "vpMatrix)!"
-                  << std::endl;
+          "vpMatrix)!"
+          << std::endl;
         return EXIT_FAILURE;
       }
     }
@@ -672,7 +669,6 @@ int main(int argc, char *argv[])
       std::cout << "juxtaposeM:\n" << juxtaposeM << std::endl;
     }
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
     {
       std::vector<vpMatrix> vec_mat;
       vec_mat.emplace_back(5, 5);
@@ -687,7 +683,6 @@ int main(int argc, char *argv[])
       res2 = A + B;
       std::cout << "\n2) A+B:\n" << res2 << std::endl;
     }
-#endif
 
     {
       std::cout << "\n------------------------" << std::endl;
@@ -843,7 +838,8 @@ int main(int argc, char *argv[])
 
     std::cout << "\nAll tests succeeded" << std::endl;
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e << std::endl;
     return EXIT_FAILURE;
   }

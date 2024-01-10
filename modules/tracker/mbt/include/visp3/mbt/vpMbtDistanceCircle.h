@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Manage a circle used in the model-based tracker.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
  \file vpMbtDistanceCircle.h
@@ -107,11 +104,11 @@ public:
   // private:
   //#ifndef DOXYGEN_SHOULD_SKIP_THIS
   //    vpMbtDistanceCircle(const vpMbtDistanceCircle &)
-  //      : name(), index(0), cam(), me(NULL), wmean(1),
-  //        featureEllipse(), isTrackedCircle(true), meEllipse(NULL),
-  //        circle(NULL), radius(0.), p1(NULL), p2(NULL), p3(NULL),
+  //      : name(), index(0), cam(), me(nullptr), wmean(1),
+  //        featureEllipse(), isTrackedCircle(true), meEllipse(nullptr),
+  //        circle(nullptr), radius(0.), p1(nullptr), p2(nullptr), p3(nullptr),
   //        L(), error(), nbFeature(0), Reinit(false),
-  //        hiddenface(NULL), index_polygon(-1), isvisible(false)
+  //        hiddenface(nullptr), index_polygon(-1), isvisible(false)
   //    {
   //      throw vpException(vpException::functionNotImplementedError, "Not
   //      implemented!");
@@ -138,7 +135,7 @@ public:
   void displayMovingEdges(const vpImage<vpRGBa> &I);
 
   /*!
-   Get the camera paramters.
+   Get the camera parameters.
 
    \param camera : The vpCameraParameters used to store the camera parameters.
   */
@@ -175,7 +172,7 @@ public:
   void initInteractionMatrixError();
 
   bool initMovingEdge(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cMo, bool doNotTrack,
-                      const vpImage<bool> *mask = NULL);
+                      const vpImage<bool> *mask = nullptr);
 
   /*!
    Return if the circle is used for tracking.
@@ -192,10 +189,10 @@ public:
   inline bool isVisible() const { return isvisible; }
 
   void reinitMovingEdge(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cMo,
-                        const vpImage<bool> *mask = NULL);
+                        const vpImage<bool> *mask = nullptr);
 
   /*!
-   Set the camera paramters.
+   Set the camera parameters.
    \param camera : The camera parameters.
   */
   inline void setCameraParameters(const vpCameraParameters &camera) { this->cam = camera; }

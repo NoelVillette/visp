@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Demonstration of the wireframe simulator
  *
- * Authors:
- * Nicolas Melchior
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example wireframeSimulator.cpp
@@ -125,7 +122,7 @@ bool getOptions(int argc, const char **argv, bool &display, bool &click)
       display = false;
       break;
     case 'h':
-      usage(argv[0], NULL);
+      usage(argv[0], nullptr);
       return false;
       break;
 
@@ -138,7 +135,7 @@ bool getOptions(int argc, const char **argv, bool &display, bool &click)
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL);
+    usage(argv[0], nullptr);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -169,15 +166,15 @@ int main(int argc, const char **argv)
 /*
 Create a display for each different cameras.
 */
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
     vpDisplayX display[3];
-#elif defined VISP_HAVE_OPENCV
+#elif defined(HAVE_OPENCV_HIGHGUI)
     vpDisplayOpenCV display[3];
-#elif defined VISP_HAVE_GDI
+#elif defined(VISP_HAVE_GDI)
     vpDisplayGDI display[3];
-#elif defined VISP_HAVE_D3D9
+#elif defined(VISP_HAVE_D3D9)
     vpDisplayD3D display[3];
-#elif defined VISP_HAVE_GTK
+#elif defined(VISP_HAVE_GTK)
     vpDisplayGTK display[3];
 #endif
 

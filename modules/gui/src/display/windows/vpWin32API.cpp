@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Filip Novotny
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <iostream>
 #include <visp3/core/vpConfig.h>
@@ -47,8 +47,8 @@ DWORD vpProcessErrors(const std::string &api_name)
   LPVOID lpMsgBuf;
   DWORD err = GetLastError();
 
-  FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, err,
-                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+  FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, err,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, nullptr);
   std::cout << "call to " << api_name << " failed with the following error code: " << err << "(" << (LPTSTR)lpMsgBuf
             << ")" << std::endl;
   return err;
@@ -91,12 +91,12 @@ void vpSelectObject(HWND hWnd, HDC hDC, HDC hDCMem, HGDIOBJ h)
 {
 
   HGDIOBJ ret = SelectObject(hDCMem, h);
-  if (ret == NULL) {
+  if (ret == nullptr) {
     vpProcessErrors("SelectObject");
 
     double ms = vpTime::measureTimeMs();
 
-    while (ret == NULL && vpTime::measureTimeMs() - ms < 5000) {
+    while (ret == nullptr && vpTime::measureTimeMs() - ms < 5000) {
       DeleteObject(h);
       DeleteDC(hDCMem);
       ReleaseDC(hWnd, hDC);
@@ -129,7 +129,7 @@ COLORREF vpSetPixel(HDC hdc, int X, int Y, COLORREF crColor)
 HBITMAP vpCreateBitmap(int nWidth, int nHeight, UINT cPlanes, UINT cBitsPerPel, const VOID *lpvBits)
 {
   HBITMAP ret = CreateBitmap(nWidth, nHeight, cPlanes, cBitsPerPel, lpvBits);
-  if (ret == NULL)
+  if (ret == nullptr)
     vpProcessErrors("CreateBitmap");
 
   return ret;

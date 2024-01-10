@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,11 +31,11 @@
  * Description:
  * Benchmark Gaussian filter.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
-#ifdef VISP_HAVE_CATCH2
+#if defined(VISP_HAVE_SIMDLIB) && defined(VISP_HAVE_CATCH2)
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
@@ -44,6 +44,11 @@
 #include <visp3/core/vpImageFilter.h>
 #include <visp3/core/vpIoTools.h>
 #include <visp3/io/vpImageIo.h>
+
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGCODECS) && defined(HAVE_OPENCV_IMGPROC)
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+#endif
 
 static const std::string ipath = vpIoTools::getViSPImagesDataPath();
 static std::string imagePath = vpIoTools::createFilePath(ipath, "faces/1280px-Solvay_conference_1927.png");
@@ -126,7 +131,8 @@ TEST_CASE("vpImageFilter::gaussianBlur", "[benchmark]")
   }
 }
 
-#if (VISP_HAVE_OPENCV_VERSION >= 0x020101)
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGCODECS) && defined(HAVE_OPENCV_IMGPROC)
+
 TEST_CASE("Gaussian filter (OpenCV)", "[benchmark]")
 {
   SECTION("unsigned char")
@@ -165,12 +171,12 @@ int main(int argc, char *argv[])
   // Build a new parser on top of Catch's
   using namespace Catch::clara;
   auto cli = session.cli()         // Get Catch's composite command line parser
-             | Opt(runBenchmark)   // bind variable to a new option, with a hint string
-                   ["--benchmark"] // the option names it will respond to
-             ("run benchmark?")    // description string for the help output
-      ;
+    | Opt(runBenchmark)   // bind variable to a new option, with a hint string
+    ["--benchmark"] // the option names it will respond to
+    ("run benchmark?")    // description string for the help output
+    ;
 
-  // Now pass the new composite back to Catch so it uses that
+// Now pass the new composite back to Catch so it uses that
   session.cli(cli);
 
   // Let Catch (using Clara) parse the command line

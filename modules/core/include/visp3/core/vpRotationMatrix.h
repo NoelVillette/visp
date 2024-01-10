@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,14 +29,10 @@
  *
  * Description:
  * Rotation matrix.
- *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+ */
 
-#ifndef vpROTATIONMATRIX_H
-#define vpROTATIONMATRIX_H
+#ifndef _vpRotationMatrix_h_
+#define _vpRotationMatrix_h_
 
 /*!
   \file vpRotationMatrix.h
@@ -112,10 +107,8 @@ int main()
 
 int main()
 {
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpRotationMatrix R{ 0, 0, -1, 0, -1, 0, -1, 0, 0 };
   std::cout << "R:\n" << R << std::endl;
-#endif
 }
   \endcode
 */
@@ -134,14 +127,7 @@ public:
   explicit vpRotationMatrix(const vpMatrix &R);
   vpRotationMatrix(double tux, double tuy, double tuz);
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   explicit vpRotationMatrix(const std::initializer_list<double> &list);
-#endif
-
-  /*!
-    Destructor.
-  */
-  virtual ~vpRotationMatrix() {}
 
   vpRotationMatrix buildFrom(const vpHomogeneousMatrix &M);
   vpRotationMatrix buildFrom(const vpThetaUVector &v);
@@ -166,14 +152,13 @@ public:
   vpRotationMatrix &operator=(const vpRotationMatrix &R);
   // copy operator from vpMatrix (handle with care)
   vpRotationMatrix &operator=(const vpMatrix &M);
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpRotationMatrix &operator=(const std::initializer_list<double> &list);
-#endif
   // operation c = A * b (A is unchanged)
   vpTranslationVector operator*(const vpTranslationVector &tv) const;
   // operation C = A * B (A is unchanged)
   vpRotationMatrix operator*(const vpRotationMatrix &R) const;
   // operation C = A * B (A is unchanged)
+  vpHomogeneousMatrix operator*(const vpHomogeneousMatrix &M) const;
   vpMatrix operator*(const vpMatrix &M) const;
   // operation v2 = A * v1 (A is unchanged)
   vpColVector operator*(const vpColVector &v) const;
@@ -215,12 +200,12 @@ public:
      \deprecated Provided only for compat with previous releases.
      This function does nothing.
    */
-  vp_deprecated void init() {}
+  vp_deprecated void init() { }
   /*!
      \deprecated You should rather use eye().
    */
   vp_deprecated void setIdentity();
-//@}
+  //@}
 #endif
 
 protected:

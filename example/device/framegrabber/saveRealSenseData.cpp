@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +30,17 @@
  *
  *****************************************************************************/
 
+ /*!
+   \example saveRealSenseData.cpp
+
+   \brief Example that show how to save realsense data that can be replayed with readRealSenseData.cpp
+ */
+
 #include <iostream>
 
 #include <visp3/core/vpConfig.h>
-#if (defined(VISP_HAVE_REALSENSE) || defined(VISP_HAVE_REALSENSE2)) && (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11) &&  \
-    (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI))
+#if (defined(VISP_HAVE_REALSENSE) || defined(VISP_HAVE_REALSENSE2)) && \
+    (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI)) && defined(VISP_HAVE_PUGIXML)
 
 #include <condition_variable>
 #include <fstream>
@@ -57,7 +63,7 @@
 #include <visp3/sensor/vpRealSense.h>
 #include <visp3/sensor/vpRealSense2.h>
 
-// Priority to libRealSense2
+ // Priority to libRealSense2
 #if defined(VISP_HAVE_REALSENSE2)
 #define USE_REALSENSE2
 #endif
@@ -153,7 +159,7 @@ bool getOptions(int argc, char **argv, bool &save, std::string &output_directory
       break;
 
     case 'h':
-      usage(argv[0], NULL);
+      usage(argv[0], nullptr);
       return false;
       break;
 
@@ -166,26 +172,26 @@ bool getOptions(int argc, char **argv, bool &save, std::string &output_directory
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL);
+    usage(argv[0], nullptr);
     std::cerr << "ERROR: " << std::endl;
-    std::cerr << "  Bad argument " << optarg << std::endl << std::endl;
+    std::cerr << "  Bad argument " << optarg << std::endl
+      << std::endl;
     return false;
   }
 
   return true;
 }
 
-class FrameQueue
+class vpFrameQueue
 {
 public:
-  struct cancelled {
-  };
+  struct vpCancelled_t
+  { };
 
-  FrameQueue()
+  vpFrameQueue()
     : m_cancelled(false), m_cond(), m_queueColor(), m_queueDepth(), m_queuePointCloud(), m_queueInfrared(),
-      m_maxQueueSize(1024 * 8), m_mutex()
-  {
-  }
+    m_maxQueueSize(1024 * 8), m_mutex()
+  { }
 
   void cancel()
   {
@@ -246,13 +252,13 @@ public:
 
     while (m_queueColor.empty() || m_queueDepth.empty() || m_queuePointCloud.empty() || m_queueInfrared.empty()) {
       if (m_cancelled) {
-        throw cancelled();
+        throw vpCancelled_t();
       }
 
       m_cond.wait(lock);
 
       if (m_cancelled) {
-        throw cancelled();
+        throw vpCancelled_t();
       }
     }
 
@@ -272,22 +278,22 @@ public:
 private:
   bool m_cancelled;
   std::condition_variable m_cond;
-  std::queue<vpImage<vpRGBa> > m_queueColor;
-  std::queue<vpImage<uint16_t> > m_queueDepth;
+  std::queue<vpImage<vpRGBa>> m_queueColor;
+  std::queue<vpImage<uint16_t>> m_queueDepth;
 #ifdef VISP_HAVE_PCL
   std::queue<pcl::PointCloud<pcl::PointXYZ>::Ptr> m_queuePointCloud;
 #else
-  std::queue<std::vector<vpColVector> > m_queuePointCloud;
+  std::queue<std::vector<vpColVector>> m_queuePointCloud;
 #endif
-  std::queue<vpImage<unsigned char> > m_queueInfrared;
+  std::queue<vpImage<unsigned char>> m_queueInfrared;
   size_t m_maxQueueSize;
   std::mutex m_mutex;
 };
 
-class StorageWorker
+class vpStorageWorker
 {
 public:
-  StorageWorker(FrameQueue &queue, const std::string &directory, bool save_color, bool save_depth, bool save_pointcloud,
+  vpStorageWorker(vpFrameQueue &queue, const std::string &directory, bool save_color, bool save_depth, bool save_pointcloud,
                 bool save_infrared, bool save_pointcloud_binary_format,
                 int
 #ifndef VISP_HAVE_PCL
@@ -298,16 +304,15 @@ public:
 #ifndef VISP_HAVE_PCL
                     height
 #endif
-                )
+  )
     : m_queue(queue), m_directory(directory), m_cpt(0), m_save_color(save_color), m_save_depth(save_depth),
-      m_save_pointcloud(save_pointcloud), m_save_infrared(save_infrared),
-      m_save_pointcloud_binary_format(save_pointcloud_binary_format)
+    m_save_pointcloud(save_pointcloud), m_save_infrared(save_infrared),
+    m_save_pointcloud_binary_format(save_pointcloud_binary_format)
 #ifndef VISP_HAVE_PCL
-      ,
-      m_size_height(height), m_size_width(width)
+    ,
+    m_size_height(height), m_size_width(width)
 #endif
-  {
-  }
+  { }
 
   // Thread main loop
   void run()
@@ -411,7 +416,8 @@ public:
                 }
 #endif
               }
-            } else {
+            }
+            else {
 #ifdef VISP_HAVE_PCL
               pcl::io::savePCDFileBinary(filename_point_cloud, *pointCloud);
 #endif
@@ -430,13 +436,14 @@ public:
           m_cpt++;
         }
       }
-    } catch (const FrameQueue::cancelled &) {
-      std::cout << "Receive cancel FrameQueue." << std::endl;
+    }
+    catch (const vpFrameQueue::vpCancelled_t &) {
+      std::cout << "Receive cancel vpFrameQueue." << std::endl;
     }
   }
 
 private:
-  FrameQueue &m_queue;
+  vpFrameQueue &m_queue;
   std::string m_directory;
   unsigned int m_cpt;
   bool m_save_color;
@@ -528,7 +535,7 @@ int main(int argc, char *argv[])
   d3.init(I_infrared, I_gray.getWidth() + 80, I_gray.getHeight() + 10, "RealSense infrared stream");
 
   while (true) {
-    realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, NULL, NULL);
+    realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, nullptr, nullptr);
     vpImageConvert::convert(I_color, I_gray);
     vpImageConvert::createDepthHistogram(I_depth_raw, I_depth);
 
@@ -553,12 +560,20 @@ int main(int argc, char *argv[])
     vpXmlParserCamera xml_camera;
     xml_camera.save(cam_color, output_directory + "/camera.xml", "color_camera", width, height);
 
-    vpCameraParameters cam_depth = realsense.getCameraParameters(RS2_STREAM_DEPTH);
-    xml_camera.save(cam_depth, output_directory + "/camera.xml", "depth_camera", width, height);
+    if (use_aligned_stream) {
+      xml_camera.save(cam_color, output_directory + "/camera.xml", "depth_camera", width, height);
+    }
+    else {
+      vpCameraParameters cam_depth = realsense.getCameraParameters(RS2_STREAM_DEPTH);
+      xml_camera.save(cam_depth, output_directory + "/camera.xml", "depth_camera", width, height);
+    }
 
     vpCameraParameters cam_infrared = realsense.getCameraParameters(RS2_STREAM_INFRARED);
     xml_camera.save(cam_infrared, output_directory + "/camera.xml", "infrared_camera", width, height);
-    vpHomogeneousMatrix depth_M_color = realsense.getTransformation(RS2_STREAM_COLOR, RS2_STREAM_DEPTH);
+    vpHomogeneousMatrix depth_M_color;
+    if (!use_aligned_stream) {
+      depth_M_color = realsense.getTransformation(RS2_STREAM_COLOR, RS2_STREAM_DEPTH);
+    }
 #else
     vpCameraParameters cam_color = realsense.getCameraParameters(rs::stream::color);
     vpXmlParserCamera xml_camera;
@@ -567,34 +582,42 @@ int main(int argc, char *argv[])
     vpCameraParameters cam_color_rectified = realsense.getCameraParameters(rs::stream::rectified_color);
     xml_camera.save(cam_color_rectified, output_directory + "/camera.xml", "color_camera_rectified", width, height);
 
-    vpCameraParameters cam_depth = realsense.getCameraParameters(rs::stream::depth);
-    xml_camera.save(cam_depth, output_directory + "/camera.xml", "depth_camera", width, height);
+    if (use_aligned_stream) {
+      vpCameraParameters cam_depth = realsense.getCameraParameters(rs::stream::depth);
+      xml_camera.save(cam_depth, output_directory + "/camera.xml", "depth_camera", width, height);
+    }
+    else {
+      xml_camera.save(cam_color, output_directory + "/camera.xml", "depth_camera", width, height);
+    }
 
     vpCameraParameters cam_depth_aligned_to_rectified_color =
-        realsense.getCameraParameters(rs::stream::depth_aligned_to_rectified_color);
+      realsense.getCameraParameters(rs::stream::depth_aligned_to_rectified_color);
     xml_camera.save(cam_depth_aligned_to_rectified_color, output_directory + "/camera.xml",
                     "depth_camera_aligned_to_rectified_color", width, height);
 
     vpCameraParameters cam_infrared = realsense.getCameraParameters(rs::stream::infrared);
     xml_camera.save(cam_infrared, output_directory + "/camera.xml", "infrared_camera", width, height);
-    vpHomogeneousMatrix depth_M_color = realsense.getTransformation(rs::stream::color, rs::stream::depth);
+    vpHomogeneousMatrix depth_M_color;
+    if (!use_aligned_stream) {
+      depth_M_color = realsense.getTransformation(rs::stream::color, rs::stream::depth);
+    }
 #endif
     std::ofstream file(std::string(output_directory + "/depth_M_color.txt"));
     depth_M_color.save(file);
     file.close();
   }
 
-  FrameQueue save_queue;
-  StorageWorker storage(std::ref(save_queue), std::cref(output_directory), save_color, save_depth, save_pointcloud,
+  vpFrameQueue save_queue;
+  vpStorageWorker storage(std::ref(save_queue), std::cref(output_directory), save_color, save_depth, save_pointcloud,
                         save_infrared, save_pointcloud_binary_format, width, height);
-  std::thread storage_thread(&StorageWorker::run, &storage);
+  std::thread storage_thread(&vpStorageWorker::run, &storage);
 
 #ifdef USE_REALSENSE2
   rs2::align align_to(RS2_STREAM_COLOR);
   if (use_aligned_stream && save_infrared) {
     std::cerr << "Cannot use aligned streams with infrared acquisition currently."
-                 "\nInfrared stream acquisition is disabled!"
-              << std::endl;
+      "\nInfrared stream acquisition is disabled!"
+      << std::endl;
   }
 #endif
 
@@ -609,27 +632,28 @@ int main(int argc, char *argv[])
     if (use_aligned_stream) {
 #ifdef USE_REALSENSE2
 #ifdef VISP_HAVE_PCL
-      realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, NULL, pointCloud, NULL,
+      realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, nullptr, pointCloud, nullptr,
                         &align_to);
 #else
-      realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, &pointCloud, NULL,
+      realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, &pointCloud, nullptr,
                         &align_to);
 #endif
 #else
 #ifdef VISP_HAVE_PCL
-      realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, NULL, pointCloud,
-                        (unsigned char *)I_infrared.bitmap, NULL, rs::stream::rectified_color,
+      realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, nullptr, pointCloud,
+                        (unsigned char *)I_infrared.bitmap, nullptr, rs::stream::rectified_color,
                         rs::stream::depth_aligned_to_rectified_color);
 #else
       realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, &pointCloud,
-                        (unsigned char *)I_infrared.bitmap, NULL, rs::stream::rectified_color,
+                        (unsigned char *)I_infrared.bitmap, nullptr, rs::stream::rectified_color,
                         rs::stream::depth_aligned_to_rectified_color);
 #endif
 #endif
-    } else {
+    }
+    else {
 #ifdef VISP_HAVE_PCL
-      realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, NULL, pointCloud,
-                        (unsigned char *)I_infrared.bitmap, NULL);
+      realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, nullptr, pointCloud,
+                        (unsigned char *)I_infrared.bitmap, nullptr);
 #else
       realsense.acquire((unsigned char *)I_color.bitmap, (unsigned char *)I_depth_raw.bitmap, &pointCloud,
                         (unsigned char *)I_infrared.bitmap);
@@ -645,7 +669,8 @@ int main(int argc, char *argv[])
 
     if (!click_to_save) {
       vpDisplay::displayText(I_gray, 20, 20, "Click to quit.", vpColor::red);
-    } else {
+    }
+    else {
       std::stringstream ss;
       ss << "Images saved:" << nb_saves;
       vpDisplay::displayText(I_gray, 20, 20, ss.str(), vpColor::red);
@@ -669,7 +694,8 @@ int main(int argc, char *argv[])
       if (!click_to_save) {
         save_queue.cancel();
         quit = true;
-      } else {
+      }
+      else {
         switch (button) {
         case vpMouseButton::button1:
           if (save) {
@@ -702,6 +728,10 @@ int main(int argc, char *argv[])
 int main()
 {
   std::cerr << "Need libRealSense or libRealSense2 and C++11 and displayX or displayGDI!" << std::endl;
+
+#if !defined(VISP_HAVE_PUGIXML)
+  std::cout << "pugixml built-in 3rdparty is requested." << std::endl;
+#endif
   return EXIT_SUCCESS;
 }
 #endif

@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Video for linux two framegrabber.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpV4l2Grabber.h
@@ -188,9 +188,9 @@ public:
   // private:
   //#ifndef DOXYGEN_SHOULD_SKIP_THIS
   //  vpV4l2Grabber(const vpV4l2Grabber &)
-  //    : fd(-1), device(), cap(), streamparm(), inp(NULL), std(NULL),
-  //    fmt(NULL), ctl(NULL),
-  //      fmt_v4l2(), fmt_me(), reqbufs(), buf_v4l2(NULL), buf_me(NULL),
+  //    : fd(-1), device(), cap(), streamparm(), inp(nullptr), std(nullptr),
+  //    fmt(nullptr), ctl(nullptr),
+  //      fmt_v4l2(), fmt_me(), reqbufs(), buf_v4l2(nullptr), buf_me(nullptr),
   //      queue(0), waiton_cpt(0), index_buffer(0), m_verbose(false),
   //      m_nbuffers(3), field(0), streaming(false),
   //      m_input(vpV4l2Grabber::DEFAULT_INPUT),

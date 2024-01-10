@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Firewire cameras video capture.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vp1394TwoGrabber.cpp
@@ -121,12 +118,12 @@ int main()
 
 */
 vp1394TwoGrabber::vp1394TwoGrabber(bool reset)
-  : camera(NULL), cameras(NULL), num_cameras(0), camera_id(0), verbose(false), camIsOpen(NULL),
+  : camera(nullptr), cameras(nullptr), num_cameras(0), camera_id(0), verbose(false), camIsOpen(nullptr),
     num_buffers(4), // ring buffer size
-    isDataModified(NULL), initialShutterMode(NULL), dataCam(NULL)
+    isDataModified(nullptr), initialShutterMode(nullptr), dataCam(nullptr)
 #ifdef VISP_HAVE_DC1394_CAMERA_ENUMERATE // new API > libdc1394-2.0.0-rc7
     ,
-    d(NULL), list(NULL)
+    d(nullptr), list(nullptr)
 #endif
 {
   // protected members
@@ -405,7 +402,7 @@ to the new video capture mode.
 
   The iso transmission (setTransmission()) and the dma capture (see
   setCapture()) are first stopped. Then, the camera video capture mode is
-  set. Finaly, the dma capture and the iso transmission are re-started.
+  set. finally, the dma capture and the iso transmission are re-started.
 
   \param videomode : The camera video capture mode. The current camera mode is
   given by getVideoMode(). The camera supported modes are given by
@@ -659,7 +656,7 @@ bool vp1394TwoGrabber::isColor()
 
   The iso transmission (setTransmission()) and the dma capture (see
   setCapture()) are first stopped. Then, the camera framerate capture mode is
-  set. Finaly, the dma capture and the iso transmission are re-started.
+  set. finally, the dma capture and the iso transmission are re-started.
 
   If the current video mode is scalable (Format 7), this function is without
   effect.
@@ -898,7 +895,7 @@ bool vp1394TwoGrabber::isFramerateSupported(vp1394TwoVideoModeType mode, vp1394T
 
   The iso transmission (setTransmission()) and the dma capture (see
   setCapture()) are first stopped. Then, the active camera Format 7 is
-  set. Finaly, the dma capture and the iso transmission are re-started.
+  set. finally, the dma capture and the iso transmission are re-started.
 
   \warning Setting color coding for non format 7 video mode will be
   without effect.
@@ -1162,7 +1159,7 @@ bool vp1394TwoGrabber::isColorCodingSupported(vp1394TwoVideoModeType mode, vp139
 
   The iso transmission (setTransmission()) and the dma capture (see
   setCapture()) are first stopped. Then, the format 7 roi is
-  set. Finaly, the dma capture and the iso transmission are re-started.
+  set. finally, the dma capture and the iso transmission are re-started.
 
   \warning Setting format 7 roi takes only effect if video mode is
   format 7 like.
@@ -1292,7 +1289,7 @@ void vp1394TwoGrabber::initialize(bool reset)
   if (init == false) {
 // Find cameras
 #ifdef VISP_HAVE_DC1394_CAMERA_ENUMERATE // new API > libdc1394-2.0.0-rc7
-    if (d != NULL)
+    if (d != nullptr)
       dc1394_free(d);
 
     d = dc1394_new();
@@ -1310,7 +1307,7 @@ void vp1394TwoGrabber::initialize(bool reset)
       throw(vpFrameGrabberException(vpFrameGrabberException::initializationError, "No cameras found"));
     }
 
-    if (cameras != NULL)
+    if (cameras != nullptr)
       delete[] cameras;
 
     cameras = new dc1394camera_t *[list->num];
@@ -1334,14 +1331,14 @@ void vp1394TwoGrabber::initialize(bool reset)
       dc1394_reset_bus(cameras[0]);
     }
 
-    // if (list != NULL)
+    // if (list != nullptr)
     dc1394_camera_free_list(list);
-    list = NULL;
+    list = nullptr;
 
 #elif defined VISP_HAVE_DC1394_FIND_CAMERAS // old API <= libdc1394-2.0.0-rc7
-    if (cameras != NULL)
+    if (cameras != nullptr)
       free(cameras);
-    cameras = NULL;
+    cameras = nullptr;
     int err = dc1394_find_cameras(&cameras, &num_cameras);
 
     if (err != DC1394_SUCCESS && err != DC1394_NO_CAMERA) {
@@ -1382,7 +1379,7 @@ void vp1394TwoGrabber::initialize(bool reset)
       std::cout << "-----------------------------" << std::endl;
     }
 
-    if (camIsOpen != NULL)
+    if (camIsOpen != nullptr)
       delete[] camIsOpen;
     camIsOpen = new bool[num_cameras];
     for (unsigned int i = 0; i < num_cameras; i++) {
@@ -1489,43 +1486,43 @@ void vp1394TwoGrabber::close()
 #endif
       }
     }
-    if (camIsOpen != NULL) {
+    if (camIsOpen != nullptr) {
       delete[] camIsOpen;
-      camIsOpen = NULL;
+      camIsOpen = nullptr;
     }
 
 #ifdef VISP_HAVE_DC1394_CAMERA_ENUMERATE // new API > libdc1394-2.0.0-rc7
-    if (cameras != NULL) {
+    if (cameras != nullptr) {
       delete[] cameras;
-      cameras = NULL;
+      cameras = nullptr;
     }
-    if (d != NULL) {
+    if (d != nullptr) {
       dc1394_free(d);
-      d = NULL;
+      d = nullptr;
     }
 
 #elif defined VISP_HAVE_DC1394_FIND_CAMERAS // old API <= libdc1394-2.0.0-rc7
-    if (cameras != NULL) {
+    if (cameras != nullptr) {
       free(cameras);
-      cameras = NULL;
+      cameras = nullptr;
     }
 #endif
 
-    camIsOpen = NULL;
+    camIsOpen = nullptr;
     num_cameras = 0;
 
     // remove data for the parameters
-    if (isDataModified != NULL) {
+    if (isDataModified != nullptr) {
       delete[] isDataModified;
-      isDataModified = NULL;
+      isDataModified = nullptr;
     }
-    if (initialShutterMode != NULL) {
+    if (initialShutterMode != nullptr) {
       delete[] initialShutterMode;
-      initialShutterMode = NULL;
+      initialShutterMode = nullptr;
     }
-    if (dataCam != NULL) {
+    if (dataCam != nullptr) {
       delete[] dataCam;
-      dataCam = NULL;
+      dataCam = nullptr;
     }
 
     init = false;
@@ -2009,45 +2006,37 @@ void vp1394TwoGrabber::setIsoTransmissionSpeed(vp1394TwoIsoSpeedType isospeed)
   // Check the speed to configure in B-mode or A-mode
   if (isospeed >= vpISO_SPEED_800) {
     if (camera->bmode_capable != DC1394_TRUE) {
-      //       vpERROR_TRACE("Camera is not 1394B mode capable. \n"
-      // 		    "Set the iso speed lower or equal to 400Mbps");
       close();
       throw(vpFrameGrabberException(vpFrameGrabberException::settingError, "Camera is not 1394B mode capable"));
     }
 
     if (dc1394_video_set_operation_mode(camera, DC1394_OPERATION_MODE_1394B) != DC1394_SUCCESS) {
-      //       vpERROR_TRACE("Cannot set camera to 1394B mode. \n");
       close();
       throw(vpFrameGrabberException(vpFrameGrabberException::settingError, "Cannot set camera to 1394B mode"));
     }
 
     if (dc1394_video_get_operation_mode(camera, &op_mode) != DC1394_SUCCESS) {
-      //       vpERROR_TRACE("Failed to set 1394B mode. \n");
       close();
       throw(vpFrameGrabberException(vpFrameGrabberException::settingError, "Failed to set 1394B mode"));
     }
   } else {
     if (dc1394_video_set_operation_mode(camera, DC1394_OPERATION_MODE_LEGACY) != DC1394_SUCCESS) {
-      //       vpERROR_TRACE("Cannot set camera to 1394A mode. \n");
       close();
       throw(vpFrameGrabberException(vpFrameGrabberException::settingError, "Cannot set camera to 1394A mode"));
     }
 
     if (dc1394_video_get_operation_mode(camera, &op_mode) != DC1394_SUCCESS) {
-      //       vpERROR_TRACE("Failed to set 1394A mode. \n");
       close();
       throw(vpFrameGrabberException(vpFrameGrabberException::settingError, "Failed to set 1394A mode"));
     }
   }
 
   if (dc1394_video_set_iso_speed(camera, (dc1394speed_t)isospeed) != DC1394_SUCCESS) {
-    //       vpERROR_TRACE("Cannot set requested iso speed. \n");
     close();
     throw(vpFrameGrabberException(vpFrameGrabberException::settingError, "Cannot set requested iso speed"));
   }
 
   if (dc1394_video_get_iso_speed(camera, &speed) != DC1394_SUCCESS) {
-    //       vpERROR_TRACE("Failed to set iso speed. \n");
     close();
     throw(vpFrameGrabberException(vpFrameGrabberException::settingError, "Failed to set iso speed"));
   }
@@ -2131,7 +2120,7 @@ dc1394video_frame_t *vp1394TwoGrabber::dequeue()
     throw(vpFrameGrabberException(vpFrameGrabberException::initializationError, "No camera found"));
   }
 
-  dc1394video_frame_t *frame = NULL;
+  dc1394video_frame_t *frame = nullptr;
 
   if (dc1394_capture_dequeue(camera, DC1394_CAPTURE_POLICY_WAIT, &frame) != DC1394_SUCCESS) {
     vpERROR_TRACE("Error: Failed to capture from camera %d\n", camera_id);
@@ -2994,10 +2983,10 @@ void vp1394TwoGrabber::resetBus()
 
   dc1394_camera_free(camera);
   dc1394_free(d);
-  d = NULL;
-  // if (cameras != NULL)
+  d = nullptr;
+  // if (cameras != nullptr)
   delete[] cameras;
-  cameras = NULL;
+  cameras = nullptr;
 #elif defined VISP_HAVE_DC1394_FIND_CAMERAS // old API <= libdc1394-2.0.0-rc7
 
   setCamera(camera_id);
@@ -3007,15 +2996,15 @@ void vp1394TwoGrabber::resetBus()
       dc1394_free_camera(cameras[i]);
   }
   free(cameras);
-  cameras = NULL;
+  cameras = nullptr;
 
   dc1394_reset_bus(camera);
   dc1394_free_camera(camera);
 
 #endif
-  if (camIsOpen != NULL)
+  if (camIsOpen != nullptr)
     delete[] camIsOpen;
-  camIsOpen = NULL;
+  camIsOpen = nullptr;
 
   num_cameras = 0;
 

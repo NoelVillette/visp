@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,8 +29,7 @@
  *
  * Description:
  * Libjpeg backend for JPEG image I/O operations.
- *
- *****************************************************************************/
+ */
 
 /*!
   \file vpImageIoLibjpeg.cpp
@@ -76,7 +74,7 @@ void writeJPEGLibjpeg(const vpImage<unsigned char> &I, const std::string &filena
 
   file = fopen(filename.c_str(), "wb");
 
-  if (file == NULL) {
+  if (file == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot create JPEG file \"%s\"", filename.c_str()));
   }
 
@@ -135,7 +133,7 @@ void writeJPEGLibjpeg(const vpImage<vpRGBa> &I, const std::string &filename, int
 
   file = fopen(filename.c_str(), "wb");
 
-  if (file == NULL) {
+  if (file == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot create JPEG file \"%s\"", filename.c_str()));
   }
 
@@ -178,7 +176,7 @@ void writeJPEGLibjpeg(const vpImage<vpRGBa> &I, const std::string &filename, int
 /*!
   Read the contents of the JPEG file, allocate memory
   for the corresponding gray level image, if necessary convert the data in
-  gray level, and set the bitmap whith the gray level data. That means that
+  gray level, and set the bitmap with the gray level data. That means that
   the image \e I is a "black and white" rendering of the original image in \e
   filename, as in a black and white photograph. If necessary, the quantization
   formula used is \f$0,299 r + 0,587 g + 0,114 b\f$.
@@ -206,7 +204,7 @@ void readJPEGLibjpeg(vpImage<unsigned char> &I, const std::string &filename)
 
   file = fopen(filename.c_str(), "rb");
 
-  if (file == NULL) {
+  if (file == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot read JPEG file \"%s\"", filename.c_str()));
   }
 
@@ -257,14 +255,14 @@ void readJPEGLibjpeg(vpImage<unsigned char> &I, const std::string &filename)
 
   Read the contents of the JPEG file, allocate
   memory for the corresponding image, and set
-  the bitmap whith the content of
+  the bitmap with the content of
   the file.
 
   If the image has been already initialized, memory allocation is done
   only if the new image size is different, else we re-use the same
   memory space.
 
-  If the file corresponds to a grayscaled image, a conversion is done to deal
+  If the file corresponds to a gray scaled image, a conversion is done to deal
   with \e I which is a color image.
 
   \param I : Color image to set with the \e filename content.
@@ -286,7 +284,7 @@ void readJPEGLibjpeg(vpImage<vpRGBa> &I, const std::string &filename)
 
   file = fopen(filename.c_str(), "rb");
 
-  if (file == NULL) {
+  if (file == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot read JPEG file \"%s\"", filename.c_str()));
   }
 

@@ -2,14 +2,14 @@
 #include <visp3/core/vpImageConvert.h>
 #include <visp3/io/vpImageIo.h>
 
-#if VISP_HAVE_OPENCV_VERSION >= 0x020300
+#if defined(HAVE_OPENCV_IMGPROC)
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #endif
 
 int main()
 {
-#if VISP_HAVE_OPENCV_VERSION >= 0x020300 && (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGPROC)
   {
     std::cout << "From OpenCV to ViSP conversion" << std::endl;
     //! [Create OpenCV matrix]
@@ -27,7 +27,7 @@ int main()
   {
     std::cout << "From ViSP to OpenCV conversion" << std::endl;
     //! [Create ViSP matrix]
-    vpMatrix M(3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+    vpMatrix M(3, 4, { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
     std::cout << "M: \n" << M << std::endl;
     //! [Create ViSP matrix]
 

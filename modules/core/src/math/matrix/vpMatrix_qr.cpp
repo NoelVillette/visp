@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -33,9 +33,8 @@
  *
  * Authors:
  * Filip Novotny
- * Fabien Spindler
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <algorithm> // for (std::min) and (std::max)
 #include <cmath>     // For std::abs() on iOS
@@ -161,7 +160,7 @@ vpMatrix vpMatrix::inverseByQRLapack() const
     gsl_A = gsl_matrix_alloc(rowNum, colNum);
     gsl_Q = gsl_matrix_alloc(rowNum, rowNum); // M by M
     gsl_R = gsl_matrix_alloc(rowNum, colNum); // M by N
-    gsl_tau = gsl_vector_alloc(std::min(rowNum, colNum));
+    gsl_tau = gsl_vector_alloc(std::min<unsigned int>(rowNum, colNum));
 
     gsl_inv.size1 = inv.rowNum;
     gsl_inv.size2 = inv.colNum;
@@ -225,7 +224,7 @@ vpMatrix vpMatrix::inverseByQRLapack() const
     integer rowNum_ = (integer)this->getRows();
     integer colNum_ = (integer)this->getCols();
     integer lda = (integer)rowNum_; // lda is the number of rows because we don't use a submatrix
-    integer dimTau = (std::min)(rowNum_, colNum_);
+    integer dimTau = std::min<integer>(rowNum_, colNum_);
     integer dimWork = -1;
     double *tau = new double[dimTau];
     double *work = new double[1];
@@ -295,9 +294,9 @@ vpMatrix vpMatrix::inverseByQRLapack() const
           std::cout << "dtrtri_:" << -info << "th element had an illegal value" << std::endl;
         else if (info > 0) {
           std::cout << "dtrtri_:R(" << info << "," << info << ")"
-                    << " is exactly zero.  The triangular matrix is singular "
-                       "and its inverse can not be computed."
-                    << std::endl;
+            << " is exactly zero.  The triangular matrix is singular "
+            "and its inverse can not be computed."
+            << std::endl;
           std::cout << "R=" << std::endl << C << std::endl;
         }
         throw vpMatrixException::badValue;
@@ -336,7 +335,8 @@ vpMatrix vpMatrix::inverseByQRLapack() const
       }
       delete[] tau;
       delete[] work;
-    } catch (vpMatrixException &) {
+    }
+    catch (vpMatrixException &) {
       delete[] tau;
       delete[] work;
       throw;
@@ -447,7 +447,7 @@ unsigned int vpMatrix::qr(vpMatrix &Q, vpMatrix &R, bool full, bool squareR, dou
 #if defined(VISP_HAVE_GSL)
   unsigned int m = rowNum;         // also rows of Q
   unsigned int n = colNum;         // also columns of R
-  unsigned int r = std::min(n, m); // a priori non-null rows of R = rank of R
+  unsigned int r = std::min<unsigned int>(n, m); // a priori non-null rows of R = rank of R
   unsigned int q = r;              // columns of Q and rows of R
   unsigned int na = n;             // columns of A
 
@@ -471,7 +471,7 @@ unsigned int vpMatrix::qr(vpMatrix &Q, vpMatrix &R, bool full, bool squareR, dou
 
   gsl_A = gsl_matrix_alloc(rowNum, colNum);
   gsl_R = gsl_matrix_alloc(rowNum, colNum); // M by N
-  gsl_tau = gsl_vector_alloc(std::min(rowNum, colNum));
+  gsl_tau = gsl_vector_alloc(std::min<unsigned int>(rowNum, colNum));
 
   // copy input matrix since gsl_linalg_QR_decomp() is destructive
   unsigned int Atda = static_cast<unsigned int>(gsl_A->tda);
@@ -498,7 +498,8 @@ unsigned int vpMatrix::qr(vpMatrix &Q, vpMatrix &R, bool full, bool squareR, dou
     gsl_linalg_QR_unpack(gsl_A, gsl_tau, &gsl_Qfull, gsl_R);
     //    std::cout << "gsl_Qfull:\n "; display_gsl(&gsl_Qfull);
     //    std::cout << "gsl_R:\n "; display_gsl(gsl_R);
-  } else {
+  }
+  else {
     gsl_Q = gsl_matrix_alloc(rowNum, rowNum); // M by M
 
     gsl_linalg_QR_unpack(gsl_A, gsl_tau, gsl_Q, gsl_R);
@@ -518,7 +519,7 @@ unsigned int vpMatrix::qr(vpMatrix &Q, vpMatrix &R, bool full, bool squareR, dou
   }
 
   // copy useful part of R and update rank
-  na = std::min(m, n);
+  na = std::min<unsigned int>(m, n);
   unsigned int Rtda = static_cast<unsigned int>(gsl_R->tda);
   size_t Rlen = sizeof(double) * R.colNum;
   for (unsigned int i = 0; i < na; i++) {
@@ -538,7 +539,7 @@ unsigned int vpMatrix::qr(vpMatrix &Q, vpMatrix &R, bool full, bool squareR, dou
 #else
   integer m = (integer)rowNum; // also rows of Q
   integer n = (integer)colNum; // also columns of R
-  integer r = std::min(n, m);  // a priori non-null rows of R = rank of R
+  integer r = std::min<integer>(n, m);  // a priori non-null rows of R = rank of R
   integer q = r;               // columns of Q and rows of R
   integer na = n;              // columns of A
 
@@ -559,7 +560,7 @@ unsigned int vpMatrix::qr(vpMatrix &Q, vpMatrix &R, bool full, bool squareR, dou
 
   integer dimWork = -1;
   double *qrdata = new double[m * na];
-  double *tau = new double[std::min(m, q)];
+  double *tau = new double[std::min<integer>(m, q)];
   double *work = new double[1];
   integer info;
 
@@ -611,7 +612,7 @@ unsigned int vpMatrix::qr(vpMatrix &Q, vpMatrix &R, bool full, bool squareR, dou
   // data now contains the R matrix in its upper triangular (in lapack convention)
 
   // copy useful part of R from Q and update rank
-  na = std::min(m, n);
+  na = std::min<integer>(m, n);
   if (squareR) {
     for (int i = 0; i < na; i++) {
       for (int j = i; j < na; j++)
@@ -619,7 +620,8 @@ unsigned int vpMatrix::qr(vpMatrix &Q, vpMatrix &R, bool full, bool squareR, dou
       if (std::abs(qrdata[i + m * i]) < tol)
         r--;
     }
-  } else {
+  }
+  else {
     for (int i = 0; i < na; i++) {
       for (int j = i; j < n; j++)
         R[i][j] = qrdata[i + m * j];
@@ -727,7 +729,7 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
 #if defined(VISP_HAVE_GSL)
   unsigned int m = rowNum;         // also rows of Q
   unsigned int n = colNum;         // also columns of R
-  unsigned int r = std::min(n, m); // a priori non-null rows of R = rank of R
+  unsigned int r = std::min<unsigned int>(n, m); // a priori non-null rows of R = rank of R
   unsigned int q = r;              // columns of Q and rows of R
   unsigned int na = n;             // columns of A
 
@@ -743,7 +745,8 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
     if (squareR) {
       R.resize(0, 0, false);
       P.resize(0, n, false);
-    } else {
+    }
+    else {
       R.resize(r, n, false);
       P.resize(n, n);
     }
@@ -764,7 +767,7 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
   gsl_A.block = 0;
 
   gsl_R = gsl_matrix_alloc(rowNum, colNum); // M by N
-  gsl_tau = gsl_vector_alloc(std::min(rowNum, colNum));
+  gsl_tau = gsl_vector_alloc(std::min<unsigned int>(rowNum, colNum));
   gsl_norm = gsl_vector_alloc(colNum);
   gsl_p = gsl_permutation_alloc(n);
 
@@ -781,7 +784,8 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
     gsl_linalg_QRPT_decomp2(&gsl_A, &gsl_Qfull, gsl_R, gsl_tau, gsl_p, &gsl_signum, gsl_norm);
     //    std::cout << "gsl_Qfull:\n "; display_gsl(&gsl_Qfull);
     //    std::cout << "gsl_R:\n "; display_gsl(gsl_R);
-  } else {
+  }
+  else {
     gsl_Q = gsl_matrix_alloc(rowNum, rowNum); // M by M
 
     gsl_linalg_QRPT_decomp2(&gsl_A, gsl_Q, gsl_R, gsl_tau, gsl_p, &gsl_signum, gsl_norm);
@@ -801,7 +805,7 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
   }
 
   // update rank
-  na = std::min(m, n);
+  na = std::min<unsigned int>(m, n);
   unsigned int Rtda = static_cast<unsigned int>(gsl_R->tda);
   for (unsigned int i = 0; i < na; i++) {
     unsigned int k = i * Rtda;
@@ -814,7 +818,8 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
     P.resize(r, n);
     for (unsigned int i = 0; i < r; ++i)
       P[i][gsl_p->data[i]] = 1;
-  } else {
+  }
+  else {
     R.resize(na, n, false); // R is min(m,n) x n of rank r
     P.resize(n, n);
     for (unsigned int i = 0; i < n; ++i)
@@ -837,7 +842,7 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
 #else
   integer m = (integer)rowNum; // also rows of Q
   integer n = (integer)colNum; // also columns of R
-  integer r = std::min(n, m);  // a priori non-null rows of R = rank of R
+  integer r = std::min<integer>(n, m);  // a priori non-null rows of R = rank of R
   integer q = r;               // columns of Q and rows of R
   integer na = n;              // columns of A
 
@@ -854,7 +859,8 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
     if (squareR) {
       R.resize(0, 0);
       P.resize(0, static_cast<unsigned int>(n));
-    } else {
+    }
+    else {
       R.resize(static_cast<unsigned int>(r), static_cast<unsigned int>(n));
       P.resize(static_cast<unsigned int>(n), static_cast<unsigned int>(n));
     }
@@ -926,7 +932,7 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
 
   // data now contains the R matrix in its upper triangular (in lapack convention)
   // get rank of R in r
-  na = std::min(n, m);
+  na = std::min<integer>(n, m);
   for (int i = 0; i < na; ++i)
     if (std::abs(qrdata[i + m * i]) < tol)
       r--;
@@ -943,7 +949,8 @@ unsigned int vpMatrix::qrPivot(vpMatrix &Q, vpMatrix &R, vpMatrix &P, bool full,
     P.resize(static_cast<unsigned int>(r), static_cast<unsigned int>(n));
     for (int i = 0; i < r; ++i)
       P[i][p[i] - 1] = 1;
-  } else // R is min(m,n) x n of rank r
+  }
+  else // R is min(m,n) x n of rank r
   {
     R.resize(static_cast<unsigned int>(na), static_cast<unsigned int>(n));
     for (int i = 0; i < na; i++)
@@ -1045,7 +1052,8 @@ vpMatrix vpMatrix::inverseTriangular(bool upper) const
       }
     }
 #endif
-  } else {
+  }
+  else {
 #if (GSL_MAJOR_VERSION >= 2 && GSL_MINOR_VERSION >= 2)
     gsl_linalg_tri_lower_invert(&gsl_inv);
 #else
@@ -1086,9 +1094,9 @@ vpMatrix vpMatrix::inverseTriangular(bool upper) const
       std::cout << "dtrtri_:" << -info << "th element had an illegal value" << std::endl;
     else if (info > 0) {
       std::cout << "dtrtri_:R(" << info << "," << info << ")"
-                << " is exactly zero.  The triangular matrix is singular "
-                   "and its inverse can not be computed."
-                << std::endl;
+        << " is exactly zero.  The triangular matrix is singular "
+        "and its inverse can not be computed."
+        << std::endl;
       throw vpMatrixException::rankDeficient;
     }
     throw vpMatrixException::badValue;

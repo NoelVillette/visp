@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Bertrand Delabarre
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpAROgre.cpp
@@ -78,9 +78,9 @@ vpAROgre::vpAROgre(const vpCameraParameters &cam, unsigned int width, unsigned i
     mInputManager(0), mKeyboard(0),
 #endif
     keepOn(true), // When created no reason to stop displaying
-    mImageRGBA(), mImage(), mPixelBuffer(), mBackground(NULL), mBackgroundHeight(0), mBackgroundWidth(0),
+    mImageRGBA(), mImage(), mPixelBuffer(), mBackground(nullptr), mBackgroundHeight(0), mBackgroundWidth(0),
     mWindowHeight(height), mWindowWidth(width), windowHidden(false), mNearClipping(0.001), mFarClipping(200), mcam(cam),
-    mshowConfigDialog(true), mOptionnalResourceLocation()
+    mshowConfigDialog(true), mOptionalResourceLocation()
 {
 }
 
@@ -246,7 +246,7 @@ void vpAROgre::init(bool
   }
   std::cout << "######################### Load plugin file: " << pluginFile << std::endl;
 
-  if (Ogre::Root::getSingletonPtr() == NULL) {
+  if (Ogre::Root::getSingletonPtr() == nullptr) {
     mRoot = new Ogre::Root(pluginFile, "ogre.cfg", "Ogre.log");
   } else {
     mRoot = Ogre::Root::getSingletonPtr();
@@ -301,9 +301,9 @@ void vpAROgre::init(bool
     }
   }
   std::cout << "##################### add resources" << std::endl;
-  // Add optionnal resources (given by the user).
-  for (std::list<std::string>::const_iterator iter = mOptionnalResourceLocation.begin();
-       iter != mOptionnalResourceLocation.end(); ++iter) {
+  // Add Optional resources (given by the user).
+  for (std::list<std::string>::const_iterator iter = mOptionalResourceLocation.begin();
+       iter != mOptionalResourceLocation.end(); ++iter) {
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
         *iter, "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   }
@@ -382,11 +382,11 @@ void vpAROgre::init(bool
   //-----------------------------------------------------
   // 4 Create the SceneManager
   //
-  //		ST_GENERIC = octree
-  //		ST_EXTERIOR_CLOSE = simple terrain
-  //		ST_EXTERIOR_FAR = nature terrain (depreciated)
-  //		ST_EXTERIOR_REAL_FAR = paging landscape
-  //		ST_INTERIOR = Quake3 BSP
+  //    ST_GENERIC = octree
+  //    ST_EXTERIOR_CLOSE = simple terrain
+  //    ST_EXTERIOR_FAR = nature terrain (depreciated)
+  //    ST_EXTERIOR_REAL_FAR = paging landscape
+  //    ST_INTERIOR = Quake3 BSP
   //-----------------------------------------------------
 
   mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);

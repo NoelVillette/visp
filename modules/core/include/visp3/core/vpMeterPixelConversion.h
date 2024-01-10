@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,15 +29,10 @@
  *
  * Description:
  * Meter to pixel conversion.
- *
- * Authors:
- * Eric Marchand
- * Anthony Saunier
- *
- *****************************************************************************/
+ */
 
-#ifndef vpMeterPixelConversion_H
-#define vpMeterPixelConversion_H
+#ifndef _vpMeterPixelConversion_h_
+#define _vpMeterPixelConversion_h_
 
 /*!
   \file vpMeterPixelConversion.h
@@ -53,7 +47,7 @@
 #include <visp3/core/vpMath.h>
 #include <visp3/core/vpSphere.h>
 
-#if VISP_HAVE_OPENCV_VERSION >= 0x020300
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_CALIB3D)
 #include <opencv2/calib3d/calib3d.hpp>
 #endif
 
@@ -65,8 +59,8 @@
   Various conversion functions to transform primitives (2D ellipse, 2D line, 2D point) from normalized
   coordinates in meter in the image plane into pixel coordinates.
 
-  Tranformation relies either on ViSP camera parameters implemented in vpCameraParameters or on OpenCV camera parameters
-  that are set from a projection matrix and a distorsion coefficients vector.
+  Transformation relies either on ViSP camera parameters implemented in vpCameraParameters or on OpenCV camera parameters
+  that are set from a projection matrix and a distortion coefficients vector.
 
 */
 class VISP_EXPORT vpMeterPixelConversion
@@ -110,7 +104,7 @@ public:
   */
   inline static void convertPoint(const vpCameraParameters &cam, const double &x, const double &y, double &u, double &v)
   {
-    switch (cam.projModel) {
+    switch (cam.m_projModel) {
     case vpCameraParameters::perspectiveProjWithoutDistortion:
       convertPointWithoutDistortion(cam, x, y, u, v);
       break;
@@ -152,7 +146,7 @@ public:
 
   inline static void convertPoint(const vpCameraParameters &cam, const double &x, const double &y, vpImagePoint &iP)
   {
-    switch (cam.projModel) {
+    switch (cam.m_projModel) {
     case vpCameraParameters::perspectiveProjWithoutDistortion:
       convertPointWithoutDistortion(cam, x, y, iP);
       break;
@@ -178,8 +172,8 @@ public:
   inline static void convertPointWithoutDistortion(const vpCameraParameters &cam, const double &x, const double &y,
                                                    double &u, double &v)
   {
-    u = x * cam.px + cam.u0;
-    v = y * cam.py + cam.v0;
+    u = x * cam.m_px + cam.m_u0;
+    v = y * cam.m_py + cam.m_v0;
   }
 
   /*!
@@ -195,8 +189,8 @@ public:
   inline static void convertPointWithoutDistortion(const vpCameraParameters &cam, const double &x, const double &y,
                                                    vpImagePoint &iP)
   {
-    iP.set_u(x * cam.px + cam.u0);
-    iP.set_v(y * cam.py + cam.v0);
+    iP.set_u(x * cam.m_px + cam.m_u0);
+    iP.set_v(y * cam.m_py + cam.m_v0);
   }
 
   /*!
@@ -218,9 +212,9 @@ public:
   inline static void convertPointWithDistortion(const vpCameraParameters &cam, const double &x, const double &y,
                                                 double &u, double &v)
   {
-    double r2 = 1. + cam.kud * (x * x + y * y);
-    u = cam.u0 + cam.px * x * r2;
-    v = cam.v0 + cam.py * y * r2;
+    double r2 = 1. + cam.m_kud * (x * x + y * y);
+    u = cam.m_u0 + cam.m_px * x * r2;
+    v = cam.m_v0 + cam.m_py * y * r2;
   }
 
   /*!
@@ -242,9 +236,9 @@ public:
   inline static void convertPointWithDistortion(const vpCameraParameters &cam, const double &x, const double &y,
                                                 vpImagePoint &iP)
   {
-    double r2 = 1. + cam.kud * (x * x + y * y);
-    iP.set_u(cam.u0 + cam.px * x * r2);
-    iP.set_v(cam.v0 + cam.py * y * r2);
+    double r2 = 1. + cam.m_kud * (x * x + y * y);
+    iP.set_u(cam.m_u0 + cam.m_px * x * r2);
+    iP.set_v(cam.m_v0 + cam.m_py * y * r2);
   }
 
   /*!
@@ -260,7 +254,7 @@ public:
 
     \f$ r = sqrt{x^2 + y^2} \f$
     \f$ \theta = \arctan{r} \f$
-    Calculate \f$ r_d \f$ knowing ditorsion coefficients as follows:
+    Calculate \f$ r_d \f$ knowing distortion coefficients as follows:
     \f$ r_d = \theta + k_1 \theta^3 + k_2 \theta^5 + k_3 \theta^7 + k_4 \theta^9 \f$
     \f$ scale = r_d / r \f$
     \f$ x_d = x * scale \f$
@@ -278,7 +272,7 @@ public:
     std::vector<double> k = cam.getKannalaBrandtDistortionCoefficients();
 
     double theta2 = theta * theta, theta3 = theta2 * theta, theta4 = theta2 * theta2, theta5 = theta4 * theta,
-           theta6 = theta3 * theta3, theta7 = theta6 * theta, theta8 = theta4 * theta4, theta9 = theta8 * theta;
+      theta6 = theta3 * theta3, theta7 = theta6 * theta, theta8 = theta4 * theta4, theta9 = theta8 * theta;
 
     double r_d = theta + k[0] * theta3 + k[1] * theta5 + k[2] * theta7 + k[3] * theta9;
 
@@ -287,8 +281,8 @@ public:
     double x_d = x * scale;
     double y_d = y * scale;
 
-    u = cam.px * x_d + cam.u0;
-    v = cam.py * y_d + cam.v0;
+    u = cam.m_px * x_d + cam.m_u0;
+    v = cam.m_py * y_d + cam.m_v0;
   }
 
   /*!
@@ -303,7 +297,7 @@ public:
 
     \f$ r = sqrt{x^2 + y^2} \f$
     \f$ \theta = \arctan{r} \f$
-    Calculate \f$ r_d \f$ knowing ditorsion coefficients as follows:
+    Calculate \f$ r_d \f$ knowing distortion coefficients as follows:
     \f$ r_d = \theta + k_1 \theta^3 + k_2 \theta^5 + k_3 \theta^7 + k_4 \theta^9 \f$
     \f$ scale = r_d / r \f$
     \f$ x_d = x * scale \f$
@@ -321,7 +315,7 @@ public:
     std::vector<double> k = cam.getKannalaBrandtDistortionCoefficients();
 
     double theta2 = theta * theta, theta3 = theta2 * theta, theta4 = theta2 * theta2, theta5 = theta4 * theta,
-           theta6 = theta3 * theta3, theta7 = theta6 * theta, theta8 = theta4 * theta4, theta9 = theta8 * theta;
+      theta6 = theta3 * theta3, theta7 = theta6 * theta, theta8 = theta4 * theta4, theta9 = theta8 * theta;
 
     double r_d = theta + k[0] * theta3 + k[1] * theta5 + k[2] * theta7 + k[3] * theta9;
 
@@ -330,14 +324,14 @@ public:
     double x_d = x * scale;
     double y_d = y * scale;
 
-    iP.set_u(cam.px * x_d + cam.u0);
-    iP.set_v(cam.py * y_d + cam.v0);
+    iP.set_u(cam.m_px * x_d + cam.m_u0);
+    iP.set_v(cam.m_py * y_d + cam.m_v0);
   }
 
 #endif // #ifndef DOXYGEN_SHOULD_SKIP_THIS
   //@}
 
-#if VISP_HAVE_OPENCV_VERSION >= 0x020300
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_CALIB3D)
   /** @name Using OpenCV camera parameters  */
   //@{
   static void convertEllipse(const cv::Mat &cameraMatrix, const vpCircle &circle, vpImagePoint &center, double &n20_p,

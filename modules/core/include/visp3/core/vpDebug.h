@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -32,21 +31,17 @@
  * Debug and trace macro.
  *
  *   - TRACING:    vpTRACE and vpERROR_TRACE work like printf with carreer
- *return at the end of the string. vpCERROR et vpCTRACE work like the C++
- *output streams std::cout and std::cerr.
+ *                 return at the end of the string. vpCERROR et vpCTRACE work like the C++
+ *                 output streams std::cout and std::cerr.
  *   - DEBUGING:   vpDEBUG_TRACE(niv) and vpDERROR_TRACE(niv), work like
- *printf, but print only if the tracing level niv is greater than the debug
- *level VP_DEBUG_MODE. vpCDEBUG(niv) work like the C++ output
- *stream std::cout. vpDEBUG_ENABLE(niv) is equal to 1 if the
- *debug level niv is greater than the debug mode
+ *                 printf, but print only if the tracing level niv is greater than the debug
+ *                 level VP_DEBUG_MODE. vpCDEBUG(niv) work like the C++ output
+ *                 stream std::cout. vpDEBUG_ENABLE(niv) is equal to 1 if the
+ *                 debug level niv is greater than the debug mode
  *                 VP_DEBUG_MODE, 0 else.
  *   - PROG DEFENSIVE: DEFENSIF(a) is equal to a if defensive mode is active,
- *0 else.
- *
- * Authors:
- * Nicolas Mansard, Bruno Renier
- *
- *****************************************************************************/
+ *                 0 else.
+ */
 
 #ifndef _vpDebug_h_
 #define _vpDebug_h_
@@ -149,15 +144,15 @@ private:
 public:
   /*!
     Constructor.
-    \param file Should be the name of the file where this constructor was
-    called. \param line Should be the line in file where this constructor was
-    called. \param func Should be the name of the function where this
-    constructor was called. \param error If true, writes to the error stream.
+    \param file Should be the name of the file where this constructor was called.
+    \param line Should be the line in file where this constructor was called.
+    \param func Should be the name of the function where this constructor was called.
+    \param error If true, writes to the error stream.
     \param s String to print before any other message (acts like a header).
     \note Call the constructor with something like
     vpTraceOutput(__FILE__,__LINE__, __FUNCTION__).
   */
-  vpTraceOutput(const char *file, int line, const char *func, bool error = false, const char *s = NULL)
+  vpTraceOutput(const char *file, int line, const char *func, bool error = false, const char *s = nullptr)
     : currentFile(file), currentFunc(func), currentLine(line), err(error), header(s)
   {
   }
@@ -221,7 +216,7 @@ public:
     // if we want to write to std::cerr/stderr
     if (err) {
       // first writes the header if there is one
-      if (header != NULL)
+      if (header != nullptr)
         std::cerr << header;
       // then writes the recorded namefile, function and line
       std::cerr << "!!\t" << currentFile << ": " << currentFunc << "(#" << currentLine << ") : ";
@@ -232,7 +227,7 @@ public:
       fflush(stderr);
     } else {
       // first writes the header if there is one
-      if (header != NULL)
+      if (header != nullptr)
         std::cout << header;
       // then writes the recorded namefile, function and line
       std::cout << currentFile << ": " << currentFunc << "(#" << currentLine << ") : ";

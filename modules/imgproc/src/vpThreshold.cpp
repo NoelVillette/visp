@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +29,7 @@
  *
  * Description:
  * Automatic thresholding functions.
- *
- * Authors:
- * Souriya Trinh
- *
- *****************************************************************************/
+ */
 
 /*!
   \file vpThreshold.cpp
@@ -94,7 +89,7 @@ int computeThresholdHuang(const vpHistogram &hist)
 
   S[0] = (float)hist[0];
   W[0] = 0.0f;
-  for (size_t i = std::max((size_t)1, first); i <= last; i++) {
+  for (size_t i = std::max<size_t>((size_t)1, first); i <= last; i++) {
     S[i] = S[i - 1] + hist[(unsigned char)i];
     W[i] = W[i - 1] + i * (float)hist[(unsigned char)i];
   }
@@ -361,18 +356,10 @@ int computeThresholdTriangle(vpHistogram &hist)
 }
 } // namespace
 
-/*!
-  \ingroup group_imgproc_threshold
-
-  Automatic thresholding.
-
-  \param I : Input grayscale image.
-  \param method : Automatic thresholding method.
-  \param backgroundValue : Value to set to the background.
-  \param foregroundValue : Value to set to the foreground.
-*/
-unsigned char vp::autoThreshold(vpImage<unsigned char> &I, const vpAutoThresholdMethod &method,
-                                const unsigned char backgroundValue, const unsigned char foregroundValue)
+namespace vp
+{
+unsigned char autoThreshold(vpImage<unsigned char> &I, const vpAutoThresholdMethod &method,
+                            const unsigned char backgroundValue, const unsigned char foregroundValue)
 {
   if (I.getSize() == 0) {
     return 0;
@@ -419,3 +406,4 @@ unsigned char vp::autoThreshold(vpImage<unsigned char> &I, const vpAutoThreshold
 
   return threshold;
 }
+};

@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Basic class used to make robot simulators.
  *
- * Authors:
- * Nicolas Melchior
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
@@ -50,19 +47,20 @@
   Basic constructor
 */
 vpRobotWireFrameSimulator::vpRobotWireFrameSimulator()
-  : vpWireFrameSimulator(), vpRobotSimulator(), I(), tcur(0), tprev(0), robotArms(NULL), size_fMi(8), fMi(NULL),
-    artCoord(), artVel(), velocity(),
+  : vpWireFrameSimulator(), vpRobotSimulator(), I(), tcur(0), tprev(0), robotArms(nullptr), size_fMi(8), fMi(nullptr),
+  artCoord(), artVel(), velocity(),
 #if defined(_WIN32)
 #elif defined(VISP_HAVE_PTHREAD)
-    thread(), attr(),
+  thread(), attr(),
 #endif
-    mutex_fMi(), mutex_artVel(), mutex_artCoord(), mutex_velocity(), mutex_display(), displayBusy(false),
-    robotStop(false), jointLimit(false), jointLimitArt(false), singularityManagement(true), cameraParam(),
+  m_mutex_fMi(), m_mutex_eMc(), m_mutex_artVel(), m_mutex_artCoord(), m_mutex_velocity(), m_mutex_display(), m_mutex_robotStop(), m_mutex_frame(), m_mutex_setVelocityCalled(), m_mutex_scene(),
+  displayBusy(false),
+  robotStop(false), jointLimit(false), jointLimitArt(false), singularityManagement(true), cameraParam(),
 #if defined(VISP_HAVE_DISPLAY)
-    display(),
+  display(),
 #endif
-    displayType(MODEL_3D), displayAllowed(true), constantSamplingTimeMode(false), setVelocityCalled(false),
-    verbose_(false)
+  displayType(MODEL_3D), displayAllowed(true), constantSamplingTimeMode(false), setVelocityCalled(false),
+  verbose_(false)
 {
   setSamplingTime(0.010);
   velocity.resize(6);
@@ -71,9 +69,6 @@ vpRobotWireFrameSimulator::vpRobotWireFrameSimulator()
 #if defined(VISP_HAVE_DISPLAY)
   display.init(I, 0, 0, "The External view");
 #endif
-
-  // pid_t pid = getpid();
-  // setpriority (PRIO_PROCESS, pid, 19);
 }
 
 /*!
@@ -81,20 +76,20 @@ vpRobotWireFrameSimulator::vpRobotWireFrameSimulator()
   \param do_display : When true, enables the display of the external view.
   */
 vpRobotWireFrameSimulator::vpRobotWireFrameSimulator(bool do_display)
-  : vpWireFrameSimulator(), vpRobotSimulator(), I(), tcur(0), tprev(0), robotArms(NULL), size_fMi(8), fMi(NULL),
-    artCoord(), artVel(), velocity(),
+  : vpWireFrameSimulator(), vpRobotSimulator(), I(), tcur(0), tprev(0), robotArms(nullptr), size_fMi(8), fMi(nullptr),
+  artCoord(), artVel(), velocity(),
 #if defined(_WIN32)
 #elif defined(VISP_HAVE_PTHREAD)
-    thread(), attr(),
+  thread(), attr(),
 #endif
-    /* thread(), attr(), */ mutex_fMi(), mutex_artVel(), mutex_artCoord(), mutex_velocity(), mutex_display(),
-    displayBusy(false), robotStop(false), jointLimit(false), jointLimitArt(false), singularityManagement(true),
-    cameraParam(),
+  m_mutex_fMi(), m_mutex_eMc(), m_mutex_artVel(), m_mutex_artCoord(), m_mutex_velocity(), m_mutex_display(), m_mutex_robotStop(), m_mutex_frame(), m_mutex_setVelocityCalled(), m_mutex_scene(),
+  displayBusy(false), robotStop(false), jointLimit(false), jointLimitArt(false), singularityManagement(true),
+  cameraParam(),
 #if defined(VISP_HAVE_DISPLAY)
-    display(),
+  display(),
 #endif
-    displayType(MODEL_3D), displayAllowed(do_display), constantSamplingTimeMode(false), setVelocityCalled(false),
-    verbose_(false)
+  displayType(MODEL_3D), displayAllowed(do_display), constantSamplingTimeMode(false), setVelocityCalled(false),
+  verbose_(false)
 {
   setSamplingTime(0.010);
   velocity.resize(6);
@@ -105,15 +100,7 @@ vpRobotWireFrameSimulator::vpRobotWireFrameSimulator(bool do_display)
   if (do_display)
     this->display.init(I, 0, 0, "The External view");
 #endif
-
-  // pid_t pid = getpid();
-  // setpriority (PRIO_PROCESS, pid, 19);
 }
-
-/*!
-  Basic destructor
-*/
-vpRobotWireFrameSimulator::~vpRobotWireFrameSimulator() {}
 
 /*!
   Initialize the display. It enables to choose the type of scene which will be
@@ -125,12 +112,13 @@ vpRobotWireFrameSimulator::~vpRobotWireFrameSimulator() {}
   corresponding files are stored in the "data" folder which is in the ViSP
   build directory.
 
-  \param obj : Type of scene used to display the object at the current
-  position. \param desired_object : Type of scene used to display the object
-  at the desired pose (in the internal view).
+  \param obj : Type of scene used to display the object at the current position.
+
+  \param desired_object : Type of scene used to display the object at the desired pose (in the internal view).
 */
 void vpRobotWireFrameSimulator::initScene(const vpSceneObject &obj, const vpSceneDesiredObject &desired_object)
 {
+  m_mutex_scene.lock();
   if (displayCamera) {
     free_Bound_scene(&(this->camera));
   }
@@ -139,6 +127,7 @@ void vpRobotWireFrameSimulator::initScene(const vpSceneObject &obj, const vpScen
     free_Bound_scene(&(this->camera));
   }
   displayCamera = false;
+  m_mutex_scene.unlock();
 }
 
 /*!
@@ -235,7 +224,8 @@ void vpRobotWireFrameSimulator::getInternalView(vpImage<vpRGBa> &I_)
       (std::fabs(py_int - 1) > vpMath::maximum(py_int, 1.) * std::numeric_limits<double>::epsilon())) {
     u = (double)I_.getWidth() / (2 * px_int);
     v = (double)I_.getHeight() / (2 * py_int);
-  } else {
+  }
+  else {
     u = (double)I_.getWidth() / (vpMath::minimum(I_.getWidth(), I_.getHeight()));
     v = (double)I_.getHeight() / (vpMath::minimum(I_.getWidth(), I_.getHeight()));
   }
@@ -308,7 +298,8 @@ void vpRobotWireFrameSimulator::getInternalView(vpImage<unsigned char> &I_)
       (std::fabs(py_int - 1) > vpMath::maximum(py_int, 1.) * std::numeric_limits<double>::epsilon())) {
     u = (double)I.getWidth() / (2 * px_int);
     v = (double)I.getHeight() / (2 * py_int);
-  } else {
+  }
+  else {
     u = (double)I_.getWidth() / (vpMath::minimum(I_.getWidth(), I_.getHeight()));
     v = (double)I_.getHeight() / (vpMath::minimum(I_.getWidth(), I_.getHeight()));
   }
@@ -375,5 +366,5 @@ vpHomogeneousMatrix vpRobotWireFrameSimulator::get_cMo()
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning:
 // libvisp_robot.a(vpRobotWireFrameSimulator.cpp.o) has no symbols
-void dummy_vpRobotWireFrameSimulator(){};
+void dummy_vpRobotWireFrameSimulator() { };
 #endif

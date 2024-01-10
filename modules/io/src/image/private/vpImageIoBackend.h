@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,16 +29,15 @@
  *
  * Description:
  * Backend functions implementation for image I/O operations.
- *
- *****************************************************************************/
+ */
 
 /*!
   \file vpImageIoBackend.h
   \brief Backend functions implementation for image I/O operations.
 */
 
-#ifndef vpIMAGEIOBACKEND_H
-#define vpIMAGEIOBACKEND_H
+#ifndef _vpImageIoBackend_h_
+#define _vpImageIoBackend_h_
 
 #include <visp3/core/vpImage.h>
 
@@ -87,23 +85,29 @@ void writeOpenCV(const vpImage<vpRGBa> &I, const std::string &filename, int qual
 void writeOpenCV(const vpImage<float> &I, const std::string &filename);
 void writeOpenCV(const vpImage<vpRGBf> &I, const std::string &filename);
 
+#if defined(VISP_HAVE_SIMDLIB)
 // Simd lib
 void readSimdlib(vpImage<unsigned char> &I, const std::string &filename);
 void readSimdlib(vpImage<vpRGBa> &I, const std::string &filename);
-
-// TinyEXR lib
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
-void readEXRTiny(vpImage<float> &I, const std::string &filename);
-void readEXRTiny(vpImage<vpRGBf> &I, const std::string &filename);
-#endif
 
 void writeJPEGSimdlib(const vpImage<unsigned char> &I, const std::string &filename, int quality);
 void writeJPEGSimdlib(const vpImage<vpRGBa> &I, const std::string &filename, int quality);
 
 void writePNGSimdlib(const vpImage<unsigned char> &I, const std::string &filename);
 void writePNGSimdlib(const vpImage<vpRGBa> &I, const std::string &filename);
+#endif
 
-// stb lib
+#if defined(VISP_HAVE_TINYEXR)
+// TinyEXR lib
+void readEXRTiny(vpImage<float> &I, const std::string &filename);
+void readEXRTiny(vpImage<vpRGBf> &I, const std::string &filename);
+
+void writeEXRTiny(const vpImage<float> &I, const std::string &filename);
+void writeEXRTiny(const vpImage<vpRGBf> &I, const std::string &filename);
+#endif
+
+#if defined(VISP_HAVE_STBIMAGE)
+// stb_image lib
 void readStb(vpImage<unsigned char> &I, const std::string &filename);
 void readStb(vpImage<vpRGBa> &I, const std::string &filename);
 
@@ -112,11 +116,6 @@ void writeJPEGStb(const vpImage<vpRGBa> &I, const std::string &filename, int qua
 
 void writePNGStb(const vpImage<unsigned char> &I, const std::string &filename);
 void writePNGStb(const vpImage<vpRGBa> &I, const std::string &filename);
-
-// TinyEXR lib
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
-void writeEXRTiny(const vpImage<float> &I, const std::string &filename);
-void writeEXRTiny(const vpImage<vpRGBf> &I, const std::string &filename);
 #endif
 
 #endif

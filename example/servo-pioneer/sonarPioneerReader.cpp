@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Example that shows how to control a Pioneer mobile robot in ViSP.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <iostream>
 
@@ -84,11 +81,11 @@ void sonarPrinter(void)
   ArPose *pose;
 
   sd = (ArSonarDevice *)robot->findRangeDevice("sonar");
-  if (sd != NULL)
+  if (sd != nullptr)
   {
     sd->lockDevice();
     readings = sd->getCurrentBuffer();
-    if (readings != NULL)
+    if (readings != nullptr)
     {
       for (it = readings->begin(); it != readings->end(); ++it)
       {
@@ -161,7 +158,7 @@ void sonarPrinter(void)
   ArSensorReading *reading;
   for (int sensor = 0; sensor < robot->getNumSonar(); sensor++) {
     reading = robot->getSonarReading(sensor);
-    if (reading != NULL) {
+    if (reading != nullptr) {
       angle = reading->getSensorTh();
       range = reading->getRange();
       double sx = reading->getSensorX(); // position of the sensor in the robot frame
@@ -331,7 +328,7 @@ int main(int argc, char **argv)
 
 #if defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI)
     if (isInitialized) {
-      if (d != NULL)
+      if (d != nullptr)
         delete d;
     }
 #endif

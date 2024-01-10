@@ -1,7 +1,7 @@
 #############################################################################
 #
 # ViSP, open source Visual Servoing Platform software.
-# Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+# Copyright (C) 2005 - 2023 by Inria. All rights reserved.
 #
 # This software is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # GPL, please contact Inria about acquiring a ViSP Professional
 # Edition License.
 #
-# See http://visp.inria.fr for more information.
+# See https://visp.inria.fr for more information.
 #
 # This software was developed at:
 # Inria Rennes - Bretagne Atlantique
@@ -30,9 +30,6 @@
 #
 # Description:
 # ViSP configuration file.
-#
-# Authors:
-# Fabien Spindler
 #
 #############################################################################
 
@@ -170,7 +167,7 @@ endif()
 
 vp_set_source_file_compile_flag(src/pose-estimation/vpPoseFeatures.cpp -Wno-strict-overflow)
 vp_set_source_file_compile_flag(src/pose-estimation/vpPoseRansac.cpp -Wno-strict-overflow)
-vp_set_source_file_compile_flag(src/pose-estimation/vpLevenbergMarquartd.cpp -Wno-strict-overflow)
+vp_set_source_file_compile_flag(src/pose-estimation/private/vpLevenbergMarquartd.cpp -Wno-strict-overflow)
 vp_set_source_file_compile_flag(src/keypoint/vpKeyPoint.cpp -Wno-strict-overflow)
 
 if(BUILD_MODULE_visp_mbt AND BUILD_MODULE_visp_gui AND BUILD_MODULE_visp_io)

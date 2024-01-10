@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Velocity twist transformation matrix.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <assert.h>
 #include <sstream>
@@ -495,7 +492,7 @@ void vpVelocityTwistMatrix::extract(vpTranslationVector &tv) const
   \param s Stream used for the printing.
 
   \param length The suggested width of each matrix element.
-  The actual width grows in order to accomodate the whole integral part,
+  The actual width grows in order to accommodate the whole integral part,
   and shrinks if the whole extent is not needed for all the numbers.
   \param intro The introduction which is printed before the matrix.
   Can be set to zero (or omitted), in which case
@@ -540,7 +537,8 @@ int vpVelocityTwistMatrix::print(std::ostream &s, unsigned int length, char cons
       if (p == std::string::npos) {
         maxBefore = vpMath::maximum(maxBefore, thislen);
         // maxAfter remains the same
-      } else {
+      }
+      else {
         maxBefore = vpMath::maximum(maxBefore, p);
         maxAfter = vpMath::maximum(maxAfter, thislen - p - 1);
       }
@@ -551,7 +549,7 @@ int vpVelocityTwistMatrix::print(std::ostream &s, unsigned int length, char cons
   // increase totalLength according to maxBefore
   totalLength = vpMath::maximum(totalLength, maxBefore);
   // decrease maxAfter according to totalLength
-  maxAfter = (std::min)(maxAfter, totalLength - maxBefore);
+  maxAfter = std::min<size_type>(maxAfter, totalLength - maxBefore);
   if (maxAfter == 1)
     maxAfter = 0;
 
@@ -575,7 +573,8 @@ int vpVelocityTwistMatrix::print(std::ostream &s, unsigned int length, char cons
         if (p != std::string::npos) {
           s.width((std::streamsize)maxAfter);
           s << values[i * n + j].substr(p, maxAfter).c_str();
-        } else {
+        }
+        else {
           assert(maxAfter > 1);
           s.width((std::streamsize)maxAfter);
           s << ".0";

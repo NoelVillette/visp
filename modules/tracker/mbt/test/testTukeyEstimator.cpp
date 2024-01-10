@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Test Tukey M-Estimator.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example testTukeyEstimator.cpp
@@ -54,7 +54,7 @@ int main()
   double stdev = 0.5, mean = 0.0, noise_threshold = 1e-3;
 
   vpGaussRand noise(stdev, mean);
-  noise.seed((unsigned int)time(NULL));
+  noise.seed((unsigned int)time(nullptr));
 
   vpColVector residues_col((unsigned int)nb_elements);
   vpColVector weights_col, weights_col_save;

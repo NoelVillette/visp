@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Interface for the ptu-46 robot.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 #ifdef VISP_HAVE_PTU46
@@ -99,11 +99,11 @@ public:
 
   void get_cMe(vpHomogeneousMatrix &_cMe) const;
   void get_cVe(vpVelocityTwistMatrix &_cVe) const;
-  void get_eJe(vpMatrix &_eJe);
-  void get_fJe(vpMatrix &_fJe);
+  void get_eJe(vpMatrix &_eJe) override;
+  void get_fJe(vpMatrix &_fJe) override;
 
   void getDisplacement(vpRobot::vpControlFrameType frame, vpColVector &q);
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q);
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) override;
   double getPositioningVelocity(void);
   void getVelocity(const vpRobot::vpControlFrameType frame, vpColVector &q_dot);
   vpColVector getVelocity(const vpRobot::vpControlFrameType frame);
@@ -112,13 +112,13 @@ public:
 
   bool readPositionFile(const std::string &filename, vpColVector &q);
 
-  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q);
+  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &q) override;
   void setPosition(const vpRobot::vpControlFrameType frame, const double &q1, const double &q2);
   void setPosition(const char *filename);
   void setPositioningVelocity(double velocity);
   vpRobot::vpRobotStateType setRobotState(vpRobot::vpRobotStateType newState);
 
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &q_dot);
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &q_dot) override;
 
   void stopMotion();
 };

@@ -1,7 +1,7 @@
 # ############################################################################
 #
 # ViSP, open source Visual Servoing Platform software.
-# Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+# Copyright (C) 2005 - 2023 by Inria. All rights reserved.
 #
 # This software is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # GPL, please contact Inria about acquiring a ViSP Professional
 # Edition License.
 #
-# See http://visp.inria.fr for more information.
+# See https://visp.inria.fr for more information.
 #
 # This software was developed at:
 # Inria Rennes - Bretagne Atlantique
@@ -31,14 +31,12 @@
 # Description:
 # ViSP configuration file.
 #
-# Authors:
-# Fabien Spindler
-#
 # ############################################################################
 
 # Add optional 3rd parties
 set(opt_incs "")
 set(opt_libs "")
+set(opt_libs_private "")
 
 # Warning: when composing the link line, CMake sometimes end up placing multiple
 # copies of a given library. This can produce the following link error
@@ -52,9 +50,10 @@ if(USE_VIRTUOSE)
   list(APPEND opt_incs ${VIRTUOSE_INCLUDE_DIRS})
   list(APPEND opt_libs ${VIRTUOSE_LIBRARIES})
 
-  if(USE_PTHREAD AND RT_FOUND AND DL_FOUND)
-    list(APPEND opt_incs ${PTHREAD_INCLUDE_DIRS})
-    list(APPEND opt_libs ${PTHREAD_LIBRARIES})
+  if(USE_THREADS AND RT_FOUND AND DL_FOUND)
+    if(CMAKE_THREAD_LIBS_INIT)
+      list(APPEND opt_libs "${CMAKE_THREAD_LIBS_INIT}")
+    endif()
     list(APPEND opt_libs ${RT_LIBRARIES})
     list(APPEND opt_libs ${DL_LIBRARIES})
   endif()
@@ -103,8 +102,9 @@ if(USE_MAVSDK)
 endif()
 
 if(USE_BICLOPS)
-  list(APPEND opt_incs ${BICLOPS_INCLUDE_DIRS})
-  list(APPEND opt_libs ${BICLOPS_LIBRARIES})
+  # No need to export, there is an implementation that allows to use Biclops as private
+  include_directories(${BICLOPS_INCLUDE_DIRS})
+  list(APPEND opt_libs_private ${BICLOPS_LIBRARIES})
 endif()
 
 if(USE_PTU46)
@@ -126,8 +126,9 @@ if(USE_ARIA AND UNIX AND USE_PTHREAD AND RT_FOUND AND DL_FOUND)
   # Under Unix we need Aria, pthread, dl and rt libraries
   list(APPEND opt_incs ${ARIA_INCLUDE_DIRS})
   list(APPEND opt_libs ${ARIA_LIBRARIES})
-  list(APPEND opt_incs ${PTHREAD_INCLUDE_DIRS})
-  list(APPEND opt_libs ${PTHREAD_LIBRARIES})
+  if(CMAKE_THREAD_LIBS_INIT)
+    list(APPEND opt_libs "${CMAKE_THREAD_LIBS_INIT}")
+  endif()
   list(APPEND opt_libs ${RT_LIBRARIES})
   list(APPEND opt_libs ${DL_LIBRARIES})
 elseif(USE_ARIA AND NOT UNIX)
@@ -175,14 +176,22 @@ endif()
 if(WITH_QBDEVICE)
   # qbdevice is private
   include_directories(${QBDEVICE_INCLUDE_DIRS})
+  list(APPEND opt_libs_private ${QBDEVICE_LIBRARIES})
 endif()
 
 if(WITH_TAKKTILE2)
   # reflex-takktile2 is private
   include_directories(${TAKKTILE2_INCLUDE_DIRS})
+  list(APPEND opt_libs_private ${TAKKTILE2_LIBRARIES})
 endif()
 
-vp_add_module(robot visp_core OPTIONAL visp_io visp_gui visp_sensor PRIVATE_OPTIONAL ${QBDEVICE_LIBRARIES} ${TAKKTILE2_LIBRARIES})
+if(WITH_POLOLU)
+  # Rapa Pololu Maestro 3rdparty is private
+  include_directories(${POLOLU_INCLUDE_DIRS})
+  list(APPEND opt_libs_private ${POLOLU_LIBRARIES})
+endif()
+
+vp_add_module(robot visp_core OPTIONAL visp_io visp_gui visp_sensor PRIVATE_OPTIONAL ${opt_libs_private})
 vp_glob_module_sources()
 
 vp_set_source_file_compile_flag(src/wireframe-simulator/vpKeyword.cpp -Wno-sign-conversion)
@@ -219,6 +228,15 @@ if(USE_UR_RTDE)
   vp_set_source_file_compile_flag(src/real-robot/universal-robots/vpRobotUniversalRobots.cpp -Wno-unused-parameter)
 endif()
 
+if(USE_MAVSDK)
+  vp_set_source_file_compile_flag(src/real-robot/mavsdk/vpRobotMavsdk.cp -Wno-unused-but-set-variable)
+endif()
+
+if(USE_BICLOPS)
+  vp_set_source_file_compile_flag(src/real-robot/biclops/vpRobotBiclops.cpp -Wno-unused-parameter)
+  vp_set_source_file_compile_flag(src/real-robot/biclops/private/vpRobotBiclopsController_impl.cpp -Wno-unused-parameter)
+endif()
+
 vp_set_source_file_compile_flag(src/light/vpRingLight.cpp -Wno-strict-overflow)
 vp_set_source_file_compile_flag(src/wireframe-simulator/vpClipping.cpp -Wno-strict-overflow)
 vp_set_source_file_compile_flag(src/wireframe-simulator/vpBoundio.cpp -Wno-strict-overflow)
@@ -235,8 +253,11 @@ vp_glob_module_copy_data("src/wireframe-simulator/scene/*.sld" data/wireframe-si
 vp_module_include_directories(${opt_incs})
 vp_create_module(${opt_libs})
 vp_add_tests(
-  DEPENDS_ON visp_sensor visp_vision visp_blob visp_gui
-  CTEST_EXCLUDE_PATH bebop2 qbdevice servo-afma4 servo-afma6 servo-franka servo-universal-robots servo-viper virtuose servo-pixhawk)
+  DEPENDS_ON
+    visp_sensor visp_vision visp_blob visp_gui
+  CTEST_EXCLUDE_PATH
+    bebop2 qbdevice servo-afma4 servo-afma6 servo-franka servo-pixhawk servo-pololu servo-universal-robots
+    servo-viper virtuose)
 
 if(USE_VIRTUOSE)
   # Add specific build flag to turn off warnings coming from VirtuoseAPI 3rd party

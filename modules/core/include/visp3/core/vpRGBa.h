@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * RGBA pixel.
- *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
 
 #ifndef vpRGBa_h
 #define vpRGBa_h
@@ -73,7 +67,7 @@ public:
 
     Build a black value.
   */
-  inline vpRGBa() : R(0), G(0), B(0), A(vpRGBa::alpha_default) {}
+  inline vpRGBa() : R(0), G(0), B(0), A(vpRGBa::alpha_default) { }
 
   /*!
     Constructor.
@@ -87,8 +81,7 @@ public:
   */
   inline vpRGBa(unsigned char r, unsigned char g, unsigned char b, unsigned char a = vpRGBa::alpha_default)
     : R(r), G(g), B(b), A(a)
-  {
-  }
+  { }
 
   /*!
     Constructor.
@@ -97,12 +90,12 @@ public:
 
     \param v : Value to set.
   */
-  inline vpRGBa(unsigned char v) : R(v), G(v), B(v), A(v) {}
+  inline vpRGBa(unsigned char v) : R(v), G(v), B(v), A(v) { }
 
   /*!
     Copy constructor.
   */
-  inline vpRGBa(const vpRGBa &v) : R(v.R), G(v.G), B(v.B), A(v.A) {}
+  inline vpRGBa(const vpRGBa &v) : R(v.R), G(v.G), B(v.B), A(v.A) { }
 
   /*!
     Create a RGBa value from a 4 dimension column vector.
@@ -121,12 +114,10 @@ public:
 
   vpRGBa &operator=(const unsigned char &v);
   vpRGBa &operator=(const vpRGBa &v);
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpRGBa &operator=(const vpRGBa &&v);
-#endif
   vpRGBa &operator=(const vpColVector &v);
-  bool operator==(const vpRGBa &v);
-  bool operator!=(const vpRGBa &v);
+  bool operator==(const vpRGBa &v) const;
+  bool operator!=(const vpRGBa &v) const;
 
   vpColVector operator-(const vpRGBa &v) const;
   vpRGBa operator+(const vpRGBa &v) const;

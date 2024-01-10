@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -33,11 +33,7 @@
  *   eye-in-hand control
  *   velocity computed in the camera frame
  *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file servoAfma6FourPoints2DCamVelocityLs_des.cpp
@@ -139,7 +135,7 @@ int main()
 
 #ifdef VISP_HAVE_X11
     vpDisplayX display(I, 100, 100, "Current image");
-#elif defined(VISP_HAVE_OPENCV)
+#elif defined(HAVE_OPENCV_HIGHGUI)
     vpDisplayOpenCV display(I, 100, 100, "Current image");
 #elif defined(VISP_HAVE_GTK)
     vpDisplayGTK display(I, 100, 100, "Current image");
@@ -157,7 +153,7 @@ int main()
     std::cout << " Use of the Afma6 robot " << std::endl;
     std::cout << " Interaction matrix computed with the desired features " << std::endl;
 
-    std::cout << " task : servo 4 points on a square with dimention " << L << " meters" << std::endl;
+    std::cout << " task : servo 4 points on a square with dimension " << L << " meters" << std::endl;
     std::cout << "-------------------------------------------------------" << std::endl;
     std::cout << std::endl;
 

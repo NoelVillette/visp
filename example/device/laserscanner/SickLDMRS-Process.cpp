@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Sick LD-MRS laser driver.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example SickLDMRS-Process.cpp
@@ -116,11 +116,11 @@ void *laser_display_and_save_loop(void *)
     }
   }
 
-  vpDisplay *display = NULL;
+  vpDisplay *display = nullptr;
 #ifdef VISP_HAVE_MODULE_GUI
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
   display = new vpDisplayX;
-#elif defined VISP_HAVE_GTK
+#elif defined(VISP_HAVE_GTK)
   display = new vpDisplayGTK;
 #endif
   display->init(map, 10, 10, "Laser scan");
@@ -141,9 +141,6 @@ void *laser_display_and_save_loop(void *)
 #ifdef VISP_HAVE_PTHREAD
     pthread_mutex_unlock(&shm_mutex);
 #endif
-
-    //     std::cout << "laser start timestamp "
-    // 	      << laserscan[0].getStartTimestamp() - time_offset << std::endl;
 
     // Parse the four layers
     for (int layer = 0; layer < 4; layer++) {
@@ -172,8 +169,6 @@ void *laser_display_and_save_loop(void *)
       vpImagePoint E;        // Beam echo
       double resolution = 5; // 100 pixels = 1 meter - increase this value to
                              // see better near info
-      //       std::cout << "display layer " << layer << " nb points: "
-      // 		<< pointsLayer.size() << std::endl;
       for (unsigned int i = 0; i < pointsLayer.size(); i++) {
         p = pointsLayer[i];
         E.set_i(height - resolution * p.getRadialDist() * cos(p.getHAngle()));
@@ -199,7 +194,7 @@ void *laser_display_and_save_loop(void *)
     // std::endl;
   }
   delete display;
-  return NULL;
+  return nullptr;
 }
 
 void *laser_acq_loop(void *)
@@ -211,7 +206,6 @@ void *laser_acq_loop(void *)
   laser.setup();
   vpLaserScan laserscan[4];
 
-  unsigned int iter = 0;
   for (;;) {
     double t1 = vpTime::measureTimeMs();
     if (laser.measure(laserscan) == false)
@@ -226,11 +220,10 @@ void *laser_acq_loop(void *)
     pthread_mutex_unlock(&shm_mutex);
 #endif
 
-    iter++;
     std::cout << "laser acq time: " << vpTime::measureTimeMs() - t1 << std::endl;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 void *camera_acq_and_display_loop(void *)
@@ -242,7 +235,7 @@ void *camera_acq_and_display_loop(void *)
 
     // If no camera found return
     if (g.getNumCameras() == 0)
-      return NULL;
+      return nullptr;
 
     //     g.setVideoMode(vp1394TwoGrabber::vpVIDEO_MODE_640x480_MONO8);
     //     g.setFramerate(vp1394TwoGrabber::vpFRAMERATE_60);
@@ -252,11 +245,11 @@ void *camera_acq_and_display_loop(void *)
     g.acquire(I);             // Acquire an image
     I.quarterSizeImage(Q);
 
-    vpDisplay *display = NULL;
+    vpDisplay *display = nullptr;
 #ifdef VISP_HAVE_MODULE_GUI
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
     display = new vpDisplayX;
-#elif defined VISP_HAVE_GTK
+#elif defined(VISP_HAVE_GTK)
     display = new vpDisplayGTK;
 #endif
     display->init(Q, 320, 10, "Camera");
@@ -299,7 +292,7 @@ void *camera_acq_and_display_loop(void *)
   } catch (...) {
   }
 #endif
-  return NULL;
+  return nullptr;
 }
 
 int main(int argc, const char **argv)
@@ -319,18 +312,18 @@ int main(int argc, const char **argv)
 
     // Parse the command line to set the variables
     vpParseArgv::vpArgvInfo argTable[] = {
-        {"-layer", vpParseArgv::ARGV_INT, (char *)NULL, (char *)&layerToDisplay,
+        {"-layer", vpParseArgv::ARGV_INT, (char *)nullptr, (char *)&layerToDisplay,
          "The layer to display:\n"
          "\t\t. 0x1 for layer 1.\n"
          "\t\t. 0x2 for layer 2.\n"
          "\t\t. 0x4 for layer 3.\n"
          "\t\t. 0x8 for layer 4.\n"
          "\t\tTo display all the layers you should set 0xF value."},
-        {"-save", vpParseArgv::ARGV_INT, (char *)NULL, (char *)&save, "Turn to 1 in order to save data."},
-        {"-h", vpParseArgv::ARGV_HELP, (char *)NULL, (char *)NULL,
+        {"-save", vpParseArgv::ARGV_INT, (char *)nullptr, (char *)&save, "Turn to 1 in order to save data."},
+        {"-h", vpParseArgv::ARGV_HELP, (char *)nullptr, (char *)nullptr,
          "Display one or more measured layers form a Sick LD-MRS laser "
          "scanner."},
-        {(char *)NULL, vpParseArgv::ARGV_END, (char *)NULL, (char *)NULL, (char *)NULL}};
+        {(char *)nullptr, vpParseArgv::ARGV_END, (char *)nullptr, (char *)nullptr, (char *)nullptr}};
 
     // Read the command line options
     if (vpParseArgv::parse(&argc, argv, argTable,
@@ -344,9 +337,9 @@ int main(int argc, const char **argv)
     pthread_t thread_camera_acq;
     pthread_t thread_laser_acq;
     pthread_t thread_laser_display;
-    pthread_create(&thread_camera_acq, NULL, &camera_acq_and_display_loop, NULL);
-    pthread_create(&thread_laser_acq, NULL, &laser_acq_loop, NULL);
-    pthread_create(&thread_laser_display, NULL, &laser_display_and_save_loop, NULL);
+    pthread_create(&thread_camera_acq, nullptr, &camera_acq_and_display_loop, nullptr);
+    pthread_create(&thread_laser_acq, nullptr, &laser_acq_loop, nullptr);
+    pthread_create(&thread_laser_display, nullptr, &laser_display_and_save_loop, nullptr);
     pthread_join(thread_camera_acq, 0);
     pthread_join(thread_laser_acq, 0);
     pthread_join(thread_laser_display, 0);

@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Firewire cameras video capture.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vp1394TwoGrabber.h
@@ -334,13 +334,13 @@ private:
   // private:
   //#ifndef DOXYGEN_SHOULD_SKIP_THIS
   //  vp1394TwoGrabber(const vp1394TwoGrabber &)
-  //    : camera(NULL), cameras(NULL), num_cameras(0), camera_id(0),
-  //    verbose(false), camIsOpen(NULL),
+  //    : camera(nullptr), cameras(nullptr), num_cameras(0), camera_id(0),
+  //    verbose(false), camIsOpen(nullptr),
   //      num_buffers(4), // ring buffer size
-  //      isDataModified(NULL), initialShutterMode(NULL), dataCam(NULL)
+  //      isDataModified(nullptr), initialShutterMode(nullptr), dataCam(nullptr)
   //    #ifdef VISP_HAVE_DC1394_CAMERA_ENUMERATE // new API >
-  //    libdc1394-2.0.0-rc7 , d(NULL),
-  //      list(NULL)
+  //    libdc1394-2.0.0-rc7 , d(nullptr),
+  //      list(nullptr)
   //    #endif
   //  {
   //    throw vpException(vpException::functionNotImplementedError,"Not

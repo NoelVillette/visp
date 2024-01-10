@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +29,7 @@
  *
  * Description:
  * Ransac robust algorithm.
- *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+ */
 
 /*!
   \file vpRansac.h
@@ -74,7 +69,7 @@ template <class vpTransformation> class vpRansac
 public:
   static bool ransac(unsigned int npts, const vpColVector &x, unsigned int s, double t, vpColVector &model,
                      vpColVector &inliers, int consensus = 1000, double not_used = 0.0, int maxNbumbersOfTrials = 10000,
-                     double *residual = NULL);
+                     double *residual = nullptr);
 };
 
 /*!
@@ -136,14 +131,13 @@ bool vpRansac<vpTransformation>::ransac(unsigned int npts, const vpColVector &x,
   int bestscore = -1;
   double N = 1; // Dummy initialisation for number of trials.
 
-  vpUniRand random((const long)time(NULL));
+  vpUniRand random((const long)time(nullptr));
   vpColVector bestinliers;
   unsigned int *ind = new unsigned int[s];
-  int numiter = 0;
   int ninliers = 0;
 
   while ((N > trialcount) && (consensus > bestscore)) {
-    // Select at random s datapoints to form a trial model, M.
+    // Select at random s data points to form a trial model, M.
     // In selecting these points we have to check that they are not in
     // a degenerate configuration.
 
@@ -165,7 +159,7 @@ bool vpRansac<vpTransformation>::ransac(unsigned int npts, const vpColVector &x,
       if (count > maxDataTrials) {
         delete[] ind;
         vpERROR_TRACE("Unable to select a nondegenerate data set");
-        throw(vpException(vpException::fatalError, "Unable to select a nondegenerate data set"));
+        throw(vpException(vpException::fatalError, "Unable to select a non degenerate data set"));
         // return false; //Useless after a throw() function
       }
     }
@@ -177,7 +171,7 @@ bool vpRansac<vpTransformation>::ransac(unsigned int npts, const vpColVector &x,
     vpTransformation::computeResidual(x, M, d);
 
     // Find the indices of points that are inliers to this model.
-    if (residual != NULL)
+    if (residual != nullptr)
       *residual = 0.0;
     ninliers = 0;
     for (unsigned int i = 0; i < npts; i++) {
@@ -185,7 +179,7 @@ bool vpRansac<vpTransformation>::ransac(unsigned int npts, const vpColVector &x,
       if (resid < t) {
         inliers[i] = 1;
         ninliers++;
-        if (residual != NULL) {
+        if (residual != nullptr) {
           *residual += fabs(d[i]);
         }
       } else
@@ -217,7 +211,6 @@ bool vpRansac<vpTransformation>::ransac(unsigned int npts, const vpColVector &x,
       vpTRACE("ransac reached the maximum number of %d trials", maxTrials);
       break;
     }
-    numiter++;
   }
 
   if (solutionFind == true) // We got a solution
@@ -229,7 +222,7 @@ bool vpRansac<vpTransformation>::ransac(unsigned int npts, const vpColVector &x,
     M = 0;
   }
 
-  if (residual != NULL) {
+  if (residual != nullptr) {
     if (ninliers > 0) {
       *residual /= ninliers;
     }

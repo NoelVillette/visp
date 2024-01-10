@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Test image I/O for EXR file format.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example testIoEXR.cpp
@@ -41,7 +41,9 @@
 
 #include <visp3/core/vpConfig.h>
 
-#if defined(VISP_HAVE_CATCH2) && (VISP_HAVE_DATASET_VERSION >= 0x030600)
+// EXR format is only supported when OpenCV or TinyEXR 3rd parties are available
+#if defined(VISP_HAVE_CATCH2) && (VISP_HAVE_DATASET_VERSION >= 0x030600) && \
+    defined(HAVE_OPENCV_IMGCODECS) && defined(VISP_HAVE_TINYEXR)
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 
@@ -78,77 +80,79 @@ void checkGrayImages(const vpImage<float> &I1, const vpImage<float> &I2,
 #endif
 } // namespace
 
-TEST_CASE("EXR image read", "[exr_image_io]"){
+TEST_CASE("EXR image read", "[exr_image_io]")
+{
 // Disable the tests if big endian for now.
 // See: https://github.com/syoyo/tinyexr/issues/189#issuecomment-1465174904
 #ifdef VISP_LITTLE_ENDIAN
-    SECTION("Color"){const std::string imgPathRef = vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(),
-                                                                              "memorial/memorial_color_LSB.pfm");
-REQUIRE(vpIoTools::checkFilename(imgPathRef));
+  SECTION("Color")
+  {
+    const std::string imgPathRef = vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_LSB.pfm");
+    REQUIRE(vpIoTools::checkFilename(imgPathRef));
 
-vpImage<vpRGBf> I_ref;
-vpImageIo::readPFM_HDR(I_ref, imgPathRef);
-CHECK(I_ref.getSize() > 0);
+    vpImage<vpRGBf> I_ref;
+    vpImageIo::readPFM_HDR(I_ref, imgPathRef);
+    CHECK(I_ref.getSize() > 0);
 
-SECTION("32-bits")
-{
-  const std::string imgPath =
-      vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_32bits.exr");
-  REQUIRE(vpIoTools::checkFilename(imgPath));
+    SECTION("32-bits")
+    {
+      const std::string imgPath =
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_32bits.exr");
+      REQUIRE(vpIoTools::checkFilename(imgPath));
 
-  vpImage<vpRGBf> I;
-  vpImageIo::readEXR(I, imgPath);
-  CHECK(I.getSize() > 0);
-  checkColorImages(I_ref, I);
-}
+      vpImage<vpRGBf> I;
+      vpImageIo::readEXR(I, imgPath);
+      CHECK(I.getSize() > 0);
+      checkColorImages(I_ref, I);
+    }
 
-SECTION("16-bits")
-{
-  const std::string imgPath =
-      vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_16bits.exr");
-  REQUIRE(vpIoTools::checkFilename(imgPath));
+    SECTION("16-bits")
+    {
+      const std::string imgPath =
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_16bits.exr");
+      REQUIRE(vpIoTools::checkFilename(imgPath));
 
-  vpImage<vpRGBf> I;
-  vpImageIo::readEXR(I, imgPath);
-  CHECK(I.getSize() > 0);
-  checkColorImages(I_ref, I, 0.00097656f);
-}
-}
+      vpImage<vpRGBf> I;
+      vpImageIo::readEXR(I, imgPath);
+      CHECK(I.getSize() > 0);
+      checkColorImages(I_ref, I, 0.00097656f);
+    }
+  }
 
-SECTION("Gray")
-{
-  const std::string imgPathRef =
+  SECTION("Gray")
+  {
+    const std::string imgPathRef =
       vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_LSB.pfm");
-  REQUIRE(vpIoTools::checkFilename(imgPathRef));
+    REQUIRE(vpIoTools::checkFilename(imgPathRef));
 
-  vpImage<float> I_ref;
-  vpImageIo::readPFM_HDR(I_ref, imgPathRef);
-  CHECK(I_ref.getSize() > 0);
+    vpImage<float> I_ref;
+    vpImageIo::readPFM_HDR(I_ref, imgPathRef);
+    CHECK(I_ref.getSize() > 0);
 
-  SECTION("32-bits")
-  {
-    const std::string imgPath =
+    SECTION("32-bits")
+    {
+      const std::string imgPath =
         vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_32bits.exr");
-    REQUIRE(vpIoTools::checkFilename(imgPath));
+      REQUIRE(vpIoTools::checkFilename(imgPath));
 
-    vpImage<float> I;
-    vpImageIo::readEXR(I, imgPath);
-    CHECK(I.getSize() > 0);
-    checkGrayImages(I_ref, I);
-  }
+      vpImage<float> I;
+      vpImageIo::readEXR(I, imgPath);
+      CHECK(I.getSize() > 0);
+      checkGrayImages(I_ref, I);
+    }
 
-  SECTION("16-bits")
-  {
-    const std::string imgPath =
+    SECTION("16-bits")
+    {
+      const std::string imgPath =
         vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_16bits.exr");
-    REQUIRE(vpIoTools::checkFilename(imgPath));
+      REQUIRE(vpIoTools::checkFilename(imgPath));
 
-    vpImage<float> I;
-    vpImageIo::readEXR(I, imgPath);
-    CHECK(I.getSize() > 0);
-    checkGrayImages(I_ref, I, 0.00097656f);
+      vpImage<float> I;
+      vpImageIo::readEXR(I, imgPath);
+      CHECK(I.getSize() > 0);
+      checkGrayImages(I_ref, I, 0.00097656f);
+    }
   }
-}
 #endif
 }
 
@@ -163,7 +167,7 @@ TEST_CASE("EXR image write", "[exr_image_io]")
   SECTION("Color")
   {
     const std::string imgPath =
-        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_32bits.exr");
+      vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_color_32bits.exr");
     REQUIRE(vpIoTools::checkFilename(imgPath));
 
     vpImage<vpRGBf> I;
@@ -183,7 +187,7 @@ TEST_CASE("EXR image write", "[exr_image_io]")
   SECTION("Gray")
   {
     const std::string imgPath =
-        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_32bits.exr");
+      vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "memorial/memorial_gray_32bits.exr");
     REQUIRE(vpIoTools::checkFilename(imgPath));
 
     vpImage<float> I;

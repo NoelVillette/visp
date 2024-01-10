@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Interface for the Irisa's Afma6 robot.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef _vpAfma6_h
 #define _vpAfma6_h
@@ -43,7 +40,7 @@
 
   \file vpAfma6.h
 
-  Modelisation of Irisa's gantry robot named Afma6.
+  Modelization of Irisa's gantry robot named Afma6.
 
 */
 
@@ -53,9 +50,9 @@
 
   \ingroup group_robot_real_gantry group_robot_simu_gantry
 
-  \brief Modelisation of Irisa's gantry robot named Afma6.
+  \brief Modelization of Irisa's gantry robot named Afma6.
 
-  In this modelisation, different frames have to be considered.
+  In this modelization, different frames have to be considered.
 
   - \f$ {\cal F}_f \f$: the reference frame, also called world frame
 
@@ -81,7 +78,7 @@ public:
 #ifdef VISP_HAVE_AFMA6_DATA
   //! File where constant parameters in relation with the robot are stored:
   //! joint max, min, coupling factor between 4 ant 5 joint, distance between
-  //! 5 and 6 joint, tranformation eMc between end-effector and camera frame.
+  //! 5 and 6 joint, transformation eMc between end-effector and camera frame.
   static const std::string CONST_AFMA6_FILENAME;
   static const std::string CONST_EMC_CCMOP_WITHOUT_DISTORTION_FILENAME;
   static const std::string CONST_EMC_CCMOP_WITH_DISTORTION_FILENAME;

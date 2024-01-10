@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Example of dot tracking.
  *
- *****************************************************************************/
+*****************************************************************************/
 /*!
   \file trackDot2.cpp
 
@@ -127,8 +127,8 @@ OPTIONS:                                               Default\n\
      Step between two images.\n\
 \n\
   -c\n\
-     Disable the mouse click. Useful to automaze the \n\
-     execution of this program without humain intervention.\n\
+     Disable the mouse click. Useful to automate the \n\
+     execution of this program without human intervention.\n\
 \n\
   -d \n\
      Turn off the display.\n\
@@ -187,7 +187,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath, std::string &pp
       step = (unsigned)atoi(optarg_);
       break;
     case 'h':
-      usage(argv[0], NULL, ipath, ppath, first, last, step);
+      usage(argv[0], nullptr, ipath, ppath, first, last, step);
       return false;
       break;
 
@@ -200,7 +200,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath, std::string &pp
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL, ipath, ppath, first, last, step);
+    usage(argv[0], nullptr, ipath, ppath, first, last, step);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -249,7 +249,7 @@ int main(int argc, const char **argv)
       ipath = opt_ipath;
 
     // Compare ipath and env_ipath. If they differ, we take into account
-    // the input path comming from the command line option
+    // the input path coming from the command line option
     if (!opt_ipath.empty() && !env_ipath.empty() && opt_ppath.empty()) {
       if (ipath != env_ipath) {
         std::cout << std::endl << "WARNING: " << std::endl;
@@ -261,7 +261,7 @@ int main(int argc, const char **argv)
 
     // Test if an input path is set
     if (opt_ipath.empty() && env_ipath.empty() && opt_ppath.empty()) {
-      usage(argv[0], NULL, ipath, opt_ppath, opt_first, opt_last, opt_step);
+      usage(argv[0], nullptr, ipath, opt_ppath, opt_first, opt_last, opt_step);
       std::cerr << std::endl << "ERROR:" << std::endl;
       std::cerr << "  Use -i <visp image path> option or set VISP_INPUT_IMAGE_PATH " << std::endl
                 << "  environment variable to specify the location of the " << std::endl
@@ -329,13 +329,13 @@ int main(int argc, const char **argv)
     }
 
 // We open a window using either X11, GTK or GDI.
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
     vpDisplayX display;
-#elif defined VISP_HAVE_GTK
+#elif defined(VISP_HAVE_GTK)
     vpDisplayGTK display;
-#elif defined VISP_HAVE_GDI
+#elif defined(VISP_HAVE_GDI)
     vpDisplayGDI display;
-#elif defined VISP_HAVE_OPENCV
+#elif defined(HAVE_OPENCV_HIGHGUI)
     vpDisplayOpenCV display;
 #endif
 
@@ -345,7 +345,7 @@ int main(int argc, const char **argv)
       // Display the image
       // The image class has a member that specify a pointer toward
       // the display that has been initialized in the display declaration
-      // therefore is is no longuer necessary to make a reference to the
+      // therefore is is no longer necessary to make a reference to the
       // display variable.
       vpDisplay::display(I);
       vpDisplay::flush(I);
@@ -364,7 +364,7 @@ int main(int argc, const char **argv)
       // by using setGraphics, we request to see the all the pixel of the dot
       // in green on the screen.
       // It uses the overlay image plane.
-      // The default of this setting is that it is time consumming
+      // The default of this setting is that it is time consuming
 
       d.setGraphics(true);
     } else {
@@ -379,7 +379,7 @@ int main(int argc, const char **argv)
 
     // tracking is initalized if no other parameters are given to the
     // iniTracking(..) method a right mouse click on the dot is expected
-    // dot location can also be specified explicitely in the
+    // dot location can also be specified explicitly in the
     // initTracking method : d.initTracking(I,ip) where ip is the image
     // point from which the dot is searched
 
@@ -427,7 +427,7 @@ int main(int argc, const char **argv)
       // track the dot and returns its coordinates in the image
       // results are given in float since many many are usually considered
       //
-      // an expcetion is thrown by the track method if
+      // an exception is thrown by the track method if
       //  - dot is lost
 
       if (opt_display) {

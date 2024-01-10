@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,9 +34,8 @@
  * Authors:
  * Amaury Dame
  * Aurelien Yol
- * Fabien Spindler
  *
- *****************************************************************************/
+*****************************************************************************/
 #ifndef vpTemplateTrackerMIESM_hh
 #define vpTemplateTrackerMIESM_hh
 
@@ -53,8 +52,10 @@
 */
 class VISP_EXPORT vpTemplateTrackerMIESM : public vpTemplateTrackerMI
 {
+public:
   /*! Minimization method. */
-  typedef enum {
+  typedef enum
+  {
     USE_NEWTON, // not used
     USE_LMA,    // not used
     USE_GRADIENT,
@@ -97,9 +98,8 @@ public:
   //! Default constructor.
   vpTemplateTrackerMIESM()
     : vpTemplateTrackerMI(), minimizationMethod(USE_NEWTON), CompoInitialised(false), HDirect(), HInverse(),
-      HdesireDirect(), HdesireInverse(), GDirect(), GInverse()
-  {
-  }
+    HdesireDirect(), HdesireInverse(), GDirect(), GInverse()
+  { }
   explicit vpTemplateTrackerMIESM(vpTemplateTrackerWarp *_warp);
 
   void setMinimizationMethod(vpMinimizationTypeMIESM method) { minimizationMethod = method; }

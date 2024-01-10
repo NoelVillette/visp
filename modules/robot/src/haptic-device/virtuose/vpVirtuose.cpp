@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description: Class which enables to project an image in the 3D space
  * and get the view of a virtual camera.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpVirtuose.cpp
@@ -52,7 +49,7 @@
  * Authorize indexing on all movements by default.
  */
 vpVirtuose::vpVirtuose()
-  : m_virtContext(NULL), m_ip_port("localhost#5000"), m_verbose(false), m_apiMajorVersion(0), m_apiMinorVersion(0),
+  : m_virtContext(nullptr), m_ip_port("localhost#5000"), m_verbose(false), m_apiMajorVersion(0), m_apiMinorVersion(0),
     m_ctrlMajorVersion(0), m_ctrlMinorVersion(0), m_typeCommand(COMMAND_TYPE_IMPEDANCE), m_indexType(INDEXING_ALL),
     m_is_init(false), m_period(0.001f), m_njoints(6)
 {
@@ -65,9 +62,9 @@ vpVirtuose::vpVirtuose()
  */
 void vpVirtuose::close()
 {
-  if (m_virtContext != NULL) {
+  if (m_virtContext != nullptr) {
     virtClose(m_virtContext);
-    m_virtContext = NULL;
+    m_virtContext = nullptr;
   }
 }
 
@@ -541,7 +538,7 @@ void vpVirtuose::init()
   if (!m_is_init) {
     m_virtContext = virtOpen(m_ip_port.c_str());
 
-    if (m_virtContext == NULL) {
+    if (m_virtContext == nullptr) {
       int err = virtGetErrorCode(m_virtContext);
       throw(vpException(vpException::fatalError,
                         "Cannot open communication with haptic device using %s: %s. Check ip and port values",

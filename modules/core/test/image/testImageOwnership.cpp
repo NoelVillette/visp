@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Test vpImage ownership
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpImage.h>
 
@@ -138,7 +138,6 @@ int main(int /* argc */, const char ** /* argv */)
 
       delete[] bitmap;
     }
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
     {
       unsigned char *bitmap = new unsigned char[12];
       vpImage<unsigned char> I = std::move(vpImage<unsigned char>(bitmap, 3, 4, false));
@@ -157,8 +156,8 @@ int main(int /* argc */, const char ** /* argv */)
       }
       delete[] bitmap;
     }
-#endif
-  } catch (const std::exception &e) {
+  }
+  catch (const std::exception &e) {
     std::cerr << "Exception: " << e.what() << std::endl;
     return EXIT_FAILURE;
   }

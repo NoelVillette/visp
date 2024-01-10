@@ -1,7 +1,7 @@
 #############################################################################
 #
 # ViSP, open source Visual Servoing Platform software.
-# Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+# Copyright (C) 2005 - 2023 by Inria. All rights reserved.
 #
 # This software is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # GPL, please contact Inria about acquiring a ViSP Professional
 # Edition License.
 #
-# See http://visp.inria.fr for more information.
+# See https://visp.inria.fr for more information.
 #
 # This software was developed at:
 # Inria Rennes - Bretagne Atlantique
@@ -30,9 +30,6 @@
 #
 # Description:
 # ViSP overall configuration file. Detect third party libraries (X11, GTK, ...)
-#
-# Authors:
-# Fabien Spindler
 #
 #############################################################################
 
@@ -81,7 +78,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
 
-cmake_minimum_required(VERSION 3.0) # needs to be before project() for policy CMP0025
+cmake_minimum_required(VERSION 3.5) # needs to be before project() for policy CMP0025
 
 # Detect if the toolchain is for Aldebaran naoqi
 if(CMAKE_TOOLCHAIN_FILE AND I_AM_A_ROBOT)
@@ -139,7 +136,7 @@ endif()
 #-----------------------------------------------------------------------------
 # VISP version number.  An even minor number corresponds to releases.
 set(VISP_VERSION_MAJOR "3")
-set(VISP_VERSION_MINOR "5")
+set(VISP_VERSION_MINOR "6")
 set(VISP_VERSION_PATCH "1")
 set(VISP_VERSION "${VISP_VERSION_MAJOR}.${VISP_VERSION_MINOR}.${VISP_VERSION_PATCH}")
 set(VISP_SOVERSION "${VISP_VERSION_MAJOR}.${VISP_VERSION_MINOR}")
@@ -175,7 +172,7 @@ include(cmake/PCLTools.cmake)
 #----------------------------------------------------------------------
 include(cmake/VISPDetectPlatform.cmake)
 
-# where to install the library and headers
+# Where to install the library and headers
 if(ANDROID)
   # Where to build modules
   set(LIBRARY_OUTPUT_PATH                 "${VISP_BINARY_DIR}/lib/${ANDROID_NDK_ABI_NAME}")
@@ -275,6 +272,39 @@ if(NOT IOS)
   include(cmake/VISPDetectPython.cmake)
 endif()
 
+if(CMAKE_VERSION VERSION_LESS "3.19.0")
+  set(CMAKE_NOT_OK_FOR_BINDINGS TRUE)
+else()
+  set(CMAKE_NOT_OK_FOR_BINDINGS FALSE)
+endif()
+
+if(CMAKE_NOT_OK_FOR_BINDINGS)
+  status("${CMAKE_NOT_OK_FOR_BINDINGS}")
+  status("CMake version required for Python bindings is 3.19.0, but you have ${CMAKE_VERSION}. Python bindings generation will be deactivated")
+endif()
+
+# --- Python Bindings requirements ---
+
+# this avoids non-active conda from getting picked anyway on Windows
+#set(Python_FIND_REGISTRY LAST)
+# Use environment variable PATH to decide preference for Python
+#set(Python_FIND_VIRTUALENV FIRST)
+#set(Python_FIND_STRATEGY LOCATION)
+
+#find_package(Python 3.7 COMPONENTS Interpreter Development) # TODO: use visp function to find python?
+#if(Python_FOUND)
+#  set(VISP_PYTHON_BINDINGS_EXECUTABLE "${Python_EXECUTABLE}")
+#endif()
+#find_package(pybind11)
+VP_OPTION(USE_PYBIND11       pybind11       QUIET    "Include pybind11 to create Python bindings" "" ON)
+
+#if(pybind11_FOUND)
+#  set(VISP_PYBIND11_DIR "${pybind11_DIR}")
+#endif()
+#message("${pybind11_FOUND}")
+# ---
+
+
 include_directories(${VISP_INCLUDE_DIR})
 
 #----------------------------------------------------------------------
@@ -284,7 +314,7 @@ VP_OPTION(ENABLE_SSE2  "" "" "Enable SSE2 instructions"  "" ON IF ((MSVC OR CMAK
 VP_OPTION(ENABLE_SSE3  "" "" "Enable SSE3 instructions"  "" ON IF ((MSVC OR CMAKE_COMPILER_IS_GNUCXX) AND (X86 OR X86_64)) )
 VP_OPTION(ENABLE_SSSE3 "" "" "Enable SSSE3 instructions" "" ON IF ((MSVC OR CMAKE_COMPILER_IS_GNUCXX) AND (X86_64)) ) # X86 disabled since it produces an issue on Debian i386
 if(X86_64)
-  VP_OPTION(ENABLE_AVX   "" "" "Enable AVX instructions"   "" OFF) # should be explicitely enabled, used in matrix transpose code
+  VP_OPTION(ENABLE_AVX   "" "" "Enable AVX instructions"   "" OFF) # should be explicitly enabled, used in matrix transpose code
 endif()
 
 #----------------------------------------------------------------------
@@ -333,12 +363,13 @@ endif()
 # add the path to detect Ogre3D
 if(WIN32)
   list(APPEND CMAKE_MODULE_PATH "${OGRE_DIR}/cmake")
-  list(APPEND CMAKE_MODULE_PATH "${OGRE_DIR}/CMake")
+  list(APPEND CMAKE_MODULE_PATH "${OGRE_DIR}")
 endif(WIN32)
 
 if(UNIX)
   list(APPEND CMAKE_MODULE_PATH "${OGRE_DIR}/cmake")
   list(APPEND CMAKE_MODULE_PATH "${OGRE_DIR}/CMake")
+  list(APPEND CMAKE_MODULE_PATH "${OGRE_DIR}")
   list(APPEND CMAKE_MODULE_PATH "/usr/local/lib/OGRE/cmake")
   list(APPEND CMAKE_MODULE_PATH "/usr/lib/OGRE/cmake")
   list(APPEND CMAKE_MODULE_PATH "/usr/local/lib64/OGRE/cmake")
@@ -384,39 +415,14 @@ if(WIN32)
   endif()
 endif()
 
-# Add library ws2_32.a or ws2_32.lib for vpNetwork class
 if(WIN32 AND NOT CYGWIN)
-  if(MINGW)
-    set(WS2_32_LIBRARY "ws2_32.a")
-    check_library_exists(${WS2_32_LIBRARY} getch "" HAVE_LIBWS2_32) # for inet_ntoa() and socket functionalities
-    if(HAVE_LIBWS2_32)
-      list(APPEND VISP_LINKER_LIBS ${WS2_32_LIBRARY})
-    else()
-      find_library(HAVE_LIBWS2_32 ${WS2_32_LIBRARY}
-        "$ENV{MINGW_DIR}/lib"
-        "$ENV{MINGW_DIR}/mingw/lib"
-        C:/mingw/mingw/lib)
-      if(HAVE_LIBWS2_32)
-        list(APPEND VISP_LINKER_LIBS "${WS2_32_LIBRARY}")
-      endif()
-    endif()
-  elseif(WINRT)
-    # Since check_library_exists() and find_library() does't work to detect ws2_32.lib we add the lib that is part of Windows SDK
-    set(WS2_32_LIBRARY "ws2_32.lib")
-    list(APPEND VISP_LINKER_LIBS  ${WS2_32_LIBRARY})
-  else() # pure WIN32
-    set(WS2_32_LIBRARY "ws2_32.lib")
-    #check_library_exists("ws2_32.lib" getch "" HAVE_LIBWS2_32) # for inet_ntoa() and socket functionalities
-    check_library_exists(${WS2_32_LIBRARY} getch "" HAVE_LIBWS2_32) # for inet_ntoa() and socket functionalities
-    if(HAVE_LIBWS2_32)
-      list(APPEND VISP_LINKER_LIBS ${WS2_32_LIBRARY})
-    endif()
-  endif()
-  mark_as_advanced(HAVE_LIBWS2_32)
+  VP_CHECK_PACKAGE(WS2_32)
+  # Should be before include(cmake/VISPDetectCXXStandard.cmake)
+  VP_CHECK_FUNCTION_EXISTS(inet_ntop "${WS2_32_LIBRARY}")
+else()
+  # Should be before include(cmake/VISPDetectCXXStandard.cmake)
+  VP_CHECK_FUNCTION_EXISTS(inet_ntop "")
 endif()
-
-# Should be before include(cmake/VISPDetectCXXStandard.cmake)
-VP_CHECK_FUNCTION_EXISTS(inet_ntop "${VISP_LINKER_LIBS}")
 
 #--------------------------------------------------------------------
 # Option management
@@ -424,6 +430,8 @@ VP_CHECK_FUNCTION_EXISTS(inet_ntop "${VISP_LINKER_LIBS}")
 
 # Choose static or shared libraries.
 VP_OPTION(BUILD_SHARED_LIBS  "" "" "Build ViSP shared libraries (.dll/.so) instead of static ones (.lib/.a)" "" NOT (ANDROID OR APPLE_FRAMEWORK))
+# Build apps as an option.
+VP_OPTION(BUILD_APPS "" "" "Build utility applications (used for example for calibration)" "" (NOT ANDROID AND NOT WINRT AND NOT APPLE_FRAMEWORK) )
 # Build examples as an option.
 VP_OPTION(BUILD_EXAMPLES  "" "" "Build ViSP examples" "" ON)
 # Build examples as an option.
@@ -437,6 +445,11 @@ VP_OPTION(BUILD_ANDROID_SERVICE   "" "" "Build ViSP Manager for Google Play"    
 VP_OPTION(BUILD_ANDROID_PROJECTS  "" "" "Build Android projects providing .apk files" "" ON  IF ANDROID )
 VP_OPTION(BUILD_ANDROID_EXAMPLES  "" "" "Build examples for Android platform"         "" ON  IF ANDROID )
 VP_OPTION(INSTALL_ANDROID_EXAMPLES "" "" "Install Android examples"  ""                  OFF IF ANDROID )
+
+# Build python bindings as an option
+VP_OPTION(BUILD_PYTHON_BINDINGS  "" "" "Build Python bindings" "" ON IF (PYTHON3INTERP_FOUND AND USE_PYBIND11 AND NOT CMAKE_NOT_OK_FOR_BINDINGS) )
+VP_OPTION(BUILD_PYTHON_BINDINGS_DOC  "" "" "Build the documentation for the Python bindings" "" ON IF BUILD_PYTHON_BINDINGS )
+
 
 # Build demos as an option.
 VP_OPTION(BUILD_DEMOS  "" "" "Build ViSP demos" "" ON)
@@ -573,19 +586,18 @@ if(SOQT_FOUND) # SoQt < 1.6.0 that depends on Qt4 was found. We need an explicit
   VP_OPTION(USE_QT        Qt          ""    "Include Coin/SoQt/Qt support" "" ON  IF USE_SOQT AND NOT WINRT AND NOT IOS)
 endif()
 VP_OPTION(USE_SOXT        SOXT        ""    "Include Coin/SoXt support"    "" OFF IF USE_COIN3D AND NOT WINRT AND NOT IOS)
-if (ANDROID)
-  VP_OPTION(USE_PTHREAD     Threads     ""    "Include pthread support"      "" ON)
-else()
-  VP_OPTION(USE_PTHREAD     PTHREAD     ""    "Include pthread support"      "" ON)
-endif()
-# We need threads with c++11
-if((VISP_CXX_STANDARD GREATER VISP_CXX_STANDARD_98) AND NOT USE_PTHREAD)
-  if(Threads_FOUND OR PTHREAD_FOUND)
-    message(WARNING "We need threads. Turn USE_PTHREAD=ON.")
-    unset(USE_PTHREAD)
-    set(USE_PTHREAD ON CACHE BOOL "Include pthread support" FORCE)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+VP_OPTION(USE_THREADS     Threads     ""    "Include std::thread support"      "" ON IF NOT (WIN32 OR MINGW))
+
+# We need threads. To be changed to make threads optional
+if(NOT USE_THREADS)
+  if(Threads_FOUND)
+    message(WARNING "We need std::thread. We turn USE_THREADS=ON.")
+    unset(USE_THREADS)
+    set(USE_THREADS ON CACHE BOOL "Include std::thread support" FORCE)
   endif()
 endif()
+
 VP_OPTION(USE_XML2        XML2        ""    "Include xml support"          "" ON IF NOT WINRT)
 if(CMAKE_TOOLCHAIN_FILE)
   # Find opencv2.framework for ios and naoqi
@@ -610,42 +622,12 @@ VP_OPTION(USE_ZBAR        ZBAR         ""    "Include zbar support"         "" O
 VP_OPTION(USE_DMTX        DMTX         ""    "Include dmtx support"         "" ON IF NOT WINRT AND NOT IOS)
 VP_OPTION(USE_PCL         PCL          QUIET "Include Point Cloud Library support" "" ON IF NOT WINRT AND NOT IOS)
 VP_OPTION(USE_TENSORRT    TensorRT     ""    "Include TensorRT support"     "" ON IF NOT WINRT AND NOT IOS)
+VP_OPTION(USE_NLOHMANN_JSON  nlohmann_json QUIET "Include nlohmann json support" "" ON)
 
 # ----------------------------------------------------------------------------
 # Handle cxx standard depending on specific 3rd parties. Should be before module parsing and VISP3rdParty.cmake include
 # ----------------------------------------------------------------------------
-# if c++ standard is not at leat c++11, force 3rd parties that require at least c++11 to OFF
-if(VISP_CXX_STANDARD LESS VISP_CXX_STANDARD_11)
-  if(USE_REALSENSE)
-     message(WARNING "librealsense 3rd party was detected and needs at least c++11 standard compiler flag while you have set c++${USE_CXX_STANDARD}. Thus we disable librealsense usage turning USE_REALSENSE=OFF.")
-     unset(USE_REALSENSE)
-     set(USE_REALSENSE OFF CACHE BOOL "Include RealSense SDK support" FORCE)
-  endif()
-  if(USE_REALSENSE2)
-     message(WARNING "librealsense2 3rd party was detected and needs at least c++11 standard compiler flag while you have set c++${USE_CXX_STANDARD}. Thus we disable librealsense2 usage turning USE_REALSENSE2=OFF.")
-     unset(USE_REALSENSE2)
-     set(USE_REALSENSE2 OFF CACHE BOOL "Include RealSense2 SDK support" FORCE)
-  endif()
-  if(USE_FRANKA)
-     message(WARNING "libfranka 3rd party was detected and needs at least c++11 standard compiler flag while you have set c++${USE_CXX_STANDARD}. Thus we disable libfranka usage turning USE_FRANKA=OFF.")
-     unset(USE_FRANKA)
-     set(USE_FRANKA OFF CACHE BOOL "Include libfranka SDK support for Franka Emika robots" FORCE)
-  endif()
-  if(USE_UR_RTDE)
-    message(WARNING "ur_rtde 3rd party was detected and needs at least c++11 standard compiler flag while you have set c++${USE_CXX_STANDARD}. Thus we disable ur_rtde usage turning USE_UR_RTDE=OFF.")
-    unset(USE_UR_RTDE)
-    set(USE_UR_RTDE OFF CACHE BOOL "Include ur_rtde SDK support for Universal Robots robots" FORCE)
-  endif()
-  if((OpenCV_VERSION VERSION_GREATER 4.0.0) OR (OpenCV_VERSION VERSION_EQUAL 4.0.0))
-    # if c++ standard is not at least 11: disable opencv 4.x usage
-    message(WARNING "OpenCV ${OpenCV_VERSION} 3rd party was detected and needs c++11 or higher compiler flag while you have set c++${USE_CXX_STANDARD}. Thus we disable OpenCV usage turning USE_OPENCV=OFF")
-    unset(USE_OPENCV)
-    set(USE_OPENCV OFF CACHE BOOL "Include OpenCV support" FORCE)
-  endif()
-  # Downgrade to cxx98 to completely disable cxx11
-  unset(CMAKE_CXX_STANDARD)
-endif()
-
+# if c++ standard is not at leat c++17, force 3rd parties that require at least c++17 to OFF
 if(VISP_CXX_STANDARD LESS VISP_CXX_STANDARD_17)
   if(USE_MAVSDK)
     message(WARNING "mavsdk 3rd party was detected and needs at least c++17 standard compiler flag while you have set c++${USE_CXX_STANDARD}. Thus we disable MAVSDK usage turning USE_MAVSDK=OFF.")
@@ -656,6 +638,16 @@ endif()
 
 # Upgrade c++ standard to 14 for pcl 1.9.1.99 that enables by default c++ 14 standard
 if(USE_PCL)
+  # PCL is used in modules gui, sensor and mbt.
+  # In these modules we cannot directly use PCL_INCLUDE_DIRS and PCL_LIBRARIES using:
+  #   list(APPEND opt_incs ${PCL_INCLUDE_DIRS})
+  #   list(APPEND opt_libs ${PCL_LIBRARIES})
+  # Using PCL_LIBRARIES works to build visp libraries, embedded examples, demos, tests and tutorials thanks to the
+  # components. But when examples, demos, tests and tutorials are build outside ViSP workspace as independent projects
+  # that are using ViSP as 3rd-party we lead to build issues due to VTK headers and libraries that are not found.
+  # That's why here, we are using vp_find_pcl() macro that will set PCL_DEPS_INCLUDE_DIRS and PCL_DEPS_LIBRARIES
+  # that contains also VTK material location.
+  vp_find_pcl(PCL_LIBRARIES PCL_DEPS_INCLUDE_DIRS PCL_DEPS_LIBRARIES)
   if(PCL_VERSION VERSION_GREATER 1.9.1)
     # pcl > 1.9.1 requires c++14
     # if c++14 option is OFF, force to c++14
@@ -683,9 +675,9 @@ endif()
 # ----------------------------------------------------------------------------
 # Build-in 3rd parties. Should be after c++ standard potential modification
 # ----------------------------------------------------------------------------
-VP_OPTION(WITH_PTHREAD    ""           ""    "Build pthread as built-in library"   "" ON IF (NOT USE_PTHREAD) AND (WIN32 OR MINGW) AND (NOT WINRT_8_1) AND (NOT WINRT_8_0))
+VP_OPTION(WITH_PTHREAD    ""           ""    "Build pthread as built-in library"   "" ON IF (NOT USE_THREADS) AND (WIN32 OR MINGW) AND (NOT WINRT))
 # Since C99 is not supported by MSVC 2010 or prior, we disable apriltag if MSVC < 2012
-VP_OPTION(WITH_APRILTAG   ""           ""    "Build AprilTag as built-in library"  "" ON IF (USE_PTHREAD OR WITH_PTHREAD) AND (NOT WINRT_8_1) AND (NOT WINRT_8_0) AND (NOT MSVC_VERSION LESS 1700))
+VP_OPTION(WITH_APRILTAG   ""           ""    "Build AprilTag as built-in library"  "" ON IF (USE_THREADS OR WITH_PTHREAD) AND (NOT WINRT) AND (NOT MSVC_VERSION LESS 1700))
 VP_OPTION(WITH_APRILTAG_BIG_FAMILY ""  ""    "Build AprilTag big family (41h12, 48h12, 49h12, 52h13)" "" OFF IF WITH_APRILTAG)
 VP_OPTION(WITH_ATIDAQ     ""           ""    "Build atidaq-c as built-in library"  "" ON IF USE_COMEDI AND NOT WINRT)
 VP_OPTION(WITH_CLIPPER    ""           ""    "Build clipper as built-in library"   "" ON IF USE_OPENCV)
@@ -693,6 +685,11 @@ VP_OPTION(WITH_LAPACK     ""           ""    "Build lapack as built-in library" 
 VP_OPTION(WITH_QBDEVICE   ""           ""    "Build qbdevice-api as built-in library" "" ON IF (VISP_CXX_STANDARD GREATER VISP_CXX_STANDARD_98) AND (NOT WINRT) AND (NOT IOS))
 VP_OPTION(WITH_TAKKTILE2  ""           ""    "Build Right Hand takktile2 driver as built-in library"   "" ON IF (VISP_CXX_STANDARD GREATER VISP_CXX_STANDARD_98) AND (NOT WIN32) AND (NOT WINRT) AND (NOT IOS) AND (NOT ANDROID))
 VP_OPTION(WITH_CATCH2     ""           ""    "Use catch2" "" ON IF (VISP_CXX_STANDARD GREATER VISP_CXX_STANDARD_98))
+VP_OPTION(WITH_POLOLU     ""           ""    "Build rapa pololu as built-in library" "" ON IF (NOT WINRT) AND (NOT IOS) AND (NOT ANDROID))
+VP_OPTION(WITH_PUGIXML    ""           ""    "Use pugixml built-in third-party" "" ON)
+VP_OPTION(WITH_SIMDLIB    ""           ""    "Use simdlib built-in third-party" "" ON)
+VP_OPTION(WITH_STBIMAGE   ""           ""    "Use std_image built-in third-party" "" ON)
+VP_OPTION(WITH_TINYEXR    ""           ""    "Use tinyexr built-in third-party" "" ON)
 
 # ----------------------------------------------------------------------------
 # Check for specific functions. Should be after cxx standard detection in VISPDetectCXXStandard.cmake and potential modification depending on pcl, realsense2, libfranka
@@ -702,6 +699,7 @@ VP_CHECK_PACKAGE(IsInf)
 VP_CHECK_PACKAGE(Round)
 VP_CHECK_PACKAGE(Erfc)
 VP_CHECK_PACKAGE(Strtof)
+VP_CHECK_PACKAGE(IsFinite)
 VP_CHECK_PACKAGE(Log1p)
 
 #----------------------------------------------------------------------
@@ -774,8 +772,36 @@ if(DOXYGEN_FOUND)
     set(DOXYGEN_USE_MATHJAX "NO")
   endif()
 
+  # HTML version of the doc
+  set(DOXYGEN_GENERATE_HTML "YES")
+  set(DOXYGEN_GENERATE_XML "NO")
+  set(DOXYGEN_GENERATE_TEST_LIST "YES")
+  set(DOXYGEN_QUIET "NO")
+  set(DOXYGEN_INPUTS
+    "${VISP_SOURCE_DIR}/modules"
+    "${VISP_SOURCE_DIR}/example"
+    "${VISP_SOURCE_DIR}/tutorial"
+    "${VISP_SOURCE_DIR}/demo"
+    "${VISP_SOURCE_DIR}/doc"
+    "${VISP_BINARY_DIR}/doc"
+    "${VISP_CONTRIB_MODULES_PATH}"
+  )
+  string (REPLACE ";" " " DOXYGEN_INPUTS "${DOXYGEN_INPUTS}")
   configure_file(${VISP_SOURCE_DIR}/doc/config-doxygen.in
     ${VISP_DOC_DIR}/config-doxygen
+    @ONLY )
+
+  # XML version  of the doc
+  set(DOXYGEN_GENERATE_HTML "NO")
+  set(DOXYGEN_GENERATE_XML "YES")
+  set(DOXYGEN_GENERATE_TEST_LIST "NO")
+  set(DOXYGEN_QUIET "YES")
+  set(DOXYGEN_INPUTS
+    "${VISP_SOURCE_DIR}/modules"
+  )
+  string (REPLACE ";" " " DOXYGEN_INPUTS "${DOXYGEN_INPUTS}")
+  configure_file(${VISP_SOURCE_DIR}/doc/config-doxygen.in
+    ${VISP_DOC_DIR}/config-doxygen-xml
     @ONLY )
 
   # set vars used in mainpage.dox.in
@@ -870,6 +896,8 @@ if(BUILD_JAVA)
   endif()
 endif()
 
+
+
 if(ANDROID AND ANDROID_EXECUTABLE AND ANT_EXECUTABLE AND (ANT_VERSION VERSION_GREATER 1.7) AND (ANDROID_TOOLS_Pkg_Revision GREATER 13))
   SET(CAN_BUILD_ANDROID_PROJECTS TRUE)
 else()
@@ -914,10 +942,12 @@ VP_SET(VISP_HAVE_LAPACK_GSL      TRUE IF (BUILD_MODULE_visp_core AND USE_GSL))
 VP_SET(VISP_HAVE_LAPACK_MKL      TRUE IF (BUILD_MODULE_visp_core AND USE_MKL))
 VP_SET(VISP_HAVE_LAPACK_NETLIB   TRUE IF (BUILD_MODULE_visp_core AND USE_NETLIB))
 VP_SET(VISP_HAVE_LAPACK_OPENBLAS TRUE IF (BUILD_MODULE_visp_core AND USE_OPENBLAS))
-VP_SET(VISP_HAVE_PTHREAD     TRUE IF (BUILD_MODULE_visp_core AND USE_PTHREAD))
+VP_SET(VISP_HAVE_PTHREAD     TRUE IF (BUILD_MODULE_visp_core AND USE_THREADS)) # Keep for the momment for compat
+VP_SET(VISP_HAVE_THREADS     TRUE IF (BUILD_MODULE_visp_core AND USE_THREADS))
 VP_SET(VISP_HAVE_XML2        TRUE IF (BUILD_MODULE_visp_core AND USE_XML2))
 VP_SET(VISP_HAVE_PCL         TRUE IF (BUILD_MODULE_visp_core AND USE_PCL))
 VP_SET(VISP_HAVE_TENSORRT    TRUE IF (BUILD_MODULE_visp_core AND USE_TENSORRT))
+VP_SET(VISP_HAVE_NLOHMANN_JSON   TRUE IF (BUILD_MODULE_visp_core AND USE_NLOHMANN_JSON))
 
 VP_SET(VISP_HAVE_OGRE        TRUE IF (BUILD_MODULE_visp_ar AND USE_OGRE))
 VP_SET(VISP_HAVE_OIS         TRUE IF (BUILD_MODULE_visp_ar AND USE_OIS))
@@ -945,7 +975,7 @@ VP_SET(VISP_HAVE_ARSDK       TRUE IF (BUILD_MODULE_visp_robot AND USE_ARSDK))
 VP_SET(VISP_HAVE_FFMPEG      TRUE IF (BUILD_MODULE_visp_robot AND USE_FFMPEG))
 #VP_SET(VISP_HAVE_PIONEER     TRUE IF (BUILD_MODULE_visp_robot AND USE_ARIA))
 if(BUILD_MODULE_visp_robot AND USE_ARIA)
-  if(UNIX AND USE_PTHREAD AND RT_FOUND AND DL_FOUND)
+  if(UNIX AND USE_THREADS AND RT_FOUND AND DL_FOUND)
     set(VISP_HAVE_PIONEER TRUE)
   elseif(NOT UNIX)
     set(VISP_HAVE_PIONEER TRUE)
@@ -953,7 +983,7 @@ if(BUILD_MODULE_visp_robot AND USE_ARIA)
 endif()
 #VP_SET(VISP_HAVE_VIRTUOSE    TRUE IF (BUILD_MODULE_visp_robot AND USE_VIRTUOSE))
 if(BUILD_MODULE_visp_robot AND USE_VIRTUOSE)
-  if(UNIX AND USE_PTHREAD AND RT_FOUND AND DL_FOUND)
+  if(UNIX AND USE_THREADS AND RT_FOUND AND DL_FOUND)
     set(VISP_HAVE_VIRTUOSE TRUE)
   elseif(NOT UNIX)
     set(VISP_HAVE_VIRTUOSE TRUE)
@@ -981,7 +1011,12 @@ VP_SET(VISP_HAVE_APRILTAG    TRUE IF (BUILD_MODULE_visp_detection AND WITH_APRIL
 VP_SET(VISP_HAVE_APRILTAG_BIG_FAMILY TRUE IF (BUILD_MODULE_visp_detection AND WITH_APRILTAG AND WITH_APRILTAG_BIG_FAMILY))
 VP_SET(VISP_HAVE_QBDEVICE    TRUE IF (BUILD_MODULE_visp_robot AND WITH_QBDEVICE))
 VP_SET(VISP_HAVE_TAKKTILE2   TRUE IF (BUILD_MODULE_visp_robot AND WITH_TAKKTILE2))
+VP_SET(VISP_HAVE_POLOLU      TRUE IF (BUILD_MODULE_visp_robot AND WITH_POLOLU))
 VP_SET(VISP_HAVE_CATCH2      TRUE IF (BUILD_MODULE_visp_core AND WITH_CATCH2))
+VP_SET(VISP_HAVE_SIMDLIB     TRUE IF (BUILD_MODULE_visp_core AND WITH_SIMDLIB))
+VP_SET(VISP_HAVE_STBIMAGE    TRUE IF (BUILD_MODULE_visp_core AND WITH_STBIMAGE))
+VP_SET(VISP_HAVE_TINYEXR     TRUE IF (BUILD_MODULE_visp_core AND WITH_TINYEXR))
+VP_SET(VISP_HAVE_PUGIXML     TRUE IF (BUILD_MODULE_visp_core AND WITH_PUGIXML))
 
 VP_SET(VISP_HAVE_QUALISYS    TRUE IF (BUILD_MODULE_visp_sensor AND USE_QUALISYS))
 VP_SET(VISP_HAVE_VICON       TRUE IF (BUILD_MODULE_visp_sensor AND USE_VICON))
@@ -993,9 +1028,9 @@ VP_SET(VISP_HAVE_D3D9        TRUE IF USE_DIRECT3D) # for header vpConfig.h
 VP_SET(VISP_HAVE_GTK         TRUE IF USE_GTK2) # for header vpConfig.h
 VP_SET(VISP_HAVE_XRANDR      TRUE IF XRANDR) # for header vpConfig.h
 
-# Check if libfreenect dependencies (ie libusb-1.0 and libpthread) are available
-if(USE_LIBFREENECT AND USE_LIBUSB_1 AND USE_PTHREAD)
-  if(LIBFREENECT_FOUND AND LIBUSB_1_FOUND AND PTHREAD_FOUND)
+# Check if libfreenect dependencies (ie libusb-1.0 and threads) are available
+if(USE_LIBFREENECT AND USE_LIBUSB_1 AND USE_THREADS)
+  if(LIBFREENECT_FOUND AND LIBUSB_1_FOUND)
     set(VISP_HAVE_LIBFREENECT_AND_DEPENDENCIES TRUE)
 
     # The material is found. Check if libfreenect is an old version
@@ -1041,12 +1076,6 @@ if(USE_OPENCV)
   else()
     message(STATUS "opencv nonfree not found")
     set(VISP_HAVE_OPENCV_VERSION "(0)") # for vpConfig.h
-  endif()
-  if(OPENCV_DNN_FOUND)
-    set(VISP_HAVE_OPENCV_DNN TRUE)  # for header vpConfig.h
-  endif()
-  if(OPENCV_OBJDETECT_FOUND)
-    set(VISP_HAVE_OPENCV_OBJDETECT TRUE)  # for header vpConfig.h
   endif()
 endif()
 
@@ -1121,7 +1150,7 @@ endif()
 
 # libraries for Pioneer mobile robots
 if(USE_ARIA AND UNIX)
-  if(ARIA_FOUND AND USE_PTHREAD AND RT_FOUND AND DL_FOUND)
+  if(ARIA_FOUND AND USE_THREADS AND RT_FOUND AND DL_FOUND)
     set(VISP_HAVE_PIONEER TRUE) # for header vpConfig.h
   endif()
 elseif(USE_ARIA AND NOT UNIX)
@@ -1203,6 +1232,10 @@ set(VISP_DIR ${PROJECT_BINARY_DIR})
 mark_as_advanced(VISP_DIR)
 mark_as_advanced(VISP_INCLUDE_DIRS)
 
+if(BUILD_APPS)
+  add_subdirectory(apps)
+  vp_add_subdirectories(VISP_CONTRIB_MODULES_PATH apps)
+endif()
 if(BUILD_DEMOS)
   add_subdirectory(demo)
   vp_add_subdirectories(VISP_CONTRIB_MODULES_PATH demo)
@@ -1218,6 +1251,11 @@ endif()
 if(BUILD_APPS)
   vp_add_subdirectories(VISP_CONTRIB_MODULES_PATH apps)
 endif()
+if(BUILD_PYTHON_BINDINGS)
+  add_subdirectory(modules/python)
+endif()
+
+
 
 # ----------------------------------------------------------------------------
 #  Make some cmake vars advanced
@@ -1289,16 +1327,7 @@ vp_system_information(NUMBER_OF_LOGICAL_CORES NUMBER_OF_PHYSICAL_CORES TOTAL_PHY
 find_host_package(Git QUIET)
 
 if(NOT DEFINED VISP_VCSVERSION AND GIT_FOUND)
-  execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --always --dirty --match "v[0-9].[0-9].[0-9]*"
-    WORKING_DIRECTORY "${VISP_SOURCE_DIR}"
-    OUTPUT_VARIABLE VISP_VCSVERSION
-    RESULT_VARIABLE GIT_RESULT
-    ERROR_QUIET
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-  if(NOT GIT_RESULT EQUAL 0)
-    set(VISP_VCSVERSION "unknown")
-  endif()
+  vp_git_describe(VISP_VCSVERSION "${VISP_SOURCE_DIR}")
 elseif(NOT DEFINED VISP_VCSVERSION)
   # We don't have git:
   set(VISP_VCSVERSION "unknown")
@@ -1315,6 +1344,7 @@ if(VISP_VCSVERSION)
   status("  Version control:" ${VISP_VCSVERSION})
 endif()
 
+# ========================== contrib modules ==========================
 if(VISP_CONTRIB_MODULES_PATH)
   set(__dump_extra_header OFF)
   foreach(p ${VISP_CONTRIB_MODULES_PATH})
@@ -1349,11 +1379,12 @@ endif()
 # ========================== build platform ==========================
 status("")
 status("  Platform:")
-if(NOT CMAKE_VERSION VERSION_LESS 2.8.11)
-  string(TIMESTAMP TIMESTAMP "" UTC)
-  if(TIMESTAMP)
-    status("    Timestamp:"    ${TIMESTAMP})
-  endif()
+if(NOT DEFINED VISP_TIMESTAMP AND NOT BUILD_INFO_SKIP_TIMESTAMP)
+  string(TIMESTAMP VISP_TIMESTAMP "" UTC)
+  set(VISP_TIMESTAMP "${VISP_TIMESTAMP}" CACHE STRING "Timestamp of ViSP build configuration" FORCE)
+endif()
+if(VISP_TIMESTAMP)
+  status("    Timestamp:"      ${VISP_TIMESTAMP})
 endif()
 status("    Host:"             ${CMAKE_HOST_SYSTEM_NAME} ${CMAKE_HOST_SYSTEM_VERSION} ${CMAKE_HOST_SYSTEM_PROCESSOR})
 if(CMAKE_CROSSCOMPILING)
@@ -1496,7 +1527,8 @@ endif()
 
 # ========================== java ==========================
 status("")
-status("  Python (for build):"  PYTHON_DEFAULT_AVAILABLE THEN "${PYTHON_DEFAULT_EXECUTABLE}" ELSE "no")
+status("  Python 3:")
+status("    Interpreter:"     PYTHON3INTERP_FOUND  THEN "${PYTHON3_EXECUTABLE} (ver ${PYTHON3_VERSION_STRING})"    ELSE "no")
 
 if(BUILD_JAVA OR BUILD_visp_java)
   status("")
@@ -1507,6 +1539,17 @@ if(BUILD_JAVA OR BUILD_visp_java)
   endif()
 endif()
 
+# ======================= Python bindings ========================
+status("")
+status("  Python3 bindings:"           BUILD_PYTHON_BINDINGS    THEN "yes" ELSE "no")
+if(BUILD_PYTHON_BINDINGS)
+  status("    Python3 interpreter:"    PYTHON3INTERP_FOUND  THEN "${PYTHON3_EXECUTABLE} (ver ${PYTHON3_VERSION_STRING})" ELSE "no")
+  status("    Pybind11:"               USE_PYBIND11         THEN "${pybind11_DIR} (${pybind11_VERSION})" ELSE "no")
+  status("    Package version:"        "${VISP_PYTHON_PACKAGE_VERSION}")
+  status("    Wrapped modules:"        "${VISP_PYTHON_BOUND_MODULES}")
+  status("    Generated input config:" "${VISP_PYTHON_GENERATED_CONFIG_FILE}")
+endif()
+
 # ============================ Options ===========================
 status("")
 status("  Build options: ")
@@ -1514,6 +1557,14 @@ status("    Build deprecated:"           BUILD_DEPRECATED_FUNCTIONS      THEN "y
 status("    Build with moment combine:"  ENABLE_MOMENTS_COMBINE_MATRICES THEN "yes" ELSE "no")
 
 # ===================== Optional 3rd parties =====================
+status("")
+status("  OpenCV: ")
+status("    Version:"             USE_OPENCV         THEN "${OpenCV_VERSION}" ELSE "n/a")
+if(USE_OPENCV)
+  vp_list_replace_string(OpenCV_LIB_COMPONENTS OpenCV_LIB_COMPONENTS_FILTERED "^opencv_+" "")
+  status("    Modules:"    "${OpenCV_LIB_COMPONENTS_FILTERED}")
+  status("    OpenCV dir:" "${OpenCV_DIR}")
+endif()
 status("")
 status("  Mathematics: ")
 status("    Blas/Lapack:"            (USE_LAPACK OR WITH_LAPACK) THEN "yes" ELSE "no")
@@ -1548,8 +1599,9 @@ status("    Use JPEG:"               USE_JPEG         THEN "yes (ver ${JPEG_LIB_
 status("    Use PNG:"                USE_PNG          THEN "yes (ver ${PNG_VERSION_STRING})" ELSE "no")
 status("    \\- Use ZLIB:"           USE_ZLIB         THEN "yes (ver ${ZLIB_VERSION_STRING})" ELSE "no")
 status("    Use OpenCV:"             USE_OPENCV       THEN "yes (ver ${OpenCV_VERSION})" ELSE "no")
-status("    Use stb_image (built-in):"                     "yes (ver ${STBIMAGE_VERSION})")
-status("    Use TinyEXR (built-in):"                       "yes (ver ${TINYEXR_VERSION})")
+status("    Use stb_image (built-in):" WITH_STBIMAGE  THEN "yes (ver ${STBIMAGE_VERSION})" ELSE "no")
+status("    Use TinyEXR (built-in):" WITH_TINYEXR     THEN "yes (ver ${TINYEXR_VERSION})" ELSE "no")
+status("    Use simdlib (built-in):" WITH_SIMDLIB     THEN "yes" ELSE "no")
 status("")
 status("  Real robots: ")
 status("    Use Afma4:"              USE_AFMA4        THEN "yes" ELSE "no")
@@ -1569,6 +1621,7 @@ status("    \\-Use ffmpeg:"          USE_FFMPEG       THEN "yes" ELSE "no")
 status("    Use Virtuose:"           USE_VIRTUOSE     THEN "yes" ELSE "no")
 status("    Use qbdevice (built-in):" WITH_QBDEVICE   THEN "yes (ver ${QBDEVICE_VERSION})" ELSE "no")
 status("    Use takktile2 (built-in):" WITH_TAKKTILE2 THEN "yes (ver ${TAKKTILE2_VERSION})" ELSE "no")
+status("    Use pololu (built-in):"  WITH_POLOLU      THEN "yes (ver ${POLOLU_VERSION})" ELSE "no")
 status("")
 status("  GUI: ")
 status("    Use X11:"                USE_X11          THEN "yes" ELSE "no")
@@ -1591,10 +1644,10 @@ status("  RGB-D sensors: ")
 status("    Use Realsense:"          USE_REALSENSE    THEN "yes (ver ${REALSENSE_VERSION})" ELSE "no")
 status("    Use Realsense2:"         USE_REALSENSE2   THEN "yes (ver ${REALSENSE2_VERSION})" ELSE "no")
 status("    Use Occipital Structure:"          USE_OCCIPITAL_STRUCTURE    THEN "yes" ELSE "no")
-status("    Use Kinect:"             USE_LIBFREENECT AND USE_LIBUSB_1 AND USE_PTHREAD THEN "yes" ELSE "no")
+status("    Use Kinect:"             USE_LIBFREENECT AND USE_LIBUSB_1 AND USE_THREADS THEN "yes" ELSE "no")
 status("    \\- Use libfreenect:"    USE_LIBFREENECT  THEN "yes (ver ${LIBFREENECT_VERSION})" ELSE "no")
 status("    \\- Use libusb-1:"       USE_LIBUSB_1     THEN "yes (ver ${LIBUSB_1_VERSION})" ELSE "no")
-status("    \\- Use pthread:"        USE_PTHREAD      THEN "yes" ELSE "no")
+status("    \\- Use std::thread:"    USE_THREADS      THEN "yes" ELSE "no")
 status("    Use PCL:"                USE_PCL          THEN "yes (ver ${PCL_VERSION})" ELSE "no")
 status("    \\- Use VTK:"            VTK_FOUND        THEN "yes (ver ${VTK_VERSION})" ELSE "no")
 status("")
@@ -1615,14 +1668,15 @@ status("    \\- Use AprilTag big family:" WITH_APRILTAG_BIG_FAMILY  THEN "yes" E
 status("")
 status("  Misc: ")
 status("    Use Clipper (built-in):"  WITH_CLIPPER     THEN "yes (ver ${CLIPPER_VERSION})" ELSE "no")
-status("    Use pugixml (built-in):"                        "yes (ver ${PUGIXML_VERSION})")
+status("    Use pugixml (built-in):"  WITH_PUGIXML     THEN "yes (ver ${PUGIXML_VERSION})" ELSE "no")
 status("    Use libxml2:"             USE_XML2         THEN "yes (ver ${XML2_VERSION_STRING})" ELSE "no")
+status("    Use json (nlohmann):"     USE_NLOHMANN_JSON THEN "yes (ver ${nlohmann_json_VERSION})" ELSE "no")
 status("")
 status("  Optimization: ")
 status("    Use OpenMP:"             USE_OPENMP         THEN "yes" ELSE "no")
-status("    Use pthread:"            USE_PTHREAD        THEN "yes" ELSE "no")
+status("    Use std::thread:"        USE_THREADS        THEN "yes" ELSE "no")
 status("    Use pthread (built-in):" WITH_PTHREAD       THEN "yes (ver ${PTHREADS_VERSION})" ELSE "no")
-status("    Use Simd (built-in):"                            "yes (ver ${SIMD_VERSION})")
+status("    Use simdlib (built-in):" WITH_SIMDLIB       THEN "yes" ELSE "no")
 status("")
 status("  DNN: ")
 status("    Use CUDA Toolkit:"       USE_TENSORRT AND CUDA_FOUND  THEN "yes (ver ${CUDA_VERSION})" ELSE "no")
@@ -1639,6 +1693,7 @@ status("")
 status("  Tests and samples:")
 status("    Use catch2 (built-in):"  WITH_CATCH2        THEN "yes (ver ${CATCH2_VERSION})" ELSE "no")
 status("    Tests:"                  BUILD_TESTS        THEN "yes" ELSE "no")
+status("    Apps:"                   BUILD_APPS         THEN "yes" ELSE "no")
 status("    Demos:"                  BUILD_DEMOS        THEN "yes" ELSE "no")
 status("    Examples:"               BUILD_EXAMPLES     THEN "yes" ELSE "no")
 status("    Tutorials:"              BUILD_TUTORIALS    THEN "yes" ELSE "no")

@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,13 +31,15 @@
  * Description:
  * Example that shows how to do visual servoing with a drone equipped with a Pixhawk.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <iostream>
 
 #include <visp3/core/vpConfig.h>
 
-#if defined(VISP_HAVE_MAVSDK) && (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_17) && defined(VISP_HAVE_REALSENSE2)
+// Check if std:c++17 or higher
+#if defined(VISP_HAVE_MAVSDK) && ((__cplusplus >= 201703L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201703L))) && \
+  defined(VISP_HAVE_REALSENSE2) && defined(VISP_HAVE_PUGIXML)
 
 #include <visp3/core/vpImageConvert.h>
 #include <visp3/core/vpMomentAreaNormalized.h>
@@ -110,7 +112,8 @@ int main(int argc, char **argv)
         if (std::string(argv[i]) == "--co" && i + 1 < argc) {
           opt_connecting_info = std::string(argv[i + 1]);
           i++;
-        } else if (std::string(argv[i]) == "--distance-to-tag" && i + 1 < argc) {
+        }
+        else if (std::string(argv[i]) == "--distance-to-tag" && i + 1 < argc) {
           opt_distance_to_tag = std::atof(argv[i + 1]);
           if (opt_distance_to_tag <= 0) {
             std::cout << "Error : invalid distance to tag." << std::endl << "See " << argv[0] << " --help" << std::endl;
@@ -119,59 +122,64 @@ int main(int argc, char **argv)
           opt_has_distance_to_tag = true;
           i++;
 
-        } else if (std::string(argv[i]) == "--display-fps" && i + 1 < argc) {
+        }
+        else if (std::string(argv[i]) == "--display-fps" && i + 1 < argc) {
           opt_display_fps = std::stoi(std::string(argv[i + 1]));
           i++;
-        } else if (std::string(argv[i]) == "--verbose" || std::string(argv[i]) == "-v") {
+        }
+        else if (std::string(argv[i]) == "--verbose" || std::string(argv[i]) == "-v") {
           opt_verbose = true;
-        } else {
+        }
+        else {
           std::cout << "Error : unknown parameter " << argv[i] << std::endl
-                    << "See " << argv[0] << " --help" << std::endl;
+            << "See " << argv[0] << " --help" << std::endl;
           return EXIT_FAILURE;
         }
       }
-    } else if (argc >= 2 && (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-h")) {
+    }
+    else if (argc >= 2 && (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-h")) {
       std::cout << "\nUsage:\n"
-                << "  " << argv[0]
-                << " [--tag-size <tag size [m]>] [--co <connection information>] [--distance-to-tag <distance>]"
-                << " [--display-fps <display fps>] [--verbose] [-v] [--help] [-h]\n"
-                << std::endl
-                << "Description:\n"
-                << "  --tag-size <size>\n"
-                << "      The size of the tag to detect in meters, required.\n\n"
-                << "  --co <connection information>\n"
-                << "      - UDP: udp://[host][:port]\n"
-                << "      - TCP: tcp://[host][:port]\n"
-                << "      - serial: serial://[path][:baudrate]\n"
-                << "      - Default: udp://192.168.30.111:14552).\n\n"
-                << "  --distance-to-tag <distance>\n"
-                << "      The desired distance to the tag in meters (default: 1 meter).\n\n"
-                << "  --display-fps <display_fps>\n"
-                << "      The desired fps rate for the video display (default: 10 fps).\n\n"
-                << "  --verbose, -v\n"
-                << "      Enables verbosity (drone information messages and velocity commands\n"
-                << "      are then displayed).\n\n"
-                << "  --help, -h\n"
-                << "      Print help message.\n"
-                << std::endl;
+        << "  " << argv[0]
+        << " [--tag-size <tag size [m]>] [--co <connection information>] [--distance-to-tag <distance>]"
+        << " [--display-fps <display fps>] [--verbose] [-v] [--help] [-h]\n"
+        << std::endl
+        << "Description:\n"
+        << "  --tag-size <size>\n"
+        << "      The size of the tag to detect in meters, required.\n\n"
+        << "  --co <connection information>\n"
+        << "      - UDP: udp://[host][:port]\n"
+        << "      - TCP: tcp://[host][:port]\n"
+        << "      - serial: serial://[path][:baudrate]\n"
+        << "      - Default: udp://192.168.30.111:14552).\n\n"
+        << "  --distance-to-tag <distance>\n"
+        << "      The desired distance to the tag in meters (default: 1 meter).\n\n"
+        << "  --display-fps <display_fps>\n"
+        << "      The desired fps rate for the video display (default: 10 fps).\n\n"
+        << "  --verbose, -v\n"
+        << "      Enables verbosity (drone information messages and velocity commands\n"
+        << "      are then displayed).\n\n"
+        << "  --help, -h\n"
+        << "      Print help message.\n"
+        << std::endl;
       return EXIT_SUCCESS;
 
-    } else {
+    }
+    else {
       std::cout << "Error : tag size parameter required." << std::endl << "See " << argv[0] << " --help" << std::endl;
       return EXIT_FAILURE;
     }
 
     std::cout << std::endl
-              << "WARNING:" << std::endl
-              << " - This program does no sensing or avoiding of obstacles, " << std::endl
-              << "   the drone WILL collide with any objects in the way! Make sure the " << std::endl
-              << "   drone has approximately 3 meters of free space on all sides." << std::endl
-              << " - The drone uses a forward-facing camera for Apriltag detection," << std::endl
-              << "   make sure the drone flies  above a non-uniform flooring," << std::endl
-              << "   or its movement will be inacurate and dangerous !" << std::endl
-              << std::endl;
+      << "WARNING:" << std::endl
+      << " - This program does no sensing or avoiding of obstacles, " << std::endl
+      << "   the drone WILL collide with any objects in the way! Make sure the " << std::endl
+      << "   drone has approximately 3 meters of free space on all sides." << std::endl
+      << " - The drone uses a forward-facing camera for Apriltag detection," << std::endl
+      << "   make sure the drone flies  above a non-uniform flooring," << std::endl
+      << "   or its movement will be inacurate and dangerous !" << std::endl
+      << std::endl;
 
-    // Connect to the drone
+// Connect to the drone
     vpRobotMavsdk drone(opt_connecting_info);
 
     if (drone.isRunning()) {
@@ -206,13 +214,13 @@ int main(int argc, char **argv)
 
       vpImage<unsigned char> I(rs.getIntrinsics(RS2_STREAM_COLOR).height, rs.getIntrinsics(RS2_STREAM_COLOR).width);
 
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
       vpDisplayX display;
-#elif defined VISP_HAVE_GTK
+#elif defined(VISP_HAVE_GTK)
       vpDisplayGTK display;
-#elif defined VISP_HAVE_GDI
+#elif defined(VISP_HAVE_GDI)
       vpDisplayGDI display;
-#elif defined VISP_HAVE_OPENCV
+#elif defined(HAVE_OPENCV_HIGHGUI)
       vpDisplayOpenCV display;
 #endif
       int orig_displayX = 100;
@@ -226,8 +234,10 @@ int main(int argc, char **argv)
                      "Visual servoing tasks");
       unsigned int iter = 0;
 
+      //! [DJI-F450 apriltag family]
       vpDetectorAprilTag::vpAprilTagFamily tagFamily = vpDetectorAprilTag::TAG_36h11;
       vpDetectorAprilTag detector(tagFamily); // The detector used to detect Apritags
+      //! [DJI-F450 apriltag family]
       detector.setAprilTagQuadDecimate(4.0);
       detector.setAprilTagNbThreads(4);
       detector.setDisplayTag(true);
@@ -240,30 +250,32 @@ int main(int argc, char **argv)
       task.setInteractionMatrixType(vpServo::CURRENT);
       task.setLambda(lambda);
 
+      //! [DJI-F450 cMe]
       /*
-       * In the following section, camera 1 refers to camera coordinates system of the drone,
-       * but without taking camera orientation into account. This orientation is taken into
-       * consideration in camera 2. E is the effective coordinate system of the drone, the one
-       * in which we need to convert every velocity command.
+       * In the following section, (c1) is an intermediate frame attached to the camera
+       * that has axis aligned with the FLU body frame. The real camera frame is denoted (c).
+       * The FLU body-frame of the drone denoted (e) is the one in which we need to convert
+       * every velocity command computed by visual servoing.
        *
-       * We can easily compute homogeneous matrix between camera 1 and camera 2, and between
-       * camera 1 and effective coordonate system E of the drone.
+       * We can easily estimate the homogeneous matrix between (c1) and (c) where
+       * in our case we have -10 degrees around X camera axis.
+       * Then for the transformation between (e) and (c1) frames we can consider only translations.
        *
-       * Using those matrices, we can in the end obtain the matrix between c2 and E
+       * Using those matrices, we can in the end obtain the homogeneous matrix between (c) and (e) frames.
+       * This homogeneous matrix is then used to compute the velocity twist matrix cVe.
        */
-      vpRxyzVector c1_rxyz_c2(vpMath::rad(-10.0), vpMath::rad(0), 0);
-      vpRotationMatrix c1Rc2(c1_rxyz_c2); // Rotation between camera 1 and 2
-      vpHomogeneousMatrix c1Mc2(vpTranslationVector(),
-                                c1Rc2); // Homogeneous matrix between c1 and c2
+      vpRxyzVector c1_rxyz_c(vpMath::rad(-10.0), vpMath::rad(0), 0);
+      vpRotationMatrix c1Rc(c1_rxyz_c); // Rotation between (c1) and (c)
+      vpHomogeneousMatrix c1Mc(vpTranslationVector(), c1Rc); // Homogeneous matrix between (c1) and (c)
 
-      vpRotationMatrix c1Re{1, 0, 0, 0, 0, 1, 0, -1, 0}; // Rotation between camera 1 and E
-      vpTranslationVector c1te(0, -0.03, -0.07);         // Translation between camera 1 and E
-      vpHomogeneousMatrix c1Me(c1te, c1Re);              // Homogeneous matrix between c1 and E
+      vpRotationMatrix c1Re { 1, 0, 0, 0, 0, 1, 0, -1, 0 };     // Rotation between (c1) and (e)
+      vpTranslationVector c1te(0, -0.03, -0.07);             // Translation between (c1) and (e)
+      vpHomogeneousMatrix c1Me(c1te, c1Re);                  // Homogeneous matrix between (c1) and (e)
 
-      vpHomogeneousMatrix c2Me = c1Mc2.inverse() * c1Me; // Homogeneous matrix between c2 and E
+      vpHomogeneousMatrix cMe = c1Mc.inverse() * c1Me;       // Homogeneous matrix between (c) and (e)
 
-      vpVelocityTwistMatrix cVe(c2Me);
-
+      vpVelocityTwistMatrix cVe(cMe);
+      //! [DJI-F450 cMe]
       task.set_cVe(cVe);
 
       vpMatrix eJe(6, 4, 0);
@@ -277,8 +289,8 @@ int main(int argc, char **argv)
       double Z_d = (opt_has_distance_to_tag ? opt_distance_to_tag : 1.);
 
       // Define the desired polygon corresponding the the AprilTag CLOCKWISE
-      double X[4] = {tagSize / 2., tagSize / 2., -tagSize / 2., -tagSize / 2.};
-      double Y[4] = {tagSize / 2., -tagSize / 2., -tagSize / 2., tagSize / 2.};
+      double X[4] = { tagSize / 2., tagSize / 2., -tagSize / 2., -tagSize / 2. };
+      double Y[4] = { tagSize / 2., -tagSize / 2., -tagSize / 2., tagSize / 2. };
       std::vector<vpPoint> vec_P, vec_P_d;
 
       for (int i = 0; i < 4; i++) {
@@ -407,7 +419,7 @@ int main(int argc, char **argv)
           mdb.updateAll(m_obj);     // All of the moments must be updated, not just an_d
           mg.compute();             // Compute gravity center moment
           mc.compute();             // Compute centered moments AFTER gravity center
-          man.setDesiredArea(area); // Desired area was init at 0 (unknow at contruction),
+          man.setDesiredArea(area); // Desired area was init at 0 (unknow at construction),
                                     // need to be updated here
           man.compute();            // Compute area normalized moment AFTER centered moment
           mgn.compute();            // Compute gravity center normalized moment AFTER area normalized
@@ -487,14 +499,16 @@ int main(int argc, char **argv)
                                    false);
           }
 
-        } else {
+        }
+        else {
 
           std::stringstream sserr;
           sserr << "Failed to detect an Apriltag, or detected multiple ones";
           if (condition) {
             vpDisplay::displayText(I, 120, 20, sserr.str(), vpColor::red);
             vpDisplay::flush(I);
-          } else {
+          }
+          else {
             std::cout << sserr.str() << std::endl;
           }
 #ifdef CONTROL_UAV
@@ -506,7 +520,7 @@ int main(int argc, char **argv)
           {
             std::stringstream ss;
             ss << "Left click to " << (send_velocities ? "stop the robot" : "servo the robot")
-               << ", right click to quit.";
+              << ", right click to quit.";
             vpDisplay::displayText(I, 20, 20, ss.str(), vpColor::red);
           }
           vpDisplay::flush(I);
@@ -544,11 +558,13 @@ int main(int argc, char **argv)
       }
 
       return EXIT_SUCCESS;
-    } else {
+    }
+    else {
       std::cout << "ERROR : failed to setup drone control." << std::endl;
       return EXIT_FAILURE;
     }
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Caught an exception: " << e << std::endl;
     return EXIT_FAILURE;
   }
@@ -559,18 +575,19 @@ int main(int argc, char **argv)
 int main()
 {
 #ifndef VISP_HAVE_MAVSDK
-  std::cout << "\nThis example requires mavsdk library. You should install it, configure and rebuid ViSP.\n"
-            << std::endl;
+  std::cout << "\nThis example requires mavsdk library. You should install it, configure and rebuid ViSP.\n" << std::endl;
 #endif
 #ifndef VISP_HAVE_REALSENSE2
-  std::cout << "\nThis example requires librealsense2 library. You should install it, configure and rebuid ViSP.\n"
-            << std::endl;
+  std::cout << "\nThis example requires librealsense2 library. You should install it, configure and rebuid ViSP.\n" << std::endl;
 #endif
-#if !(VISP_CXX_STANDARD >= VISP_CXX_STANDARD_17)
+#if !defined(VISP_HAVE_PUGIXML)
+  std::cout << "\nThis example requires pugixml built-in 3rdparty." << std::endl;
+#endif
+#if !((__cplusplus >= 201703L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201703L)))
   std::cout
-      << "\nThis example requires at least cxx17. You should enable cxx17 during ViSP configuration with cmake and "
-         "rebuild ViSP.\n"
-      << std::endl;
+    << "\nThis example requires at least cxx17. You should enable cxx17 during ViSP configuration with cmake and "
+    "rebuild ViSP.\n"
+    << std::endl;
 #endif
   return EXIT_SUCCESS;
 }

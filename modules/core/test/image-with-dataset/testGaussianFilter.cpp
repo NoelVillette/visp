@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Test Gaussian filter.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
@@ -41,7 +41,7 @@
   \brief Test Gaussian filter.
 */
 
-#if defined(VISP_HAVE_CATCH2) && (VISP_HAVE_DATASET_VERSION >= 0x030400)
+#if defined(VISP_HAVE_SIMDLIB) && defined(VISP_HAVE_CATCH2) && (VISP_HAVE_DATASET_VERSION >= 0x030400)
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
 #include <visp3/core/vpGaussianFilter.h>
@@ -55,7 +55,7 @@ TEST_CASE("Test vpGaussianFilter (unsigned char)")
   vpImage<unsigned char> I;
   vpImageIo::read(I, filepath);
 
-  std::vector<float> sigmas = {0.5f, 2.0f, 5.0f, 7.0f};
+  std::vector<float> sigmas = { 0.5f, 2.0f, 5.0f, 7.0f };
   for (auto sigma : sigmas) {
     vpGaussianFilter gaussianFilter(I.getWidth(), I.getHeight(), sigma);
 
@@ -86,7 +86,7 @@ TEST_CASE("Test vpGaussianFilter (vpRGBa)")
   vpImage<vpRGBa> I;
   vpImageIo::read(I, filepath);
 
-  std::vector<float> sigmas = {0.5f, 2.0f, 5.0f, 7.0f};
+  std::vector<float> sigmas = { 0.5f, 2.0f, 5.0f, 7.0f };
   for (auto sigma : sigmas) {
     vpGaussianFilter gaussianFilter(I.getWidth(), I.getHeight(), sigma);
 
@@ -112,8 +112,8 @@ TEST_CASE("Test vpGaussianFilter (vpRGBa)")
     vpImageConvert::convert(I_diff_B, I_diff_B_dbl);
 
     std::cout << "sigma: " << sigma << " ; I_diff_R_dbl: " << I_diff_R_dbl.getMeanValue()
-              << " ; I_diff_G_dbl: " << I_diff_G_dbl.getMeanValue()
-              << " ; I_diff_B_dbl: " << I_diff_B_dbl.getMeanValue() << std::endl;
+      << " ; I_diff_G_dbl: " << I_diff_G_dbl.getMeanValue()
+      << " ; I_diff_B_dbl: " << I_diff_B_dbl.getMeanValue() << std::endl;
     const double threshold = 1.5;
     CHECK(I_diff_R_dbl.getMeanValue() < threshold);
     CHECK(I_diff_G_dbl.getMeanValue() < threshold);
@@ -127,7 +127,7 @@ TEST_CASE("Test vpGaussianFilter (vpRGBa + deinterleave)")
   vpImage<vpRGBa> I;
   vpImageIo::read(I, filepath);
 
-  std::vector<float> sigmas = {0.5f, 2.0f, 5.0f, 7.0f};
+  std::vector<float> sigmas = { 0.5f, 2.0f, 5.0f, 7.0f };
   for (auto sigma : sigmas) {
     const bool deinterleave = true;
     vpGaussianFilter gaussianFilter(I.getWidth(), I.getHeight(), sigma, deinterleave);
@@ -154,8 +154,8 @@ TEST_CASE("Test vpGaussianFilter (vpRGBa + deinterleave)")
     vpImageConvert::convert(I_diff_B, I_diff_B_dbl);
 
     std::cout << "sigma: " << sigma << " ; I_diff_R_dbl: " << I_diff_R_dbl.getMeanValue()
-              << " ; I_diff_G_dbl: " << I_diff_G_dbl.getMeanValue()
-              << " ; I_diff_B_dbl: " << I_diff_B_dbl.getMeanValue() << std::endl;
+      << " ; I_diff_G_dbl: " << I_diff_G_dbl.getMeanValue()
+      << " ; I_diff_B_dbl: " << I_diff_B_dbl.getMeanValue() << std::endl;
     const double threshold = 1.5;
     CHECK(I_diff_R_dbl.getMeanValue() < threshold);
     CHECK(I_diff_G_dbl.getMeanValue() < threshold);

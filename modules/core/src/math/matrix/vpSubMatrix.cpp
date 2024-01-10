@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Laneurit Jean
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <stdlib.h>
 #include <visp3/core/vpDebug.h>
@@ -42,7 +42,7 @@
 #include <visp3/core/vpMatrixException.h>
 #include <visp3/core/vpSubMatrix.h>
 
-vpSubMatrix::vpSubMatrix() : pRowNum(0), pColNum(0), parent(NULL) {}
+vpSubMatrix::vpSubMatrix() : pRowNum(0), pColNum(0), parent(nullptr) {}
 
 /*!
   \brief Constructor
@@ -54,7 +54,7 @@ vpSubMatrix::vpSubMatrix() : pRowNum(0), pColNum(0), parent(NULL) {}
 */
 vpSubMatrix::vpSubMatrix(vpMatrix &m, const unsigned int &row_offset, const unsigned int &col_offset,
                          const unsigned int &nrows, const unsigned int &ncols)
-  : pRowNum(0), pColNum(0), parent(NULL)
+  : pRowNum(0), pColNum(0), parent(nullptr)
 {
   init(m, row_offset, col_offset, nrows, ncols);
 }
@@ -173,4 +173,4 @@ vpSubMatrix &vpSubMatrix::operator=(const double &x)
   return *this;
 }
 
-vpSubMatrix::~vpSubMatrix() { data = NULL; }
+vpSubMatrix::~vpSubMatrix() { data = nullptr; }

@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,9 +34,8 @@
  * Authors:
  * Amaury Dame
  * Aurelien Yol
- * Fabien Spindler
  *
- *****************************************************************************/
+*****************************************************************************/
 #include <visp3/core/vpException.h>
 #include <visp3/tt_mi/vpTemplateTrackerMI.h>
 #include <visp3/tt_mi/vpTemplateTrackerMIBSpline.h>
@@ -78,8 +77,8 @@ void vpTemplateTrackerMI::setBspline(const vpBsplineType &newbs)
 }
 
 vpTemplateTrackerMI::vpTemplateTrackerMI(vpTemplateTrackerWarp *_warp)
-  : vpTemplateTracker(_warp), hessianComputation(USE_HESSIEN_NORMAL), ApproxHessian(HESSIAN_NEW), lambda(0), temp(NULL),
-    Prt(NULL), dPrt(NULL), Pt(NULL), Pr(NULL), d2Prt(NULL), PrtTout(NULL), dprtemp(NULL), PrtD(NULL), dPrtD(NULL),
+  : vpTemplateTracker(_warp), hessianComputation(USE_HESSIEN_NORMAL), ApproxHessian(HESSIAN_NEW), lambda(0), temp(nullptr),
+    Prt(nullptr), dPrt(nullptr), Pt(nullptr), Pr(nullptr), d2Prt(nullptr), PrtTout(nullptr), dprtemp(nullptr), PrtD(nullptr), dPrtD(nullptr),
     influBspline(0), bspline(3), Nc(8), Ncb(0), d2Ix(), d2Iy(), d2Ixy(), MI_preEstimation(0), MI_postEstimation(0),
     NMI_preEstimation(0), NMI_postEstimation(0), covarianceMatrix(), computeCovariance(false)
 {

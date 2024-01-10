@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,16 +29,12 @@
  *
  * Description:
  * Moving edges.
- *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+ */
 
 /*!
-  \file vpMbtMeEllipse.h
-  \brief Moving edges on an ellipse
-*/
+ * \file vpMbtMeEllipse.h
+ * \brief Moving edges on an ellipse
+ */
 
 #ifndef vpMbtMeEllipse_HH
 #define vpMbtMeEllipse_HH
@@ -52,12 +47,12 @@
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 /*!
-  \class vpMbtMeEllipse
-  \ingroup group_mbt_features
-
-  \brief Class that tracks an ellipse moving edges with specific capabilities for
-  model-based tracking.
-*/
+ * \class vpMbtMeEllipse
+ * \ingroup group_mbt_features
+ *
+ * \brief Class that tracks an ellipse moving edges with specific capabilities for
+ * model-based tracking.
+ */
 class VISP_EXPORT vpMbtMeEllipse : public vpMeEllipse
 {
 public:
@@ -65,14 +60,13 @@ public:
 
   vpMbtMeEllipse();
   vpMbtMeEllipse(const vpMbtMeEllipse &me_ellipse);
-  virtual ~vpMbtMeEllipse();
 
   void computeProjectionError(const vpImage<unsigned char> &_I, double &_sumErrorRad, unsigned int &_nbFeatures,
                               const vpMatrix &SobelX, const vpMatrix &SobelY, bool display, unsigned int length,
                               unsigned int thickness);
 
   void initTracking(const vpImage<unsigned char> &I, const vpImagePoint &ic, double n20_p, double n11_p, double n02_p,
-                    bool doNotTrack, vpImagePoint *pt1 = NULL, const vpImagePoint *pt2 = NULL);
+                    bool doNotTrack, vpImagePoint *pt1 = nullptr, const vpImagePoint *pt2 = nullptr);
 
   void track(const vpImage<unsigned char> &I);
   void updateParameters(const vpImage<unsigned char> &I, const vpImagePoint &center_p, double n20_p, double n11_p,
@@ -80,7 +74,7 @@ public:
 
 private:
   void reSample(const vpImage<unsigned char> &I);
-  void sample(const vpImage<unsigned char> &I, bool doNotTrack = false);
+  void sample(const vpImage<unsigned char> &I, bool doNotTrack = false) override;
   void suppressPoints();
 };
 

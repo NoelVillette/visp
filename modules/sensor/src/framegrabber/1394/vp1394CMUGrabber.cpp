@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Firewire cameras video capture based on CMU 1394 Digital Camera SDK.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
@@ -69,7 +69,7 @@ vp1394CMUGrabber::~vp1394CMUGrabber()
   // delete camera instance
   if (camera) {
     delete camera;
-    camera = NULL;
+    camera = nullptr;
   }
 }
 
@@ -206,7 +206,7 @@ void vp1394CMUGrabber::acquire(vpImage<unsigned char> &I)
 {
   // get image data
   unsigned long length;
-  unsigned char *rawdata = NULL;
+  unsigned char *rawdata = nullptr;
   int dropped;
   unsigned int size;
 
@@ -268,7 +268,7 @@ void vp1394CMUGrabber::acquire(vpImage<vpRGBa> &I)
 {
   // get image data
   unsigned long length;
-  unsigned char *rawdata = NULL;
+  unsigned char *rawdata = nullptr;
   int dropped;
   unsigned int size;
 
@@ -517,7 +517,7 @@ void vp1394CMUGrabber::displayCameraModel()
   \param format : Camera video format.
   \param mode : Camera video mode.
 
-  See the following table for the correspondances between the input
+  See the following table for the correspondences between the input
   format and mode and the resulting video color coding.
 
   <TABLE BORDER="1">
@@ -617,7 +617,7 @@ void vp1394CMUGrabber::setVideoMode(unsigned long format, unsigned long mode)
   Set camera framerate rate. This method has to be called before open().
 
   \param fps : Value between 0 to 7 used to select a specific camera
-  framerate. See the following table for the correspondances between the input
+  framerate. See the following table for the correspondences between the input
   value and the framerate.
 
   <TABLE BORDER="1">
@@ -682,7 +682,7 @@ void vp1394CMUGrabber::setFramerate(unsigned long fps)
   Get the video framerate.
 
   \return Value between 0 to 7 corresponding to a specific camera framerate.
-  See the following table for the correspondances between the returned
+  See the following table for the correspondences between the returned
   value and the framerate.
 
   <TABLE BORDER="1">

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,19 +29,15 @@
  *
  * Description:
  * Read/write images.
- *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+ */
 
 /*!
   \file vpImageIo.h
   \brief Read/write images
 */
 
-#ifndef vpIMAGEIO_H
-#define vpIMAGEIO_H
+#ifndef _vpImageIo_h_
+#define _vpImageIo_h_
 
 #include <visp3/core/vpDebug.h>
 #include <visp3/core/vpImage.h>
@@ -103,7 +98,8 @@ int main()
 class VISP_EXPORT vpImageIo
 {
 private:
-  typedef enum {
+  typedef enum
+  {
     FORMAT_PGM,
     FORMAT_PPM,
     FORMAT_JPEG,
@@ -123,10 +119,11 @@ private:
 
 public:
   //! Image IO backend for only jpeg and png formats image loading and saving
-  enum vpImageIoBackendType {
+  enum vpImageIoBackendType
+  {
     IO_DEFAULT_BACKEND,    //!< Default backend
-    IO_SYSTEM_LIB_BACKEND, //!< Use system libraries like libpng or libjpeg
-    IO_OPENCV_BACKEND,     //!< Use OpenCV
+    IO_SYSTEM_LIB_BACKEND, //!< Use system libraries like libpng or libjpeg-turbo
+    IO_OPENCV_BACKEND,     //!< Use OpenCV imgcodecs module
     IO_SIMDLIB_BACKEND,    //!< Use embedded simd library
     IO_STB_IMAGE_BACKEND   //!< Use embedded stb_image library
   };

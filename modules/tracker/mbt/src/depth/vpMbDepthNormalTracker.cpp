@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Model-based tracker using depth normal features.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <iostream>
 
@@ -54,14 +54,14 @@
 
 vpMbDepthNormalTracker::vpMbDepthNormalTracker()
   : m_depthNormalFeatureEstimationMethod(vpMbtFaceDepthNormal::ROBUST_FEATURE_ESTIMATION),
-    m_depthNormalHiddenFacesDisplay(), m_depthNormalListOfActiveFaces(), m_depthNormalListOfDesiredFeatures(),
-    m_depthNormalFaces(), m_depthNormalPclPlaneEstimationMethod(2), m_depthNormalPclPlaneEstimationRansacMaxIter(200),
-    m_depthNormalPclPlaneEstimationRansacThreshold(0.001), m_depthNormalSamplingStepX(2), m_depthNormalSamplingStepY(2),
-    m_depthNormalUseRobust(false), m_error_depthNormal(), m_featuresToBeDisplayedDepthNormal(), m_L_depthNormal(),
-    m_robust_depthNormal(), m_w_depthNormal(), m_weightedError_depthNormal()
+  m_depthNormalHiddenFacesDisplay(), m_depthNormalListOfActiveFaces(), m_depthNormalListOfDesiredFeatures(),
+  m_depthNormalFaces(), m_depthNormalPclPlaneEstimationMethod(2), m_depthNormalPclPlaneEstimationRansacMaxIter(200),
+  m_depthNormalPclPlaneEstimationRansacThreshold(0.001), m_depthNormalSamplingStepX(2), m_depthNormalSamplingStepY(2),
+  m_depthNormalUseRobust(false), m_error_depthNormal(), m_featuresToBeDisplayedDepthNormal(), m_L_depthNormal(),
+  m_robust_depthNormal(), m_w_depthNormal(), m_weightedError_depthNormal()
 #if DEBUG_DISPLAY_DEPTH_NORMAL
-    ,
-    m_debugDisp_depthNormal(NULL), m_debugImage_depthNormal()
+  ,
+  m_debugDisp_depthNormal(nullptr), m_debugImage_depthNormal()
 #endif
 {
 #ifdef VISP_HAVE_OGRE
@@ -166,7 +166,10 @@ void vpMbDepthNormalTracker::computeVVS()
   double mu = m_initialMu;
   vpHomogeneousMatrix cMo_prev;
 
-  bool isoJoIdentity_ = true;
+  bool isoJoIdentity = m_isoJoIdentity; // Backup since it can be modified if L is not full rank
+  if (isoJoIdentity)
+    oJo.eye();
+
   vpVelocityTwistMatrix cVo;
   vpMatrix L_true, LVJ_true;
 
@@ -182,7 +185,7 @@ void vpMbDepthNormalTracker::computeVVS()
 
       if (computeCovariance) {
         L_true = m_L_depthNormal;
-        if (!isoJoIdentity_) {
+        if (!isoJoIdentity) {
           cVo.buildFrom(m_cMo);
           LVJ_true = (m_L_depthNormal * (cVo * oJo));
         }
@@ -190,14 +193,11 @@ void vpMbDepthNormalTracker::computeVVS()
 
       // Compute DoF only once
       if (iter == 0) {
-        isoJoIdentity_ = true;
-        oJo.eye();
-
         // If all the 6 dof should be estimated, we check if the interaction
         // matrix is full rank. If not we remove automatically the dof that
-        // cannot be estimated This is particularly useful when consering
+        // cannot be estimated. This is particularly useful when considering
         // circles (rank 5) and cylinders (rank 4)
-        if (isoJoIdentity_) {
+        if (isoJoIdentity) {
           cVo.buildFrom(m_cMo);
 
           vpMatrix K; // kernel
@@ -211,7 +211,7 @@ void vpMbDepthNormalTracker::computeVVS()
             I.eye(6);
             oJo = I - K.AtA();
 
-            isoJoIdentity_ = false;
+            isoJoIdentity = false;
           }
         }
       }
@@ -229,7 +229,7 @@ void vpMbDepthNormalTracker::computeVVS()
         }
       }
 
-      computeVVSPoseEstimation(isoJoIdentity_, iter, m_L_depthNormal, LTL, m_weightedError_depthNormal,
+      computeVVSPoseEstimation(isoJoIdentity, iter, m_L_depthNormal, LTL, m_weightedError_depthNormal,
                                m_error_depthNormal, error_prev, LTR, mu, v);
 
       cMo_prev = m_cMo;
@@ -242,7 +242,7 @@ void vpMbDepthNormalTracker::computeVVS()
     iter++;
   }
 
-  computeCovarianceMatrixVVS(isoJoIdentity_, m_w_depthNormal, cMo_prev, L_true, LVJ_true, m_error_depthNormal);
+  computeCovarianceMatrixVVS(isoJoIdentity, m_w_depthNormal, cMo_prev, L_true, LVJ_true, m_error_depthNormal);
 }
 
 void vpMbDepthNormalTracker::computeVVSInit()
@@ -282,7 +282,7 @@ void vpMbDepthNormalTracker::display(const vpImage<unsigned char> &I, const vpHo
                                      bool displayFullModel)
 {
   std::vector<std::vector<double> > models =
-      vpMbDepthNormalTracker::getModelForDisplay(I.getWidth(), I.getHeight(), cMo, cam, displayFullModel);
+    vpMbDepthNormalTracker::getModelForDisplay(I.getWidth(), I.getHeight(), cMo, cam, displayFullModel);
 
   for (size_t i = 0; i < models.size(); i++) {
     if (vpMath::equal(models[i][0], 0)) {
@@ -308,7 +308,7 @@ void vpMbDepthNormalTracker::display(const vpImage<vpRGBa> &I, const vpHomogeneo
                                      bool displayFullModel)
 {
   std::vector<std::vector<double> > models =
-      vpMbDepthNormalTracker::getModelForDisplay(I.getWidth(), I.getHeight(), cMo, cam, displayFullModel);
+    vpMbDepthNormalTracker::getModelForDisplay(I.getWidth(), I.getHeight(), cMo, cam, displayFullModel);
 
   for (size_t i = 0; i < models.size(); i++) {
     if (vpMath::equal(models[i][0], 0)) {
@@ -381,7 +381,7 @@ std::vector<std::vector<double> > vpMbDepthNormalTracker::getModelForDisplay(uns
        it != m_depthNormalFaces.end(); ++it) {
     vpMbtFaceDepthNormal *face_normal = *it;
     std::vector<std::vector<double> > modelLines =
-        face_normal->getModelForDisplay(width, height, cMo, cam, displayFullModel);
+      face_normal->getModelForDisplay(width, height, cMo, cam, displayFullModel);
     models.insert(models.end(), modelLines.begin(), modelLines.end());
   }
 
@@ -397,7 +397,8 @@ void vpMbDepthNormalTracker::init(const vpImage<unsigned char> &I)
   bool reInitialisation = false;
   if (!useOgre) {
     faces.setVisible(I.getWidth(), I.getHeight(), m_cam, m_cMo, angleAppears, angleDisappears, reInitialisation);
-  } else {
+  }
+  else {
 #ifdef VISP_HAVE_OGRE
     if (!faces.isOgreInitialised()) {
       faces.setBackgroundSizeOgre(I.getHeight(), I.getWidth());
@@ -423,6 +424,7 @@ void vpMbDepthNormalTracker::init(const vpImage<unsigned char> &I)
 
 void vpMbDepthNormalTracker::loadConfigFile(const std::string &configFile, bool verbose)
 {
+#if defined(VISP_HAVE_PUGIXML)
   vpMbtXmlGenericParser xmlp(vpMbtXmlGenericParser::DEPTH_NORMAL_PARSER);
   xmlp.setVerbose(verbose);
   xmlp.setCameraParameters(m_cam);
@@ -441,7 +443,8 @@ void vpMbDepthNormalTracker::loadConfigFile(const std::string &configFile, bool 
       std::cout << " *********** Parsing XML for Mb Depth Tracker ************ " << std::endl;
     }
     xmlp.parse(configFile);
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cerr << "Exception: " << e.what() << std::endl;
     throw vpException(vpException::ioError, "Cannot open XML file \"%s\"", configFile.c_str());
   }
@@ -467,6 +470,11 @@ void vpMbDepthNormalTracker::loadConfigFile(const std::string &configFile, bool 
   setDepthNormalPclPlaneEstimationRansacMaxIter(xmlp.getDepthNormalPclPlaneEstimationRansacMaxIter());
   setDepthNormalPclPlaneEstimationRansacThreshold(xmlp.getDepthNormalPclPlaneEstimationRansacThreshold());
   setDepthNormalSamplingStep(xmlp.getDepthNormalSamplingStepX(), xmlp.getDepthNormalSamplingStepY());
+#else
+  (void)configFile;
+  (void)verbose;
+  throw(vpException(vpException::ioError, "vpMbDepthDenseTracker::loadConfigFile() needs pugixml built-in 3rdparty"));
+#endif
 }
 
 void vpMbDepthNormalTracker::reInitModel(const vpImage<unsigned char> &I, const std::string &cad_name,
@@ -476,7 +484,7 @@ void vpMbDepthNormalTracker::reInitModel(const vpImage<unsigned char> &I, const 
 
   for (size_t i = 0; i < m_depthNormalFaces.size(); i++) {
     delete m_depthNormalFaces[i];
-    m_depthNormalFaces[i] = NULL;
+    m_depthNormalFaces[i] = nullptr;
   }
 
   m_depthNormalFaces.clear();
@@ -503,7 +511,7 @@ void vpMbDepthNormalTracker::resetTracker()
        ++it) {
     vpMbtFaceDepthNormal *normal_face = *it;
     delete normal_face;
-    normal_face = NULL;
+    normal_face = nullptr;
   }
 
   m_depthNormalFaces.clear();
@@ -584,7 +592,7 @@ void vpMbDepthNormalTracker::setUseDepthNormalTracking(const std::string &name, 
   }
 }
 
-void vpMbDepthNormalTracker::testTracking() {}
+void vpMbDepthNormalTracker::testTracking() { }
 
 #ifdef VISP_HAVE_PCL
 void vpMbDepthNormalTracker::segmentPointCloud(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &point_cloud)
@@ -650,6 +658,69 @@ void vpMbDepthNormalTracker::segmentPointCloud(const pcl::PointCloud<pcl::PointX
 #endif
 
 void vpMbDepthNormalTracker::segmentPointCloud(const std::vector<vpColVector> &point_cloud, unsigned int width,
+                                               unsigned int height)
+{
+  m_depthNormalListOfActiveFaces.clear();
+  m_depthNormalListOfDesiredFeatures.clear();
+
+#if DEBUG_DISPLAY_DEPTH_NORMAL
+  if (!m_debugDisp_depthNormal->isInitialised()) {
+    m_debugImage_depthNormal.resize(height, width);
+    m_debugDisp_depthNormal->init(m_debugImage_depthNormal, 50, 0, "Debug display normal depth tracker");
+  }
+
+  m_debugImage_depthNormal = 0;
+  std::vector<std::vector<vpImagePoint> > roiPts_vec;
+#endif
+
+  for (std::vector<vpMbtFaceDepthNormal *>::iterator it = m_depthNormalFaces.begin(); it != m_depthNormalFaces.end();
+       ++it) {
+    vpMbtFaceDepthNormal *face = *it;
+
+    if (face->isVisible() && face->isTracked()) {
+      vpColVector desired_features;
+
+#if DEBUG_DISPLAY_DEPTH_NORMAL
+      std::vector<std::vector<vpImagePoint> > roiPts_vec_;
+#endif
+
+      if (face->computeDesiredFeatures(m_cMo, width, height, point_cloud, desired_features, m_depthNormalSamplingStepX,
+                                       m_depthNormalSamplingStepY
+#if DEBUG_DISPLAY_DEPTH_NORMAL
+                                       ,
+                                       m_debugImage_depthNormal, roiPts_vec_
+#endif
+                                       ,
+                                       m_mask)) {
+        m_depthNormalListOfDesiredFeatures.push_back(desired_features);
+        m_depthNormalListOfActiveFaces.push_back(face);
+
+#if DEBUG_DISPLAY_DEPTH_NORMAL
+        roiPts_vec.insert(roiPts_vec.end(), roiPts_vec_.begin(), roiPts_vec_.end());
+#endif
+      }
+    }
+  }
+
+#if DEBUG_DISPLAY_DEPTH_NORMAL
+  vpDisplay::display(m_debugImage_depthNormal);
+
+  for (size_t i = 0; i < roiPts_vec.size(); i++) {
+    if (roiPts_vec[i].empty())
+      continue;
+
+    for (size_t j = 0; j < roiPts_vec[i].size() - 1; j++) {
+      vpDisplay::displayLine(m_debugImage_depthNormal, roiPts_vec[i][j], roiPts_vec[i][j + 1], vpColor::red, 2);
+    }
+    vpDisplay::displayLine(m_debugImage_depthNormal, roiPts_vec[i][0], roiPts_vec[i][roiPts_vec[i].size() - 1],
+                           vpColor::red, 2);
+  }
+
+  vpDisplay::flush(m_debugImage_depthNormal);
+#endif
+}
+
+void vpMbDepthNormalTracker::segmentPointCloud(const vpMatrix &point_cloud, unsigned int width,
                                                unsigned int height)
 {
   m_depthNormalListOfActiveFaces.clear();

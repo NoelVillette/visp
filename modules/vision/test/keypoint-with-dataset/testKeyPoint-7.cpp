@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,18 +29,14 @@
  *
  * Description:
  * Test saving / loading learning files for vpKeyPoint class.
- *
- * Authors:
- * Souriya Trinh
- *
- *****************************************************************************/
+ */
 
 #include <iomanip>
 #include <iostream>
 
 #include <visp3/core/vpConfig.h>
 
-#if defined(VISP_HAVE_OPENCV) && (VISP_HAVE_OPENCV_VERSION >= 0x020301)
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGPROC) && defined(HAVE_OPENCV_FEATURES2D) && defined(HAVE_OPENCV_VIDEO)
 
 #include <visp3/core/vpException.h>
 #include <visp3/core/vpImage.h>
@@ -113,7 +108,7 @@ bool getOptions(int argc, const char **argv, std::string &opath, const std::stri
       opath = optarg_;
       break;
     case 'h':
-      usage(argv[0], NULL, opath, user);
+      usage(argv[0], nullptr, opath, user);
       return false;
       break;
 
@@ -128,7 +123,7 @@ bool getOptions(int argc, const char **argv, std::string &opath, const std::stri
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL, opath, user);
+    usage(argv[0], nullptr, opath, user);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -154,43 +149,43 @@ bool compareKeyPoints(const std::vector<cv::KeyPoint> &keypoints1, const std::ve
   for (size_t cpt = 0; cpt < keypoints1.size(); cpt++) {
     if (!vpMath::equal(keypoints1[cpt].angle, keypoints2[cpt].angle, std::numeric_limits<float>::epsilon())) {
       std::cerr << std::fixed << std::setprecision(9) << "keypoints1[cpt].angle=" << keypoints1[cpt].angle
-                << " ; keypoints2[cpt].angle=" << keypoints2[cpt].angle << std::endl;
+        << " ; keypoints2[cpt].angle=" << keypoints2[cpt].angle << std::endl;
       return false;
     }
 
     if (keypoints1[cpt].class_id != keypoints2[cpt].class_id) {
       std::cerr << "keypoints1[cpt].class_id=" << keypoints1[cpt].class_id
-                << " ; keypoints2[cpt].class_id=" << keypoints2[cpt].class_id << std::endl;
+        << " ; keypoints2[cpt].class_id=" << keypoints2[cpt].class_id << std::endl;
       return false;
     }
 
     if (keypoints1[cpt].octave != keypoints2[cpt].octave) {
       std::cerr << "keypoints1[cpt].octave=" << keypoints1[cpt].octave
-                << " ; keypoints2[cpt].octave=" << keypoints2[cpt].octave << std::endl;
+        << " ; keypoints2[cpt].octave=" << keypoints2[cpt].octave << std::endl;
       return false;
     }
 
     if (!vpMath::equal(keypoints1[cpt].pt.x, keypoints2[cpt].pt.x, std::numeric_limits<float>::epsilon())) {
       std::cerr << std::fixed << std::setprecision(9) << "keypoints1[cpt].pt.x=" << keypoints1[cpt].pt.x
-                << " ; keypoints2[cpt].pt.x=" << keypoints2[cpt].pt.x << std::endl;
+        << " ; keypoints2[cpt].pt.x=" << keypoints2[cpt].pt.x << std::endl;
       return false;
     }
 
     if (!vpMath::equal(keypoints1[cpt].pt.y, keypoints2[cpt].pt.y, std::numeric_limits<float>::epsilon())) {
       std::cerr << std::fixed << std::setprecision(9) << "keypoints1[cpt].pt.y=" << keypoints1[cpt].pt.y
-                << " ; keypoints2[cpt].pt.y=" << keypoints2[cpt].pt.y << std::endl;
+        << " ; keypoints2[cpt].pt.y=" << keypoints2[cpt].pt.y << std::endl;
       return false;
     }
 
     if (!vpMath::equal(keypoints1[cpt].response, keypoints2[cpt].response, std::numeric_limits<float>::epsilon())) {
       std::cerr << std::fixed << std::setprecision(9) << "keypoints1[cpt].response=" << keypoints1[cpt].response
-                << " ; keypoints2[cpt].response=" << keypoints2[cpt].response << std::endl;
+        << " ; keypoints2[cpt].response=" << keypoints2[cpt].response << std::endl;
       return false;
     }
 
     if (!vpMath::equal(keypoints1[cpt].size, keypoints2[cpt].size, std::numeric_limits<float>::epsilon())) {
       std::cerr << std::fixed << std::setprecision(9) << "keypoints1[cpt].size=" << keypoints1[cpt].size
-                << " ; keypoints2[cpt].size=" << keypoints2[cpt].size << std::endl;
+        << " ; keypoints2[cpt].size=" << keypoints2[cpt].size << std::endl;
       return false;
     }
   }
@@ -219,7 +214,7 @@ bool compareDescriptors(const cv::Mat &descriptors1, const cv::Mat &descriptors2
       case CV_8U:
         if (descriptors1.at<unsigned char>(i, j) != descriptors2.at<unsigned char>(i, j)) {
           std::cerr << "descriptors1.at<unsigned char>(i,j)=" << descriptors1.at<unsigned char>(i, j)
-                    << " ; descriptors2.at<unsigned char>(i,j)=" << descriptors2.at<unsigned char>(i, j) << std::endl;
+            << " ; descriptors2.at<unsigned char>(i,j)=" << descriptors2.at<unsigned char>(i, j) << std::endl;
           return false;
         }
         break;
@@ -227,7 +222,7 @@ bool compareDescriptors(const cv::Mat &descriptors1, const cv::Mat &descriptors2
       case CV_8S:
         if (descriptors1.at<char>(i, j) != descriptors2.at<char>(i, j)) {
           std::cerr << "descriptors1.at<char>(i,j)=" << descriptors1.at<char>(i, j)
-                    << " ; descriptors2.at<char>(i,j)=" << descriptors2.at<char>(i, j) << std::endl;
+            << " ; descriptors2.at<char>(i,j)=" << descriptors2.at<char>(i, j) << std::endl;
           return false;
         }
         break;
@@ -235,7 +230,7 @@ bool compareDescriptors(const cv::Mat &descriptors1, const cv::Mat &descriptors2
       case CV_16U:
         if (descriptors1.at<unsigned short>(i, j) != descriptors2.at<unsigned short>(i, j)) {
           std::cerr << "descriptors1.at<unsigned short>(i,j)=" << descriptors1.at<unsigned short>(i, j)
-                    << " ; descriptors2.at<unsigned short>(i,j)=" << descriptors2.at<unsigned short>(i, j) << std::endl;
+            << " ; descriptors2.at<unsigned short>(i,j)=" << descriptors2.at<unsigned short>(i, j) << std::endl;
           return false;
         }
         break;
@@ -243,7 +238,7 @@ bool compareDescriptors(const cv::Mat &descriptors1, const cv::Mat &descriptors2
       case CV_16S:
         if (descriptors1.at<short>(i, j) != descriptors2.at<short>(i, j)) {
           std::cerr << "descriptors1.at<short>(i,j)=" << descriptors1.at<short>(i, j)
-                    << " ; descriptors2.at<short>(i,j)=" << descriptors2.at<short>(i, j) << std::endl;
+            << " ; descriptors2.at<short>(i,j)=" << descriptors2.at<short>(i, j) << std::endl;
           return false;
         }
         break;
@@ -251,7 +246,7 @@ bool compareDescriptors(const cv::Mat &descriptors1, const cv::Mat &descriptors2
       case CV_32S:
         if (descriptors1.at<int>(i, j) != descriptors2.at<int>(i, j)) {
           std::cerr << "descriptors1.at<int>(i,j)=" << descriptors1.at<int>(i, j)
-                    << " ; descriptors2.at<int>(i,j)=" << descriptors2.at<int>(i, j) << std::endl;
+            << " ; descriptors2.at<int>(i,j)=" << descriptors2.at<int>(i, j) << std::endl;
           return false;
         }
         break;
@@ -260,8 +255,8 @@ bool compareDescriptors(const cv::Mat &descriptors1, const cv::Mat &descriptors2
         if (!vpMath::equal(descriptors1.at<float>(i, j), descriptors2.at<float>(i, j),
                            std::numeric_limits<float>::epsilon())) {
           std::cerr << std::fixed << std::setprecision(9)
-                    << "descriptors1.at<float>(i,j)=" << descriptors1.at<float>(i, j)
-                    << " ; descriptors2.at<float>(i,j)=" << descriptors2.at<float>(i, j) << std::endl;
+            << "descriptors1.at<float>(i,j)=" << descriptors1.at<float>(i, j)
+            << " ; descriptors2.at<float>(i,j)=" << descriptors2.at<float>(i, j) << std::endl;
           return false;
         }
         break;
@@ -270,8 +265,8 @@ bool compareDescriptors(const cv::Mat &descriptors1, const cv::Mat &descriptors2
         if (!vpMath::equal(descriptors1.at<double>(i, j), descriptors2.at<double>(i, j),
                            std::numeric_limits<double>::epsilon())) {
           std::cerr << std::fixed << std::setprecision(17)
-                    << "descriptors1.at<double>(i,j)=" << descriptors1.at<double>(i, j)
-                    << " ; descriptors2.at<double>(i,j)=" << descriptors2.at<double>(i, j) << std::endl;
+            << "descriptors1.at<double>(i,j)=" << descriptors1.at<double>(i, j)
+            << " ; descriptors2.at<double>(i,j)=" << descriptors2.at<double>(i, j) << std::endl;
           return false;
         }
         break;
@@ -330,7 +325,9 @@ template <typename Type> void run_test(const std::string &env_ipath, const std::
 
     // Test if read is ok
     vpKeyPoint read_keypoint1;
+
     read_keypoint1.loadLearningData(filename, true);
+
     std::vector<cv::KeyPoint> trainKeyPoints_read;
     read_keypoint1.getTrainKeyPoints(trainKeyPoints_read);
     cv::Mat trainDescriptors_read = read_keypoint1.getTrainDescriptors();
@@ -346,7 +343,7 @@ template <typename Type> void run_test(const std::string &env_ipath, const std::
                                                  "binary with train images saved !");
     }
 
-    // Save in binary with no training images
+    // Save in binary without training images
     filename = vpIoTools::createFilePath(opath, "bin_without_img");
     vpIoTools::makeDirectory(filename);
     filename = vpIoTools::createFilePath(filename, "test_save_in_bin_without_img.bin");
@@ -377,6 +374,7 @@ template <typename Type> void run_test(const std::string &env_ipath, const std::
                                                  "binary without train images !");
     }
 
+#if defined(VISP_HAVE_PUGYXML)
     // Save in xml with training images
     filename = vpIoTools::createFilePath(opath, "xml_with_img");
     vpIoTools::makeDirectory(filename);
@@ -438,7 +436,7 @@ template <typename Type> void run_test(const std::string &env_ipath, const std::
                                                  "learning file saved in "
                                                  "xml without train images saved !");
     }
-
+#endif
     std::cout << "Saving / loading learning files with binary descriptor are ok !" << std::endl;
   }
 
@@ -529,6 +527,7 @@ template <typename Type> void run_test(const std::string &env_ipath, const std::
                                                  "binary without train images saved !");
     }
 
+#if defined(VISP_HAVE_PUGYXML)
     // Save in xml with training images
     filename = vpIoTools::createFilePath(opath, "xml_with_img");
     vpIoTools::makeDirectory(filename);
@@ -590,10 +589,8 @@ template <typename Type> void run_test(const std::string &env_ipath, const std::
                                                  "learning file saved in "
                                                  "xml without train images saved !");
     }
-
-    std::cout << "Saving / loading learning files with floating point "
-                 "descriptor are ok !"
-              << std::endl;
+#endif
+    std::cout << "Saving / loading learning files with floating point descriptor are ok !" << std::endl;
 
     // Test vpKeyPoint::reset()
     vpKeyPoint keypoint_reset;
@@ -628,8 +625,8 @@ template <typename Type> void run_test(const std::string &env_ipath, const std::
     }
 
     std::cout << "vpKeyPoint::reset() is ok with trainKeyPoints and "
-                 "trainDescriptors !"
-              << std::endl;
+      "trainDescriptors !"
+      << std::endl;
 #endif // OpenCV != 4.5.4 on macOS
   }
 #endif
@@ -693,7 +690,8 @@ int main(int argc, const char **argv)
       run_test(env_ipath, opath, I);
     }
 
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;
   }

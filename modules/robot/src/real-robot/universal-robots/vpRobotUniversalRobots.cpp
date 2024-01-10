@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,14 +31,11 @@
  * Description:
  * Interface for Universal Robots.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
-#if defined(VISP_HAVE_UR_RTDE) && (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
+#if defined(VISP_HAVE_UR_RTDE)
 
 #include <visp3/core/vpIoTools.h>
 #include <visp3/robot/vpRobotUniversalRobots.h>
@@ -476,8 +473,8 @@ void vpRobotUniversalRobots::setPosition(const vpRobot::vpControlFrameType frame
 
   if (vpRobot::STATE_POSITION_CONTROL != getRobotState()) {
     std::cout << "Robot is not in position-based control. "
-                 "Modification of the robot state"
-              << std::endl;
+      "Modification of the robot state"
+      << std::endl;
     setRobotState(vpRobot::STATE_POSITION_CONTROL);
   }
 
@@ -485,12 +482,14 @@ void vpRobotUniversalRobots::setPosition(const vpRobot::vpControlFrameType frame
     double speed_factor = m_positioningVelocity / 100.;
     std::vector<double> new_q = position.toStdVector();
     m_rtde_control->moveJ(new_q, m_max_joint_speed * speed_factor);
-  } else if (frame == vpRobot::END_EFFECTOR_FRAME) {
+  }
+  else if (frame == vpRobot::END_EFFECTOR_FRAME) {
     double speed_factor = m_positioningVelocity / 100.;
     std::vector<double> new_pose = position.toStdVector();
     // Move synchronously to ensure a the blocking behaviour
     m_rtde_control->moveL(new_pose, m_max_linear_speed * speed_factor);
-  } else if (frame == vpRobot::CAMERA_FRAME) {
+  }
+  else if (frame == vpRobot::CAMERA_FRAME) {
     double speed_factor = m_positioningVelocity / 100.;
 
     vpTranslationVector f_t_c(position.extract(0, 3));
@@ -501,7 +500,8 @@ void vpRobotUniversalRobots::setPosition(const vpRobot::vpControlFrameType frame
     std::vector<double> new_pose = fPe.toStdVector();
     // Move synchronously to ensure a the blocking behaviour
     m_rtde_control->moveL(new_pose, m_max_linear_speed * speed_factor);
-  } else {
+  }
+  else {
     throw(vpException(vpRobotException::functionNotImplementedError,
                       "Cannot move the robot to a cartesian position. Only joint positioning is implemented"));
   }
@@ -555,7 +555,7 @@ void vpRobotUniversalRobots::setPosition(const vpRobot::vpControlFrameType frame
  * vpRobot::STATE_VELOCITY_CONTROL) before setVelocity().
  *
  * \warning Velocities could be saturated if one of them exceed the
- * maximal autorized speed (see vpRobot::maxTranslationVelocity and
+ * maximal authorized speed (see vpRobot::maxTranslationVelocity and
  * vpRobot::maxRotationVelocity). To change these values use
  * setMaxTranslationVelocity() and setMaxRotationVelocity().
  *
@@ -566,7 +566,7 @@ void vpRobotUniversalRobots::setPosition(const vpRobot::vpControlFrameType frame
 
 int main()
 {
-#if defined(VISP_HAVE_UR_RTDE) && (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
+#if defined(VISP_HAVE_UR_RTDE)
   vpRobotUniversalRobots robot;
 
   vpColVector qd(6);
@@ -635,21 +635,25 @@ void vpRobotUniversalRobots::setVelocity(const vpRobot::vpControlFrameType frame
     double dt = 1.0 / 1000; // 2ms
     double acceleration = 0.5;
     m_rtde_control->speedJ(vel_sat.toStdVector(), acceleration, dt);
-  } else if (frame == vpRobot::REFERENCE_FRAME) {
+  }
+  else if (frame == vpRobot::REFERENCE_FRAME) {
     double dt = 1.0 / 1000; // 2ms
     double acceleration = 0.25;
     m_rtde_control->speedL(vel_sat.toStdVector(), acceleration, dt);
-  } else if (frame == vpRobot::END_EFFECTOR_FRAME) {
+  }
+  else if (frame == vpRobot::END_EFFECTOR_FRAME) {
     double dt = 1.0 / 1000; // 2ms
     double acceleration = 0.25;
     vpVelocityTwistMatrix fVe(get_fMe(), false);
     m_rtde_control->speedL((fVe * vel_sat).toStdVector(), acceleration, dt);
-  } else if (frame == vpRobot::CAMERA_FRAME) {
+  }
+  else if (frame == vpRobot::CAMERA_FRAME) {
     double dt = 1.0 / 1000; // 2ms
     double acceleration = 0.25;
     vpColVector w_v_e = vpVelocityTwistMatrix(get_fMe(), false) * vpVelocityTwistMatrix(m_eMc) * vel_sat;
     m_rtde_control->speedL(w_v_e.toStdVector(), acceleration, dt);
-  } else {
+  }
+  else {
     throw(vpException(vpRobotException::functionNotImplementedError,
                       "Cannot move the robot in velocity in the specified frame: not implemented"));
   }
@@ -809,7 +813,7 @@ bool vpRobotUniversalRobots::savePosFile(const std::string &filename, const vpCo
 
   FILE *fd;
   fd = fopen(filename.c_str(), "w");
-  if (fd == NULL)
+  if (fd == nullptr)
     return false;
 
   fprintf(fd, "#UR - Joint position file\n"
@@ -850,8 +854,9 @@ vpRobot::vpRobotStateType vpRobotUniversalRobots::setRobotState(vpRobot::vpRobot
         throw(vpException(vpException::fatalError, "Cannot stop UR robot: robot is not connected"));
       }
       m_rtde_control->speedStop();
-    } else {
-      // std::cout << "Change the control mode from stop to position control" << std::endl;
+    }
+    else {
+   // std::cout << "Change the control mode from stop to position control" << std::endl;
     }
     break;
   }
@@ -871,5 +876,5 @@ vpRobot::vpRobotStateType vpRobotUniversalRobots::setRobotState(vpRobot::vpRobot
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning: libvisp_robot.a(vpRobotUniversalRobots.cpp.o) has no
 // symbols
-void dummy_vpRobotUniversalRobots(){};
+void dummy_vpRobotUniversalRobots() { };
 #endif

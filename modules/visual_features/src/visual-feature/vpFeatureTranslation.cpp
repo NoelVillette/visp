@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,11 +31,7 @@
  * Description:
  * 3D translation visual feature.
  *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/visual_features/vpBasicFeature.h>
 #include <visp3/visual_features/vpFeatureTranslation.h>
@@ -73,7 +69,7 @@ void vpFeatureTranslation::init()
 
   // memory allocation
   s.resize(dim_s);
-  if (flags == NULL)
+  if (flags == nullptr)
     flags = new bool[nbParameters];
   for (unsigned int i = 0; i < nbParameters; i++)
     flags[i] = false;
@@ -591,7 +587,7 @@ void vpFeatureTranslation::print(unsigned int select) const
 */
 vpFeatureTranslation *vpFeatureTranslation::duplicate() const
 {
-  vpFeatureTranslation *feature = NULL;
+  vpFeatureTranslation *feature = nullptr;
   if (translation == cdMc)
     feature = new vpFeatureTranslation(cdMc);
   if (translation == cMo)

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +29,7 @@
  *
  * Description:
  * Network Request.
- *
- * Authors:
- * Aurelien Yol
- *
- *****************************************************************************/
+ */
 
 #ifndef vpRequest_H
 #define vpRequest_H
@@ -54,7 +49,7 @@
 
   \brief This the request that will transit on the network
 
-  Exemple request decoding an image on a specific form.
+  Example request decoding an image on a specific form.
   First parameter : Height of the image.
   Second parameter : Width of the image.
   Thirs parameter : Bitmap of the image (not compress).

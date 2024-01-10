@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Tukey M-estimator.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef _vpMbtTukeyEstimator_h_
 #define _vpMbtTukeyEstimator_h_
@@ -79,7 +79,7 @@ private:
 #include <visp3/core/vpCPUFeatures.h>
 
 #define USE_TRANSFORM 1
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11) && USE_TRANSFORM
+#if USE_TRANSFORM
 #define HAVE_TRANSFORM 1
 #include <functional>
 #endif
@@ -113,10 +113,12 @@ private:
 #if HAVE_TRANSFORM
 namespace
 {
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_14)
+// Check if std:c++14 or higher
+#if ((__cplusplus >= 201402L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201402L)))
 auto AbsDiff = [](const auto &a, const auto &b) { return std::fabs(a - b); };
 #else
-template <typename T> struct AbsDiff : public std::binary_function<T, T, T> {
+template <typename T> struct AbsDiff : public std::binary_function<T, T, T>
+{
   T operator()(const T a, const T b) const { return std::fabs(a - b); }
 };
 #endif
@@ -165,7 +167,8 @@ void vpMbtTukeyEstimator<T>::MEstimator_impl(const std::vector<T> &residues, std
   m_normres.resize(residues.size());
 
 #if HAVE_TRANSFORM
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_14)
+// Check if std:c++14 or higher
+#if ((__cplusplus >= 201402L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201402L)))
   std::transform(residues.begin(), residues.end(), m_normres.begin(), std::bind(AbsDiff, std::placeholders::_1, med));
 #else
   std::transform(residues.begin(), residues.end(), m_normres.begin(),
@@ -269,7 +272,8 @@ inline void vpMbtTukeyEstimator<double>::MEstimator_impl_simd(const std::vector<
   m_normres.resize(residues.size());
 
 #if HAVE_TRANSFORM
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_14)
+// Check if std:c++14 or higher
+#if ((__cplusplus >= 201402L) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 201402L)))
   std::transform(residues.begin(), residues.end(), m_normres.begin(), std::bind(AbsDiff, std::placeholders::_1, med));
 #else
   std::transform(residues.begin(), residues.end(), m_normres.begin(),
@@ -308,7 +312,11 @@ template <>
 inline void vpMbtTukeyEstimator<float>::MEstimator(const std::vector<float> &residues, std::vector<float> &weights,
                                                    float NoiseThreshold)
 {
+#if defined(VISP_HAVE_SIMDLIB)
   bool checkSimd = vpCPUFeatures::checkSSSE3() || vpCPUFeatures::checkNeon();
+#else
+  bool checkSimd = vpCPUFeatures::checkSSSE3();
+#endif
 #if !VISP_HAVE_SSSE3 && !VISP_HAVE_NEON
   checkSimd = false;
 #endif
@@ -326,7 +334,11 @@ template <>
 inline void vpMbtTukeyEstimator<double>::MEstimator(const std::vector<double> &residues, std::vector<double> &weights,
                                                     double NoiseThreshold)
 {
+#if defined(VISP_HAVE_SIMDLIB)
   bool checkSimd = vpCPUFeatures::checkSSSE3() || vpCPUFeatures::checkNeon();
+#else
+  bool checkSimd = vpCPUFeatures::checkSSSE3();
+#endif
 #if !VISP_HAVE_SSSE3 && !VISP_HAVE_NEON
   checkSimd = false;
 #endif
@@ -351,7 +363,8 @@ template <typename T> void vpMbtTukeyEstimator<T>::psiTukey(const T sig, std::ve
 
     if (xi > 1.) {
       weights[i] = 0;
-    } else {
+    }
+    else {
       xi = 1 - xi;
       xi *= xi;
       weights[i] = xi;
@@ -450,7 +463,8 @@ template <class T> void vpMbtTukeyEstimator<T>::psiTukey(const T sig, std::vecto
 
     if (xi > 1.) {
       weights[i] = 0;
-    } else {
+    }
+    else {
       xi = 1 - xi;
       xi *= xi;
       weights[i] = xi;

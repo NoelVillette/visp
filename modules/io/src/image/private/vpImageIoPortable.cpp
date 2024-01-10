@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,8 +29,7 @@
  *
  * Description:
  * Backend for portable image format I/O operations.
- *
- *****************************************************************************/
+ */
 
 /*!
   \file vpImageIoPortable.cpp
@@ -192,7 +190,7 @@ void vp_writePFM(const vpImage<float> &I, const std::string &filename)
 
   fd = fopen(filename.c_str(), "wb");
 
-  if (fd == NULL) {
+  if (fd == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot create PFM file \"%s\"", filename.c_str()));
   }
 
@@ -224,7 +222,7 @@ void vp_writePFM_HDR(const vpImage<float> &I, const std::string &filename)
   }
 
   FILE *fd = fopen(filename.c_str(), "wb");
-  if (fd == NULL) {
+  if (fd == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot create PFM file \"%s\"", filename.c_str()));
   }
 
@@ -260,7 +258,7 @@ void vp_writePFM_HDR(const vpImage<vpRGBf> &I, const std::string &filename)
   }
 
   FILE *fd = fopen(filename.c_str(), "wb");
-  if (fd == NULL) {
+  if (fd == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot create PFM file \"%s\"", filename.c_str()));
   }
 
@@ -310,7 +308,7 @@ void vp_writePGM(const vpImage<unsigned char> &I, const std::string &filename)
 
   fd = fopen(filename.c_str(), "wb");
 
-  if (fd == NULL) {
+  if (fd == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot create PGM file \"%s\"", filename.c_str()));
   }
 
@@ -375,7 +373,7 @@ void vp_writePGM(const vpImage<vpRGBa> &I, const std::string &filename)
 
   fd = fopen(filename.c_str(), "wb");
 
-  if (fd == NULL) {
+  if (fd == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot create PGM file \"%s\"", filename.c_str()));
   }
 
@@ -610,7 +608,7 @@ void vp_readPFM_HDR(vpImage<vpRGBf> &I, const std::string &filename)
   Read a PGM P5 file and initialize a scalar image.
 
   Read the contents of the portable gray pixmap (PGM P5) filename, allocate
-  memory for the corresponding image, and set the bitmap whith the content of
+  memory for the corresponding image, and set the bitmap with the content of
   the file.
 
   If the image has been already initialized, memory allocation is done
@@ -663,7 +661,7 @@ void vp_readPGM(vpImage<unsigned char> &I, const std::string &filename)
   Read a PGM P5 file and initialize a scalar image.
 
   Read the contents of the portable gray pixmap (PGM P5) filename, allocate
-  memory for the corresponding image, and set the bitmap whith the content of
+  memory for the corresponding image, and set the bitmap with the content of
   the file.
 
   If the image has been already initialized, memory allocation is done
@@ -692,7 +690,7 @@ void vp_readPGM(vpImage<vpRGBa> &I, const std::string &filename)
 /*!
   Read the contents of the portable pixmap (PPM P6) filename, allocate memory
   for the corresponding gray level image, convert the data in gray level, and
-  set the bitmap whith the gray level data. That means that the image \e I is
+  set the bitmap with the gray level data. That means that the image \e I is
   a "black and white" rendering of the original image in \e filename, as in a
   black and white photograph. The quantization formula used is \f$0,299 r +
   0,587 g + 0,114 b\f$.
@@ -808,7 +806,7 @@ void vp_writePPM(const vpImage<vpRGBa> &I, const std::string &filename)
 
   f = fopen(filename.c_str(), "wb");
 
-  if (f == NULL) {
+  if (f == nullptr) {
     throw(vpImageException(vpImageException::ioError, "Cannot create PPM file \"%s\"", filename.c_str()));
   }
 

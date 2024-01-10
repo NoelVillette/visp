@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Reading a video file.
  *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file videoReader.cpp
@@ -84,7 +81,7 @@ Read a video file on the disk.\n\
 \n\
 SYNOPSIS\n\
   %s [-i <input video path>] \n\
-     [-h]\n						      \
+     [-h]\n\
 ",
           name);
 
@@ -104,8 +101,8 @@ OPTIONS:                                               Default\n\
      Example : \"/Temp/visp-images/video/video.mpeg\"\n\
 \n\
   -c\n\
-     Disable the mouse click. Useful to automaze the \n\
-     execution of this program without humain intervention.\n\
+     Disable the mouse click. Useful to automate the \n\
+     execution of this program without human intervention.\n\
 \n\
   -d \n\
      Turn off the display.\n\
@@ -152,7 +149,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath, std::string &pp
       ppath = optarg_;
       break;
     case 'h':
-      usage(argv[0], NULL, ipath, ppath);
+      usage(argv[0], nullptr, ipath, ppath);
       return false;
       break;
 
@@ -165,7 +162,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath, std::string &pp
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL, ipath, ppath);
+    usage(argv[0], nullptr, ipath, ppath);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -210,7 +207,7 @@ int main(int argc, const char **argv)
       ipath = opt_ipath;
 
     // Compare ipath and env_ipath. If they differ, we take into account
-    // the input path comming from the command line option
+    // the input path coming from the command line option
     if (!opt_ipath.empty() && !env_ipath.empty() && opt_ppath.empty()) {
       if (ipath != env_ipath) {
         std::cout << std::endl << "WARNING: " << std::endl;
@@ -222,7 +219,7 @@ int main(int argc, const char **argv)
 
     // Test if an input path is set
     if (opt_ipath.empty() && env_ipath.empty() && opt_ppath.empty()) {
-      usage(argv[0], NULL, ipath, opt_ppath);
+      usage(argv[0], nullptr, ipath, opt_ppath);
       std::cerr << std::endl << "ERROR:" << std::endl;
       std::cerr << "  Use -i <visp image path> option or set VISP_INPUT_IMAGE_PATH " << std::endl
                 << "  environment variable to specify the location of the " << std::endl
@@ -252,13 +249,13 @@ int main(int argc, const char **argv)
     reader.open(I);
 
 // We open a window using either X11, GTK, GDI or OpenCV.
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
     vpDisplayX display;
-#elif defined VISP_HAVE_GTK
+#elif defined(VISP_HAVE_GTK)
     vpDisplayGTK display;
-#elif defined VISP_HAVE_GDI
+#elif defined(VISP_HAVE_GDI)
     vpDisplayGDI display;
-#elif defined VISP_HAVE_OPENCV
+#elif defined(HAVE_OPENCV_HIGHGUI)
     vpDisplayOpenCV display;
 #endif
 

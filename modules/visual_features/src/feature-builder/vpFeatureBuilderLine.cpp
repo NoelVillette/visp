@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Conversion between tracker and visual feature line.
  *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpFeatureBuilderLine.cpp
@@ -224,30 +221,8 @@ void vpFeatureBuilder::create(vpFeatureLine &s, const vpCameraParameters &cam, c
     while (theta < -M_PI) {
       theta += 2 * M_PI;
     }
-    //   vpTRACE("meter %f %f",rho, theta) ;
-    /*
 
-    while(theta < -M_PI)	theta += 2*M_PI ;
-    while(theta >= M_PI)	theta -= 2*M_PI ;
-
-    // If theta is between -90 and -180 get the equivalent
-    // between 0 and 90
-    if(theta <-M_PI/2)
-    {
-      theta += M_PI ;
-      rho *= -1 ;
-    }
-    // If theta is between 90 and 180 get the equivalent
-    // between 0 and -90
-    if(theta >M_PI/2)
-    {
-      theta -= M_PI ;
-      rho *= -1 ;
-    }
-    */
     s.buildFrom(rho, theta);
-    //   vpTRACE("meter %f %f",rho, theta) ;
-
   } catch (...) {
     vpERROR_TRACE("Error caught");
     throw;

@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Interface for the Irisa's Viper S650 robot.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
@@ -124,7 +121,7 @@ void emergencyStopViper650(int signo)
 
   The only available constructor.
 
-  This contructor calls init() to initialise the connection with the
+  This constructor calls init() to initialise the connection with the
   MotionBox or low level controller, send the default \f$^e{\bf
   M}_c\f$ homogeneous matrix and power on the robot.
 
@@ -132,7 +129,7 @@ void emergencyStopViper650(int signo)
 
   To set the extrinsic camera parameters related to the \f$^e{\bf
   M}_c\f$ matrix obtained with a camera perspective projection model
-  including the distorsion, use the code below:
+  including the distortion, use the code below:
 
   \code
 #include <visp3/core/vpCameraParameters.h>
@@ -146,7 +143,7 @@ int main()
   vpRobotViper650 robot;
 
   // Set the extrinsic camera parameters obtained with a perpective
-  // projection model including a distorsion parameter
+  // projection model including a distortion parameter
   robot.init(vpViper650::TOOL_MARLIN_F033C_CAMERA,
        vpCameraParameters::perspectiveProjWithDistortion);
   \endcode
@@ -165,7 +162,7 @@ int main()
   vpCameraParameters cam;
   robot.getCameraParameters(cam, I);
   // In cam, you get the intrinsic parameters of the projection model
-  // with distorsion.
+  // with distortion.
 #endif
 }
   \endcode
@@ -178,22 +175,22 @@ vpRobotViper650::vpRobotViper650(bool verbose) : vpViper650(), vpRobot()
 {
 
   /*
-    #define	SIGHUP	1	// hangup
-    #define	SIGINT	2	// interrupt (rubout)
-    #define	SIGQUIT	3	// quit (ASCII FS)
-    #define	SIGILL	4	// illegal instruction (not reset when caught)
-    #define	SIGTRAP	5	// trace trap (not reset when caught)
-    #define	SIGIOT	6	// IOT instruction
-    #define	SIGABRT 6	// used by abort, replace SIGIOT in the future
-    #define	SIGEMT	7	// EMT instruction
-    #define	SIGFPE	8	// floating point exception
-    #define	SIGKILL	9	// kill (cannot be caught or ignored)
-    #define	SIGBUS	10	// bus error
-    #define	SIGSEGV	11	// segmentation violation
-    #define	SIGSYS	12	// bad argument to system call
-    #define	SIGPIPE	13	// write on a pipe with no one to read it
-    #define	SIGALRM	14	// alarm clock
-    #define	SIGTERM	15	// software termination signal from kill
+    #define  SIGHUP  1  // hangup
+    #define  SIGINT  2  // interrupt (rubout)
+    #define  SIGQUIT  3  // quit (ASCII FS)
+    #define  SIGILL  4  // illegal instruction (not reset when caught)
+    #define  SIGTRAP  5  // trace trap (not reset when caught)
+    #define  SIGIOT  6  // IOT instruction
+    #define  SIGABRT 6  // used by abort, replace SIGIOT in the future
+    #define  SIGEMT  7  // EMT instruction
+    #define  SIGFPE  8  // floating point exception
+    #define  SIGKILL  9  // kill (cannot be caught or ignored)
+    #define  SIGBUS  10  // bus error
+    #define  SIGSEGV  11  // segmentation violation
+    #define  SIGSYS  12  // bad argument to system call
+    #define  SIGPIPE  13  // write on a pipe with no one to read it
+    #define  SIGALRM  14  // alarm clock
+    #define  SIGTERM  15  // software termination signal from kill
   */
 
   signal(SIGINT, emergencyStopViper650);
@@ -234,10 +231,10 @@ vpRobotViper650::vpRobotViper650(bool verbose) : vpViper650(), vpRobot()
 
   \warning This method sets the camera extrinsic parameters (matrix
   eMc) to the one obtained by calibration with a camera projection
-  model without distorsion by calling
+  model without distortion by calling
   init(vpViper650::defaultCameraRobot). If you want to set the extrinsic
   camera parameters to those obtained with a camera perspective model
-  including the distorsion you have to call the
+  including the distortion you have to call the
   init(vpViper650::vpToolType, vpCameraParameters::vpCameraParametersProjType)
   method. If you want to set custom extrinsic camera parameters you have to
   call the init(vpViper650::vpToolType, const vpHomogeneousMatrix&) method.
@@ -279,7 +276,7 @@ void vpRobotViper650::init(void)
   // Look if the power is on or off
   UInt32 HIPowerStatus;
   UInt32 EStopStatus;
-  Try(PrimitiveSTATUS_Viper650(NULL, NULL, &EStopStatus, NULL, NULL, NULL, &HIPowerStatus));
+  Try(PrimitiveSTATUS_Viper650(nullptr, nullptr, &EStopStatus, nullptr, nullptr, nullptr, &HIPowerStatus));
   CAL_Wait(0.1);
 
   // Print the robot status
@@ -362,7 +359,7 @@ void vpRobotViper650::init(void)
 
   To set the extrinsic camera parameters related to the \f$^e{\bf
   M}_c\f$ matrix obtained with a camera perspective projection model
-  including the distorsion, use the code below:
+  including the distortion, use the code below:
 
   \code
 #include <visp3/core/vpCameraParameters.h>
@@ -376,7 +373,7 @@ int main()
   vpRobotViper650 robot;
 
   // Set the extrinsic camera parameters obtained with a perpective
-  // projection model including a distorsion parameter
+  // projection model including a distortion parameter
   robot.init(vpViper650::TOOL_MARLIN_F033C_CAMERA, vpCameraParameters::perspectiveProjWithDistortion);
   \endcode
 
@@ -394,7 +391,7 @@ int main()
   vpCameraParameters cam;
   robot.getCameraParameters(cam, I);
   // In cam, you get the intrinsic parameters of the projection model
-  // with distorsion.
+  // with distortion.
 #endif
 }
   \endcode
@@ -663,7 +660,7 @@ vpRobotViper650::~vpRobotViper650(void)
 
   // Look if the power is on or off
   UInt32 HIPowerStatus;
-  Try(PrimitiveSTATUS_Viper650(NULL, NULL, NULL, NULL, NULL, NULL, &HIPowerStatus));
+  Try(PrimitiveSTATUS_Viper650(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &HIPowerStatus));
   CAL_Wait(0.1);
 
   //   if (HIPowerStatus == 1) {
@@ -775,7 +772,7 @@ void vpRobotViper650::powerOn(void)
   unsigned int nitermax = 10;
 
   for (unsigned int i = 0; i < nitermax; i++) {
-    Try(PrimitiveSTATUS_Viper650(NULL, NULL, &EStopStatus, NULL, NULL, NULL, &HIPowerStatus));
+    Try(PrimitiveSTATUS_Viper650(nullptr, nullptr, &EStopStatus, nullptr, nullptr, nullptr, &HIPowerStatus));
     if (EStopStatus == ESTOP_AUTO) {
       m_controlMode = AUTO;
       break; // exit for loop
@@ -840,7 +837,7 @@ void vpRobotViper650::powerOff(void)
 
   // Look if the power is on or off
   UInt32 HIPowerStatus;
-  Try(PrimitiveSTATUS_Viper650(NULL, NULL, NULL, NULL, NULL, NULL, &HIPowerStatus));
+  Try(PrimitiveSTATUS_Viper650(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &HIPowerStatus));
   CAL_Wait(0.1);
 
   if (HIPowerStatus == 1) {
@@ -874,7 +871,7 @@ bool vpRobotViper650::getPowerState(void) const
   bool status = false;
   // Look if the power is on or off
   UInt32 HIPowerStatus;
-  Try(PrimitiveSTATUS_Viper650(NULL, NULL, NULL, NULL, NULL, NULL, &HIPowerStatus));
+  Try(PrimitiveSTATUS_Viper650(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &HIPowerStatus));
   CAL_Wait(0.1);
 
   if (HIPowerStatus == 1) {
@@ -1599,7 +1596,7 @@ reference frame in m/s and rotations \f$ ^{c} \omega_x, ^{c} \omega_y, ^{c}
   vpRobot::STATE_VELOCITY_CONTROL) before setVelocity().
 
   \warning Velocities could be saturated if one of them exceed the
-  maximal autorized speed (see vpRobot::maxTranslationVelocity and
+  maximal authorized speed (see vpRobot::maxTranslationVelocity and
   vpRobot::maxRotationVelocity). To change these values use
   setMaxTranslationVelocity() and setMaxRotationVelocity().
 
@@ -1734,14 +1731,14 @@ void vpRobotViper650::setVelocity(const vpRobot::vpControlFrameType frame, const
   if (TryStt < 0) {
     if (TryStt == VelStopOnJoint) {
       UInt32 axisInJoint[njoint];
-      PrimitiveSTATUS_Viper650(NULL, NULL, NULL, NULL, NULL, axisInJoint, NULL);
+      PrimitiveSTATUS_Viper650(nullptr, nullptr, nullptr, nullptr, nullptr, axisInJoint, nullptr);
       for (unsigned int i = 0; i < njoint; i++) {
         if (axisInJoint[i])
           std::cout << "\nWarning: Velocity control stopped: axis " << i + 1 << " on joint limit!" << std::endl;
       }
     } else {
       printf("\n%s(%d): Error %d", __FUNCTION__, TryLine, TryStt);
-      if (TryString != NULL) {
+      if (TryString != nullptr) {
         // The statement is in TryString, but we need to check the validity
         printf(" Error sentence %s\n", TryString); // Print the TryString
       } else {
@@ -2165,7 +2162,7 @@ bool vpRobotViper650::savePosFile(const std::string &filename, const vpColVector
 
   FILE *fd;
   fd = fopen(filename.c_str(), "w");
-  if (fd == NULL)
+  if (fd == nullptr)
     return false;
 
   fprintf(fd, "\

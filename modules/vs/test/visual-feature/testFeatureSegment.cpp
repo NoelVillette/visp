@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Visual feature manipulation (segment).
  *
- * Author:
- * Filip Novotny
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <fstream>
 #include <iostream>
@@ -78,20 +75,20 @@ int main(int argc, const char **argv)
     int opt_normalized = 1;
 
     // Parse the command line to set the variables
-    vpParseArgv::vpArgvInfo argTable[] = {
+    vpParseArgv::vpArgvInfo argTable [] = {
 #if (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI))
       {"-d", vpParseArgv::ARGV_CONSTANT_INT, 0, (char *)&opt_no_display, "Disable display and graphics viewer."},
 #endif
-      {"-normalized", vpParseArgv::ARGV_INT, (char *)NULL, (char *)&opt_normalized,
+      {"-normalized", vpParseArgv::ARGV_INT, (char *)nullptr, (char *)&opt_normalized,
        "1 to use normalized features, 0 for non normalized."},
-      {"-h", vpParseArgv::ARGV_HELP, (char *)NULL, (char *)NULL, "Print the help."},
-      {(char *)NULL, vpParseArgv::ARGV_END, (char *)NULL, (char *)NULL, (char *)NULL}
+      {"-h", vpParseArgv::ARGV_HELP, (char *)nullptr, (char *)nullptr, "Print the help."},
+      {(char *)nullptr, vpParseArgv::ARGV_END, (char *)nullptr, (char *)nullptr, (char *)nullptr}
     };
 
     // Read the command line options
     if (vpParseArgv::parse(&argc, argv, argTable,
                            vpParseArgv::ARGV_NO_LEFTOVERS | vpParseArgv::ARGV_NO_ABBREV |
-                               vpParseArgv::ARGV_NO_DEFAULTS)) {
+                           vpParseArgv::ARGV_NO_DEFAULTS)) {
       return (false);
     }
 
@@ -106,11 +103,11 @@ int main(int argc, const char **argv)
     vpCameraParameters cam(640., 480., 320., 240.);
 
 #if defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI)
-    vpDisplay *display = NULL;
+    vpDisplay *display = nullptr;
     if (!opt_no_display) {
 #if defined(VISP_HAVE_X11)
       display = new vpDisplayX;
-#elif defined VISP_HAVE_GDI
+#elif defined(VISP_HAVE_GDI)
       display = new vpDisplayGDI;
 #endif
     }
@@ -122,7 +119,7 @@ int main(int argc, const char **argv)
       display->init(I);
 #endif
 
-    vpHomogeneousMatrix wMo; // Set to indentity. Robot world frame is equal to object frame
+    vpHomogeneousMatrix wMo; // Set to identity. Robot world frame is equal to object frame
     vpHomogeneousMatrix cMo(-0.5, 0.5, 2., vpMath::rad(10), vpMath::rad(20), vpMath::rad(30));
     vpHomogeneousMatrix cdMo(0., 0., 1., vpMath::rad(0), vpMath::rad(0), vpMath::rad(0));
     vpHomogeneousMatrix wMc; // Camera location in the robot world frame
@@ -149,7 +146,8 @@ int main(int argc, const char **argv)
       if (opt_normalized) {
         seg_cur[i].setNormalized(true);
         seg_des[i].setNormalized(true);
-      } else {
+      }
+      else {
         seg_cur[i].setNormalized(false);
         seg_des[i].setNormalized(false);
       }
@@ -180,7 +178,7 @@ int main(int argc, const char **argv)
 #endif
 
 #if (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI))
-    vpPlot *graph = NULL;
+    vpPlot *graph = nullptr;
     if (opt_curves) {
       // Create a window (700 by 700) at position (100, 200) with two graphics
       graph = new vpPlot(2, 500, 500, 700, 10, "Curves...");
@@ -241,17 +239,18 @@ int main(int argc, const char **argv)
     } while ((task.getError()).sumSquare() > 0.0005);
 
 #if (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI))
-    if (graph != NULL)
+    if (graph != nullptr)
       delete graph;
 #endif
 #if (defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI))
-    if (!opt_no_display && display != NULL)
+    if (!opt_no_display && display != nullptr)
       delete display;
 #endif
 
     std::cout << "final error=" << (task.getError()).sumSquare() << std::endl;
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e << std::endl;
     return EXIT_FAILURE;
   }

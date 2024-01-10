@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,12 +30,7 @@
  * Description:
  * Wrapper for the KLT (Kanade-Lucas-Tomasi) feature tracker implemented
  * with opencv.
- *
- * Authors:
- * Fabien Servant
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
 
 /*!
   \file vpKltOpencv.h
@@ -45,61 +39,144 @@
   implemented with opencv.
 */
 
-#ifndef vpKltOpencv_h
-#define vpKltOpencv_h
+#ifndef _vpKltOpencv_h_
+#define _vpKltOpencv_h_
 
 #include <visp3/core/vpColor.h>
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpImage.h>
 
-#if (defined(VISP_HAVE_OPENCV) && (VISP_HAVE_OPENCV_VERSION >= 0x020408))
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_HIGHGUI) && defined(HAVE_OPENCV_IMGPROC) && defined(HAVE_OPENCV_VIDEO)
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
 
 /*!
-  \class vpKltOpencv
-
-  \ingroup module_klt
-
-  \brief Wrapper for the KLT (Kanade-Lucas-Tomasi) feature tracker
-  implemented in OpenCV. Thus to enable this class OpenCV should be installed.
-  Installation instructions are provided here
-  https://visp.inria.fr/3rd_opencv.
-
-  The following example available in tutorial-klt-tracker.cpp shows how to use
-  the main functions of the class.
-
-  \include tutorial-klt-tracker.cpp
-
-  A line by line explanation is provided in \ref tutorial-tracking-keypoint.
-*/
+ * \class vpKltOpencv
+ *
+ * \ingroup module_klt
+ *
+ * \brief Wrapper for the KLT (Kanade-Lucas-Tomasi) feature tracker
+ * implemented in OpenCV. Thus to enable this class OpenCV should be installed.
+ * Installation instructions are provided here
+ * https://visp.inria.fr/3rd_opencv.
+ *
+ * The following example available in tutorial-klt-tracker.cpp shows how to use
+ * the main functions of the class.
+ *
+ * \include tutorial-klt-tracker.cpp
+ *
+ * A line by line explanation is provided in \ref tutorial-tracking-keypoint.
+ */
 class VISP_EXPORT vpKltOpencv
 {
 public:
+  /*!
+   * Default constructor.
+   */
   vpKltOpencv();
+  /*!
+   * Copy constructor.
+   */
   vpKltOpencv(const vpKltOpencv &copy);
+  /*!
+   * Destructor.
+   */
   virtual ~vpKltOpencv();
 
+  /*!
+   * Add a keypoint at the end of the feature list. The id of the feature is set
+   * to ensure that it is unique. \param x,y : Coordinates of the feature in the
+   * image.
+   */
   void addFeature(const float &x, const float &y);
+
+  /*!
+   * Add a keypoint at the end of the feature list.
+   *
+   * \warning This function doesn't ensure that the id of the feature is unique.
+   * You should rather use addFeature(const float &, const float &) or
+   * addFeature(const cv::Point2f &).
+   *
+   * \param id : Feature id. Should be unique
+   * \param x,y : Coordinates of the feature in the image.
+   */
   void addFeature(const long &id, const float &x, const float &y);
+
+  /*!
+   * Add a keypoint at the end of the feature list. The id of the feature is set
+   * to ensure that it is unique.
+   * \param f : Coordinates of the feature in the image.
+   */
   void addFeature(const cv::Point2f &f);
 
+  /*!
+   * Display features position and id.
+   *
+   * \param I : Image used as background. Display should be initialized on it.
+   * \param color : Color used to display the features.
+   * \param thickness : Thickness of the drawings.
+   */
   void display(const vpImage<unsigned char> &I, const vpColor &color = vpColor::red, unsigned int thickness = 1);
+  /*!
+   * Display features list.
+   *
+   * \param I : The image used as background.
+   * \param features : Vector of features.
+   * \param color : Color used to display the points.
+   * \param thickness : Thickness of the points.
+   */
   static void display(const vpImage<unsigned char> &I, const std::vector<cv::Point2f> &features,
                       const vpColor &color = vpColor::green, unsigned int thickness = 1);
+  /*!
+   * Display features list.
+   *
+   * \param I : The image used as background.
+   * \param features : Vector of features.
+   * \param color : Color used to display the points.
+   * \param thickness : Thickness of the points.
+   */
   static void display(const vpImage<vpRGBa> &I, const std::vector<cv::Point2f> &features,
                       const vpColor &color = vpColor::green, unsigned int thickness = 1);
+  /*!
+   * Display features list with ids.
+   *
+   * \param I : The image used as background.
+   * \param features : Vector of features.
+   * \param featuresid : Vector of ids corresponding to the features.
+   * \param color : Color used to display the points.
+   * \param thickness : Thickness of the points
+   */
   static void display(const vpImage<unsigned char> &I, const std::vector<cv::Point2f> &features,
-                      const std::vector<long> &featuresid, const vpColor &color = vpColor::green,
-                      unsigned int thickness = 1);
+                        const std::vector<long> &featuresid, const vpColor &color = vpColor::green,
+                        unsigned int thickness = 1);
+  /*!
+   * Display features list with ids.
+   *
+   * \param I : The image used as background.
+   * \param features : Vector of features.
+   * \param featuresid : Vector of ids corresponding to the features.
+   * \param color : Color used to display the points.
+   * \param thickness : Thickness of the points
+   */
   static void display(const vpImage<vpRGBa> &I, const std::vector<cv::Point2f> &features,
                       const std::vector<long> &featuresid, const vpColor &color = vpColor::green,
                       unsigned int thickness = 1);
 
   //! Get the size of the averaging block used to track the features.
   int getBlockSize() const { return m_blockSize; }
+  /*!
+   * Get the 'index'th feature image coordinates.  Beware that
+   * getFeature(i,...) may not represent the same feature before and
+   * after a tracking iteration (if a feature is lost, features are
+   * shifted in the array).
+   *
+   * \param index : Index of feature.
+   * \param id : id of the feature.
+   * \param x : x coordinate.
+   * \param y : y coordinate.
+   */
   void getFeature(const int &index, long &id, float &x, float &y) const;
   //! Get the list of current features.
   std::vector<cv::Point2f> getFeatures() const { return m_points[1]; }
@@ -134,315 +211,194 @@ public:
   //! Get the window size used to refine the corner locations.
   int getWindowSize() const { return m_winSize; }
 
+  /*!
+   * Initialise the tracking by extracting KLT keypoints on the provided image.
+   *
+   * \param I : Grey level image used as input. This image should have only 1 channel.
+   * \param mask : Image mask used to restrict the keypoint detection
+   * area. If mask is nullptr, all the image will be considered.
+   *
+   * \exception vpTrackingException::initializationError : If the image I is not
+   * initialized, or if the image or the mask have bad coding format.
+   */
   void initTracking(const cv::Mat &I, const cv::Mat &mask = cv::Mat());
+
+  /*!
+   * Set the points that will be used as initialization during the next call to
+   * track().
+   *
+   * \param I : Input image.
+   * \param pts : Vector of points that should be tracked.
+   */
   void initTracking(const cv::Mat &I, const std::vector<cv::Point2f> &pts);
+
+  /*!
+   * Set the points that will be used as initialization during the next call to
+   * track().
+   *
+   * \param I : Input image.
+   * \param pts : Vector of points that should be tracked.
+   * \param ids : Corresponding point ids.
+   */
   void initTracking(const cv::Mat &I, const std::vector<cv::Point2f> &pts, const std::vector<long> &ids);
 
+  /*!
+   * Copy operator.
+   */
   vpKltOpencv &operator=(const vpKltOpencv &copy);
+
+  /*!
+   * Track KLT keypoints using the iterative Lucas-Kanade method with pyramids.
+   *
+   * \param I : Input image.
+   */
   void track(const cv::Mat &I);
-  void setBlockSize(int blockSize);
-  void setHarrisFreeParameter(double harris_k);
+
+  /*!
+   * Set the size of the averaging block used to track the features.
+   *
+   * \warning The input is a signed integer to be compatible with OpenCV.
+   * However, it must be a positive integer.
+   *
+   * \param blockSize : Size of an average block for computing a derivative
+   * covariation matrix over each pixel neighborhood. Default value is set to 3.
+   */
+  void setBlockSize(int blockSize) { m_blockSize = blockSize; }
+
+  /*!
+   * Set the free parameter of the Harris detector.
+   *
+   * \param harris_k : Free parameter of the Harris detector. Default value is
+   * set to 0.04.
+   */
+  void setHarrisFreeParameter(double harris_k) { m_harris_k = harris_k; }
+
+  /*!
+   * Set the points that will be used as initial guess during the next call to
+   * track(). A typical usage of this function is to predict the position of the
+   * features before the next call to track().
+   *
+   * \param guess_pts : Vector of points that should be tracked. The size of this
+   * vector should be the same as the one returned by getFeatures(). If this is
+   * not the case, an exception is returned. Note also that the id of the points
+   * is not modified.
+   *
+   * \sa initTracking()
+   */
   void setInitialGuess(const std::vector<cv::Point2f> &guess_pts);
+
+  /*!
+   * Set the points that will be used as initial guess during the next call to
+   * track(). A typical usage of this function is to predict the position of the
+   * features before the next call to track().
+   *
+   * \param init_pts : Initial points (could be obtained from getPrevFeatures()
+   * or getFeatures()).
+   * \param guess_pts : Prediction of the new position of the
+   * initial points. The size of this vector must be the same as the size of the
+   * vector of initial points.
+   * \param fid : Identifiers of the initial points.
+   *
+   * \sa getPrevFeatures(),getPrevFeaturesId
+   * \sa getFeatures(), getFeaturesId
+   * \sa initTracking()
+   */
   void setInitialGuess(const std::vector<cv::Point2f> &init_pts, const std::vector<cv::Point2f> &guess_pts,
                        const std::vector<long> &fid);
-  void setMaxFeatures(int maxCount);
-  void setMinDistance(double minDistance);
-  void setMinEigThreshold(double minEigThreshold);
-  void setPyramidLevels(int pyrMaxLevel);
-  void setQuality(double qualityLevel);
+  /*!
+   * Set the maximum number of features to track in the image.
+   *
+   * \param maxCount : Maximum number of features to detect and track. Default
+   * value is set to 500.
+   */
+  void setMaxFeatures(int maxCount) { m_maxCount = maxCount; }
+
+  /*!
+   * Set the minimal Euclidean distance between detected corners during
+   * initialization.
+   *
+   * \param minDistance : Minimal possible Euclidean distance between the
+   * detected corners. Default value is set to 15.
+   */
+  void setMinDistance(double minDistance) { m_minDistance = minDistance; }
+
+  /*!
+   * Set the minimal eigen value threshold used to reject a point during the
+   * tracking.
+   *
+   * \param minEigThreshold : Minimal eigen value threshold. Default
+   * value is set to 1e-4.
+   */
+  void setMinEigThreshold(double minEigThreshold) { m_minEigThreshold = minEigThreshold; }
+
+  /*!
+   * Set the maximal pyramid level. If the level is zero, then no pyramid is
+   * computed for the optical flow.
+   *
+   * \param pyrMaxLevel : 0-based maximal pyramid level number; if set to 0,
+   * pyramids are not used (single level), if set to 1, two levels are used, and
+   * so on. Default value is set to 3.
+   */
+  void setPyramidLevels(int pyrMaxLevel) { m_pyrMaxLevel = pyrMaxLevel; }
+
+  /*!
+   * Set the parameter characterizing the minimal accepted quality of image
+   * corners.
+   *
+   * \param qualityLevel : Quality level parameter. Default value is set to 0.01.
+   * The parameter value is multiplied by the best corner quality measure, which
+   * is the minimal eigenvalue or the Harris function response. The corners with
+   * the quality measure less than the product are rejected. For example, if the
+   * best corner has the quality measure = 1500, and the qualityLevel=0.01, then
+   * all the corners with the quality measure less than 15 are rejected.
+   */
+  void setQuality(double qualityLevel) { m_qualityLevel = qualityLevel; }
+
   //! Does nothing. Just here for compat with previous releases that use
   //! OpenCV C api to do the tracking.
   void setTrackerId(int tid) { (void)tid; }
-  void setUseHarris(int useHarrisDetector);
-  void setWindowSize(int winSize);
+
+  /*!
+   * Set the parameter indicating whether to use a Harris detector or
+   * the minimal eigenvalue of gradient matrices for corner detection.
+   * \param useHarrisDetector : If 1 (default value), use the Harris detector. If
+   * 0 use the eigenvalue.
+   */
+  void setUseHarris(int useHarrisDetector) { m_useHarrisDetector = useHarrisDetector; }
+
+  /*!
+   * Set the window size used to refine the corner locations.
+   *
+   * \param winSize : Half of the side length of the search window. Default value
+   * is set to 10. For example, if \e winSize=5 , then a 5*2+1 \f$\times\f$ 5*2+1
+   * = 11 \f$\times\f$ 11 search window is used.
+   */
+  void setWindowSize(int winSize) { m_winSize = winSize; }
+
+  /*!
+   * Remove the feature with the given index as parameter.
+   *
+   * \param index : Index of the feature to remove.
+   */
   void suppressFeature(const int &index);
 
 protected:
-  cv::Mat m_gray, m_prevGray;
+  cv::Mat m_gray; //!< Gray image
+  cv::Mat m_prevGray; //!< Previous gray image
   std::vector<cv::Point2f> m_points[2]; //!< Previous [0] and current [1] keypoint location
   std::vector<long> m_points_id;        //!< Keypoint id
-  int m_maxCount;
-  cv::TermCriteria m_termcrit;
-  int m_winSize;
-  double m_qualityLevel;
-  double m_minDistance;
-  double m_minEigThreshold;
-  double m_harris_k;
-  int m_blockSize;
-  int m_useHarrisDetector;
-  int m_pyrMaxLevel;
-  long m_next_points_id;
-  bool m_initial_guess;
-};
-
-#elif defined(VISP_HAVE_OPENCV)
-#ifdef _CH_
-#pragma package < opencv>
-#endif
-
-#if (VISP_HAVE_OPENCV_VERSION >= 0x020101) // Require opencv >= 2.1.1
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/legacy/legacy.hpp>
-#include <opencv2/video/tracking.hpp>
-#else
-#ifndef _EiC
-#include <ctype.h>
-#include <cv.h>
-#include <highgui.h>
-#include <stdio.h>
-#endif
-#endif
-
-#include <visp3/core/vpDebug.h>
-#include <visp3/core/vpDisplay.h>
-#include <visp3/core/vpException.h>
-#include <visp3/core/vpImage.h>
-#include <visp3/core/vpTrackingException.h>
-
-typedef int (*funccheck)(int, double, double);
-typedef void (*funcinfo)(int, int, int, double, double);
-typedef void (*funcevent)(int);
-
-/*!
-  \class vpKltOpencv
-
-  \ingroup module_klt
-
-  \brief Wrapper for the KLT (Kanade-Lucas-Tomasi) feature tracker
-  implemented in OpenCV.
-
-  The following example available in tutorial-klt-tracker.cpp shows how to use
-  the main functions of the class.
-
-  \include tutorial-klt-tracker.cpp
-
-  A line by line explanation is provided in \ref tutorial-tracking-keypoint.
-*/
-class VISP_EXPORT vpKltOpencv
-{
-private:
-  int initialized; // Is the tracker ready ?
-
-  int maxFeatures;         // Maximum number of features to track (Default 50)
-  int globalcountFeatures; // Keep over time for ID
-
-  int win_size;                 // Size of search window for tracker (default 10)
-  double quality;               // Multiplier for the maxmin eigenvalue; specifies minimal
-                                // accepted quality of image corners (default 0.01)
-  double min_distance;          // Limit, specifying minimum possible distance between
-                                // returned corners; Euclidian distance is used.
-                                // (default 10)
-  double harris_free_parameter; // Harris detector free parameter. (default 0.04)
-  int block_size;               // Size of the averaging block used by the corner detector
-                                // (default 3)
-  int use_harris;               // 0 use a simple Minimum EigenValue Detector, != 0  use
-                                // Harris (default 1)
-  int pyramid_level;            // Number of level for the tracker's gaussian pyramid
-                                // data (default 3)
-  int _tid;                     // tracker id for multiple trackers
-
-  IplImage *image;        // Image buffer
-  IplImage *prev_image;   // Image buffer for the previous iteration
-  IplImage *pyramid;      // Gaussian pyramid data
-  IplImage *prev_pyramid; // Gaussian pyramid data for the previous iteration
-  IplImage *swap_temp;    // Internal
-
-  int countFeatures;     // Currently tracked features
-  int countPrevFeatures; // Previously tracked features
-
-  CvPoint2D32f *features;      // List of features
-  CvPoint2D32f *prev_features; // List of features for previous iteration
-
-  long *featuresid;      // Array of ids for features
-  long *prev_featuresid; // Array of ids for previous features
-
-  int flags; // Flags for tracking (internal)
-
-  bool initial_guess; // Bool to precise if the next call to track() uses an
-                      // initial guess
-
-  bool *lostDuringTrack; // Result of the tracker for every feature : 1 =
-                         // lost, 0 = still present
-  char *status;          // Result of the tracker for every features : 0 = lost, 1 =
-                         // found
-
-  // EVENT FUNCTION POINTERS
-  funcevent OnInitialize;
-  funcinfo OnFeatureLost;
-  funcinfo OnNewFeature;
-  funcinfo OnMeasureFeature;
-  funccheck IsFeatureValid;
-
-private:
-  // Internal
-  void clean();
-  void cleanAll();
-  void reset();
-
-public:
-  vpKltOpencv();
-  vpKltOpencv(const vpKltOpencv &copy);
-  virtual ~vpKltOpencv();
-
-  void addFeature(const int &id, const float &x, const float &y);
-
-  // Draw the tracked features on the given image
-  void display(const vpImage<unsigned char> &I, vpColor color = vpColor::red, unsigned int thickness = 1);
-
-  //! Get the block size
-  int getBlockSize() const { return block_size; }
-  void getFeature(int index, long &id, float &x, float &y) const;
-  //! Get the list of features
-  CvPoint2D32f *getFeatures() const { return features; }
-  //! Get the list of features id
-  long *getFeaturesId() const { return featuresid; }
-  //! Get Harris free parameter
-  double getHarrisFreeParameter() const { return harris_free_parameter; }
-  //! Get the list of lost feature
-  bool *getListOfLostFeature() const { return lostDuringTrack; }
-  //! Get Max number of features
-  int getMaxFeatures() const { return maxFeatures; }
-  //! Get Min Distance
-  double getMinDistance() const { return min_distance; }
-  //! Get the current number of features
-  int getNbFeatures() const { return countFeatures; }
-  //! Get the previous number of features
-  int getNbPrevFeatures() const { return countPrevFeatures; }
-  void getPrevFeature(int index, int &id, float &x, float &y) const;
-  //! Get the list of features
-  CvPoint2D32f *getPrevFeatures() const { return prev_features; }
-  //! Get the list of features id
-  long *getPrevFeaturesId() const { return prev_featuresid; }
-  //! Get the number of pyramid levels
-  int getPyramidLevels() const { return pyramid_level; }
-  //! Get the quality of the tracker
-  double getQuality() const { return quality; }
-  //! Get Max number of features
-  int getWindowSize() const { return win_size; }
-
-  // Detect corners in the image. Initialize the tracker
-  void initTracking(const IplImage *I, const IplImage *mask = NULL);
-  void initTracking(const IplImage *I, CvPoint2D32f *pts, int size);
-  void initTracking(const IplImage *I, CvPoint2D32f *pts, long *fid, int size);
-  vpKltOpencv &operator=(const vpKltOpencv &copy);
-  // Track !
-  void track(const IplImage *I);
-
-  // Seters
-  /*!
-    Set the size of the averaging block used to track the features.
-
-    \warning The input is a signed integer to be compatible with OpenCV.
-    However, it must be a positive integer.
-
-    \param input : The new size of the block.
-  */
-  void setBlockSize(int input)
-  {
-    initialized = 0;
-    block_size = input;
-  }
-  /*!
-    Set the Harris parameter (The \e k value).
-
-    \warning The tracker must be re-initialised using the method
-    initTracking().
-
-    \param input : The new Harris parameter.
-  */
-  void setHarrisFreeParameter(double input)
-  {
-    initialized = 0;
-    harris_free_parameter = input;
-  }
-  void setInitialGuess(CvPoint2D32f **guess_pts);
-  void setInitialGuess(CvPoint2D32f **init_pts, CvPoint2D32f **guess_pts, long *fid, int size);
-  /*!
-    Is a feature valid (e.g. : test if not too close to borders) ->
-    event(id_tracker, x, y)
-    */
-  void setIsFeatureValid(funccheck input) { IsFeatureValid = input; }
-
-  /* Should be used only before initTracking */
-  void setMaxFeatures(int input);
-  /*!
-    Set the minimal distance between two points during the initialisation.
-
-    \warning The tracker must be re-initialised using the method
-    initTracking().
-
-    \param input : The new minimal distance between two points.
-  */
-  void setMinDistance(double input)
-  {
-    initialized = 0;
-    min_distance = input;
-  }
-
-  // Functors
-
-  // Event when tracker is initialized -> event(id_tracker)
-  void setOnInitialize(funcevent input) { OnInitialize = input; }
-  // Event when a feature is lost -> event(id_tracker, index, uid, x, y)
-  void setOnFeatureLost(funcinfo input) { OnFeatureLost = input; }
-  // Event when a new feature is found -> event(id_tracker, index, uid, x, y)
-  void setOnNewFeature(funcinfo input) { OnNewFeature = input; }
-  // Event when a feature is found while tracking -> event(id_tracker, index,
-  // uid, x, y)
-  void setOnMeasureFeature(funcinfo input) { OnMeasureFeature = input; }
-  /*!
-    Set the maximal pyramid level. If the level is zero, then no pyramid is
-    computed for the optical flow.
-
-    \warning The tracker must be re-initialised using the method
-    initTracking().
-
-    \param input : The new maximal pyramid level.
-  */
-  void setPyramidLevels(int input)
-  {
-    initialized = 0;
-    pyramid_level = input;
-  }
-  void setQuality(double input)
-  {
-    initialized = 0;
-    quality = input;
-  }
-  void setTrackerId(int tid) { _tid = tid; }
-  /*!
-    Set the window size for the sub-pixel computation.
-
-    \warning The tracker must be re-initialised using the method
-    initTracking().
-
-    \param input : The new number of maximum features.
-  */
-  void setUseHarris(int input)
-  {
-    initialized = 0;
-    use_harris = input;
-  }
-  void setWindowSize(int input)
-  {
-    initialized = 0;
-    win_size = input;
-  }
-
-  void suppressFeature(int index);
-
-  // Static Functions
-public:
-  static void display(const vpImage<unsigned char> &I, const CvPoint2D32f *features_list, const int &nbFeatures,
-                      vpColor color = vpColor::green, unsigned int thickness = 1);
-  static void display(const vpImage<vpRGBa> &I, const CvPoint2D32f *features_list, const int &nbFeatures,
-                      vpColor color = vpColor::green, unsigned int thickness = 1);
-
-  static void display(const vpImage<unsigned char> &I, const CvPoint2D32f *features_list, const long *featuresid_list,
-                      const int &nbFeatures, vpColor color = vpColor::green, unsigned int thickness = 1);
-  static void display(const vpImage<vpRGBa> &I, const CvPoint2D32f *features_list, const long *featuresid_list,
-                      const int &nbFeatures, vpColor color = vpColor::green, unsigned int thickness = 1);
+  int m_maxCount; //!< Max number of keypoints
+  cv::TermCriteria m_termcrit; //!< Term criteria
+  int m_winSize; //!< Window criteria
+  double m_qualityLevel; //!< Quality level
+  double m_minDistance; //!< Mins distance between keypoints
+  double m_minEigThreshold; //!< Min eigen threshold
+  double m_harris_k; //!< Harris parameter
+  int m_blockSize; //!< Block size
+  int m_useHarrisDetector; //!< true to use Harris detector
+  int m_pyrMaxLevel; //!< Pyramid max level
+  long m_next_points_id; //!< Id for the newt keypoint
+  bool m_initial_guess; //!< true when initial guess is provided
 };
 
 #endif

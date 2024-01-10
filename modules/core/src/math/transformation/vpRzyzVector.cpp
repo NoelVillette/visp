@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -32,11 +32,7 @@
  * Euler angles parameterization for the rotation.
  * Rzyz(phi,theta,psi) = Rot(z,phi)Rot(y,theta)Rot(z,psi)
  *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <math.h>
 #include <visp3/core/vpRzyzVector.h>
@@ -48,9 +44,9 @@
 */
 
 /*! Default constructor that initialize all the 3 angles to zero. */
-vpRzyzVector::vpRzyzVector() : vpRotationVector(3) {}
+vpRzyzVector::vpRzyzVector() : vpRotationVector(3) { }
 /*! Copy constructor. */
-vpRzyzVector::vpRzyzVector(const vpRzyzVector &rzyz) : vpRotationVector(rzyz) {}
+vpRzyzVector::vpRzyzVector(const vpRzyzVector &rzyz) : vpRotationVector(rzyz) { }
 
 /*!
   Constructor from 3 angles (in radian).
@@ -227,7 +223,6 @@ vpRzyzVector &vpRzyzVector::operator=(const vpColVector &rzyz)
   return *this;
 }
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
 /*!
   Set vector from a list of 3 double angle values in radians.
   \code
@@ -249,11 +244,10 @@ vpRzyzVector &vpRzyzVector::operator=(const std::initializer_list<double> &list)
 {
   if (list.size() > size()) {
     throw(vpException(
-        vpException::dimensionError,
-        "Cannot set Euler x-y-z vector out of bounds. It has only %d values while you try to initialize with %d values",
-        size(), list.size()));
+      vpException::dimensionError,
+      "Cannot set Euler x-y-z vector out of bounds. It has only %d values while you try to initialize with %d values",
+      size(), list.size()));
   }
   std::copy(list.begin(), list.end(), data);
   return *this;
 }
-#endif

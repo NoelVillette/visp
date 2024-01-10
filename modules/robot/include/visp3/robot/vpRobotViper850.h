@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -32,10 +32,7 @@
  * Interface for the Irisa's Viper S850 robot controlled by an Adept
  *MotionBlox.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef vpRobotViper850_h
 #define vpRobotViper850_h
@@ -102,7 +99,7 @@ extern "C" {
   \end{tabular}
   \f]
 
-  In this modelisation, different frames have to be considered.
+  In this modelization, different frames have to be considered.
 
   - \f$ {\cal F}_f \f$: the reference frame, also called world frame
 
@@ -345,7 +342,8 @@ class VISP_EXPORT vpRobotViper850 : public vpViper850, public vpRobot
 
 public: /* Constantes */
   /*! \enum vpControlModeType Control mode. */
-  typedef enum {
+  typedef enum
+  {
     AUTO,   //!< Automatic control mode (default).
     MANUAL, //!< Manual control mode activated when the dead man switch is in
             //!< use.
@@ -417,7 +415,7 @@ public: /* Methode publiques */
   vpColVector getForceTorque() const;
 
   double getMaxRotationVelocityJoint6() const;
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &position);
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &position) override;
   void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &position, double &timestamp);
   void getPosition(const vpRobot::vpControlFrameType frame, vpPoseVector &position);
   void getPosition(const vpRobot::vpControlFrameType frame, vpPoseVector &position, double &timestamp);
@@ -435,13 +433,13 @@ public: /* Methode publiques */
 
   void get_cMe(vpHomogeneousMatrix &cMe) const;
   void get_cVe(vpVelocityTwistMatrix &cVe) const;
-  void get_eJe(vpMatrix &eJe);
-  void get_fJe(vpMatrix &fJe);
+  void get_eJe(vpMatrix &eJe) override;
+  void get_fJe(vpMatrix &fJe) override;
 
   void init(void);
   void
-  init(vpViper850::vpToolType tool,
-       vpCameraParameters::vpCameraParametersProjType projModel = vpCameraParameters::perspectiveProjWithoutDistortion);
+    init(vpViper850::vpToolType tool,
+         vpCameraParameters::vpCameraParametersProjType projModel = vpCameraParameters::perspectiveProjWithoutDistortion);
   void init(vpViper850::vpToolType tool, const std::string &filename);
   void init(vpViper850::vpToolType tool, const vpHomogeneousMatrix &eMc_);
 
@@ -462,7 +460,7 @@ public: /* Methode publiques */
   void setMaxRotationVelocityJoint6(double w6_max);
 
   // Position control
-  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &position);
+  void setPosition(const vpRobot::vpControlFrameType frame, const vpColVector &position) override;
   void setPosition(const vpRobot::vpControlFrameType frame, double pos1, double pos2, double pos3, double pos4,
                    double pos5, double pos6);
   void setPosition(const std::string &filename);
@@ -472,7 +470,7 @@ public: /* Methode publiques */
   vpRobot::vpRobotStateType setRobotState(vpRobot::vpRobotStateType newState);
 
   // Velocity control
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &velocity);
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &velocity) override;
 
   void stopMotion();
   void unbiasForceTorqueSensor();

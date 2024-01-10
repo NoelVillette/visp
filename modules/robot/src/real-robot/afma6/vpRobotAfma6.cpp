@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Interface for the Irisa's Afma6 robot.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
@@ -124,7 +121,7 @@ void emergencyStopAfma6(int signo)
 
   The only available constructor.
 
-  This contructor calls init() to initialise
+  This constructor calls init() to initialise
   the connection with the MotionBox or low level controller, send the
   default eMc homogeneous matrix, power on the robot and wait 1 sec
   before returning to be sure the initialisation is done.
@@ -133,12 +130,12 @@ void emergencyStopAfma6(int signo)
 
   To set the extrinsic camera parameters related to the eMc matrix
   obtained with a camera perspective projection model including the
-  distorsion, use the code below:
+  distortion, use the code below:
 
   \code
   vpRobotAfma6 robot;
   // Set the extrinsic camera parameters obtained with a perpective
-  // projection model including a distorsion parameter
+  // projection model including a distortion parameter
   robot.init(vpAfma6::TOOL_CCMOP,
   vpCameraParameters::perspectiveProjWithDistortion); \endcode
 
@@ -149,7 +146,7 @@ void emergencyStopAfma6(int signo)
   vpCameraParameters cam;
   robot.getCameraParameters(cam, I);
   // In cam, you get the intrinsic parameters of the projection model
-  // with distorsion.
+  // with distortion.
   \endcode
 
   \sa vpCameraParameters, init(vpAfma6::vpAfma6CameraRobotType,
@@ -160,22 +157,22 @@ vpRobotAfma6::vpRobotAfma6(bool verbose) : vpAfma6(), vpRobot()
 {
 
   /*
-    #define	SIGHUP	1	// hangup
-    #define	SIGINT	2	// interrupt (rubout)
-    #define	SIGQUIT	3	// quit (ASCII FS)
-    #define	SIGILL	4	// illegal instruction (not reset when caught)
-    #define	SIGTRAP	5	// trace trap (not reset when caught)
-    #define	SIGIOT	6	// IOT instruction
-    #define	SIGABRT 6	// used by abort, replace SIGIOT in the future
-    #define	SIGEMT	7	// EMT instruction
-    #define	SIGFPE	8	// floating point exception
-    #define	SIGKILL	9	// kill (cannot be caught or ignored)
-    #define	SIGBUS	10	// bus error
-    #define	SIGSEGV	11	// segmentation violation
-    #define	SIGSYS	12	// bad argument to system call
-    #define	SIGPIPE	13	// write on a pipe with no one to read it
-    #define	SIGALRM	14	// alarm clock
-    #define	SIGTERM	15	// software termination signal from kill
+    #define  SIGHUP  1  // hangup
+    #define  SIGINT  2  // interrupt (rubout)
+    #define  SIGQUIT  3  // quit (ASCII FS)
+    #define  SIGILL  4  // illegal instruction (not reset when caught)
+    #define  SIGTRAP  5  // trace trap (not reset when caught)
+    #define  SIGIOT  6  // IOT instruction
+    #define  SIGABRT 6  // used by abort, replace SIGIOT in the future
+    #define  SIGEMT  7  // EMT instruction
+    #define  SIGFPE  8  // floating point exception
+    #define  SIGKILL  9  // kill (cannot be caught or ignored)
+    #define  SIGBUS  10  // bus error
+    #define  SIGSEGV  11  // segmentation violation
+    #define  SIGSYS  12  // bad argument to system call
+    #define  SIGPIPE  13  // write on a pipe with no one to read it
+    #define  SIGALRM  14  // alarm clock
+    #define  SIGTERM  15  // software termination signal from kill
   */
 
   signal(SIGINT, emergencyStopAfma6);
@@ -214,10 +211,10 @@ vpRobotAfma6::vpRobotAfma6(bool verbose) : vpAfma6(), vpRobot()
 
   \warning This method sets the camera extrinsic parameters (matrix
   eMc) to the one obtained by calibration with a camera projection
-  model without distorsion by calling
+  model without distortion by calling
   init(vpAfma6::defaultCameraRobot). If you want to set the extrinsic
   camera parameters to those obtained with a camera perspective model
-  including the distorsion you have to call the
+  including the distortion you have to call the
   init(vpAfma6::vpAfma6CameraRobotType,
   vpCameraParameters::vpCameraParametersProjType) method.
 
@@ -253,7 +250,7 @@ void vpRobotAfma6::init(void)
   // Look if the power is on or off
   UInt32 HIPowerStatus;
   UInt32 EStopStatus;
-  Try(PrimitiveSTATUS_Afma6(NULL, NULL, &EStopStatus, NULL, NULL, NULL, &HIPowerStatus));
+  Try(PrimitiveSTATUS_Afma6(nullptr, nullptr, &EStopStatus, nullptr, nullptr, nullptr, &HIPowerStatus));
   CAL_Wait(0.1);
 
   // Print the robot status
@@ -323,12 +320,12 @@ void vpRobotAfma6::init(void)
 
   To set the extrinsic camera parameters related to the eMc matrix
   obtained with a camera perspective projection model including the
-  distorsion, use the code below:
+  distortion, use the code below:
 
   \code
   vpRobotAfma6 robot;
   // Set the extrinsic camera parameters obtained with a perpective
-  // projection model including a distorsion parameter
+  // projection model including a distortion parameter
   robot.init(vpAfma6::TOOL_CCMOP,
   vpCameraParameters::perspectiveProjWithDistortion); \endcode
 
@@ -339,7 +336,7 @@ void vpRobotAfma6::init(void)
   vpCameraParameters cam;
   robot.getCameraParameters(cam, I);
   // In cam, you get the intrinsic parameters of the projection model
-  // with distorsion.
+  // with distortion.
   \endcode
 
   \sa vpCameraParameters, init()
@@ -565,7 +562,7 @@ vpRobotAfma6::~vpRobotAfma6(void)
 
   // Look if the power is on or off
   UInt32 HIPowerStatus;
-  Try(PrimitiveSTATUS_Afma6(NULL, NULL, NULL, NULL, NULL, NULL, &HIPowerStatus));
+  Try(PrimitiveSTATUS_Afma6(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &HIPowerStatus));
   CAL_Wait(0.1);
 
   //   if (HIPowerStatus == 1) {
@@ -672,7 +669,7 @@ void vpRobotAfma6::powerOn(void)
   unsigned int nitermax = 10;
 
   for (unsigned int i = 0; i < nitermax; i++) {
-    Try(PrimitiveSTATUS_Afma6(NULL, NULL, &EStopStatus, NULL, NULL, NULL, &HIPowerStatus));
+    Try(PrimitiveSTATUS_Afma6(nullptr, nullptr, &EStopStatus, nullptr, nullptr, nullptr, &HIPowerStatus));
     if (EStopStatus == ESTOP_AUTO) {
       break; // exit for loop
     } else if (EStopStatus == ESTOP_MANUAL) {
@@ -734,7 +731,7 @@ void vpRobotAfma6::powerOff(void)
 
   // Look if the power is on or off
   UInt32 HIPowerStatus;
-  Try(PrimitiveSTATUS_Afma6(NULL, NULL, NULL, NULL, NULL, NULL, &HIPowerStatus));
+  Try(PrimitiveSTATUS_Afma6(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &HIPowerStatus));
   CAL_Wait(0.1);
 
   if (HIPowerStatus == 1) {
@@ -768,7 +765,7 @@ bool vpRobotAfma6::getPowerState(void)
   bool status = false;
   // Look if the power is on or off
   UInt32 HIPowerStatus;
-  Try(PrimitiveSTATUS_Afma6(NULL, NULL, NULL, NULL, NULL, NULL, &HIPowerStatus));
+  Try(PrimitiveSTATUS_Afma6(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &HIPowerStatus));
   CAL_Wait(0.1);
 
   if (HIPowerStatus == 1) {
@@ -1590,7 +1587,7 @@ void vpRobotAfma6::getPosition(const vpRobot::vpControlFrameType frame, vpPoseVe
   vpRobot::STATE_VELOCITY_CONTROL) before setVelocity().
 
   \warning Velocities could be saturated if one of them exceed the
-  maximal autorized speed (see vpRobot::maxTranslationVelocity and
+  maximal authorized speed (see vpRobot::maxTranslationVelocity and
   vpRobot::maxRotationVelocity). To change these values use
   setMaxTranslationVelocity() and setMaxRotationVelocity().
 
@@ -1672,14 +1669,14 @@ void vpRobotAfma6::setVelocity(const vpRobot::vpControlFrameType frame, const vp
   if (TryStt < 0) {
     if (TryStt == VelStopOnJoint) {
       Int32 axisInJoint[njoint];
-      PrimitiveSTATUS_Afma6(NULL, NULL, NULL, NULL, NULL, axisInJoint, NULL);
+      PrimitiveSTATUS_Afma6(nullptr, nullptr, nullptr, nullptr, nullptr, axisInJoint, nullptr);
       for (unsigned int i = 0; i < njoint; i++) {
         if (axisInJoint[i])
           std::cout << "\nWarning: Velocity control stopped: axis " << i + 1 << " on joint limit!" << std::endl;
       }
     } else {
       printf("\n%s(%d): Error %d", __FUNCTION__, TryLine, TryStt);
-      if (TryString != NULL) {
+      if (TryString != nullptr) {
         // The statement is in TryString, but we need to check the validity
         printf(" Error sentence %s\n", TryString); // Print the TryString
       } else {
@@ -2064,7 +2061,7 @@ bool vpRobotAfma6::savePosFile(const std::string &filename, const vpColVector &q
 
   FILE *fd;
   fd = fopen(filename.c_str(), "w");
-  if (fd == NULL)
+  if (fd == nullptr)
     return false;
 
   fprintf(fd, "\
@@ -2276,7 +2273,7 @@ bool vpRobotAfma6::checkJointLimits(vpColVector &jointsStatus)
   jointsStatus.resize(6);
   InitTry;
 
-  Try(PrimitiveSTATUS_Afma6(NULL, NULL, NULL, NULL, NULL, axisInJoint, NULL));
+  Try(PrimitiveSTATUS_Afma6(nullptr, nullptr, nullptr, nullptr, nullptr, axisInJoint, nullptr));
   for (unsigned int i = 0; i < njoint; i++) {
     if (axisInJoint[i]) {
       std::cout << "\nWarning: Velocity control stopped: axis " << i + 1 << " on joint limit!" << std::endl;

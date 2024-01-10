@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Wenfeng CAI
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef _vpPylonGrabber_h_
 #define _vpPylonGrabber_h_
@@ -165,7 +165,7 @@ public:
     */
   virtual std::ostream &getCameraInfo(std::ostream &os) = 0;
   /*!
-    Return the handler to the active camera or NULL if the camera is not
+    Return the handler to the active camera or nullptr if the camera is not
     connected. This function was designed to provide a direct access to
     the Pylon SDK to get access to advanced functionalities that are not
     implemented in this class.

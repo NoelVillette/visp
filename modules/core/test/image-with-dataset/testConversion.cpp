@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Test for image conversions.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <iomanip>
 #include <stdlib.h>
@@ -47,6 +44,11 @@
 #include <visp3/core/vpTime.h>
 #include <visp3/io/vpImageIo.h>
 #include <visp3/io/vpParseArgv.h>
+
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGCODECS) && defined(HAVE_OPENCV_IMGPROC)
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+#endif
 
 /*!
   \example testConversion.cpp
@@ -75,9 +77,9 @@ Test image conversions.\n\
 \n\
 SYNOPSIS\n\
   %s [-i <input image path>] [-o <output image path>] [-n <nb benchmark iterations>]\n\
-     [-h]\n						      \
+     [-h]\n\
 ",
-          name);
+name);
 
   fprintf(stdout, "\n\
 OPTIONS:                                               Default\n\
@@ -138,7 +140,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath, std::string &op
       nbIterations = atoi(optarg_);
       break;
     case 'h':
-      usage(argv[0], NULL, ipath, opath, user, nbIterations);
+      usage(argv[0], nullptr, ipath, opath, user, nbIterations);
       return false;
 
     case 'c':
@@ -153,7 +155,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath, std::string &op
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL, ipath, opath, user, nbIterations);
+    usage(argv[0], nullptr, ipath, opath, user, nbIterations);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -211,8 +213,9 @@ int main(int argc, const char **argv)
       try {
         // Create the dirname
         vpIoTools::makeDirectory(opath);
-      } catch (...) {
-        usage(argv[0], NULL, ipath, opt_opath, username, nbIterations);
+      }
+      catch (...) {
+        usage(argv[0], nullptr, ipath, opt_opath, username, nbIterations);
         std::cerr << std::endl << "ERROR:" << std::endl;
         std::cerr << "  Cannot create " << opath << std::endl;
         std::cerr << "  Check your -o " << opt_opath << " option " << std::endl;
@@ -221,24 +224,24 @@ int main(int argc, const char **argv)
     }
 
     // Compare ipath and env_ipath. If they differ, we take into account
-    // the input path comming from the command line option
+    // the input path coming from the command line option
     if (opt_ipath.empty()) {
       if (ipath != env_ipath) {
         std::cout << std::endl << "WARNING: " << std::endl;
         std::cout << "  Since -i <visp image path=" << ipath << "> "
-                  << "  is different from VISP_IMAGE_PATH=" << env_ipath << std::endl
-                  << "  we skip the environment variable." << std::endl;
+          << "  is different from VISP_IMAGE_PATH=" << env_ipath << std::endl
+          << "  we skip the environment variable." << std::endl;
       }
     }
 
     // Test if an input path is set
     if (opt_ipath.empty() && env_ipath.empty()) {
-      usage(argv[0], NULL, ipath, opt_opath, username, nbIterations);
+      usage(argv[0], nullptr, ipath, opt_opath, username, nbIterations);
       std::cerr << std::endl << "ERROR:" << std::endl;
       std::cerr << "  Use -i <visp image path> option or set VISP_INPUT_IMAGE_PATH " << std::endl
-                << "  environment variable to specify the location of the " << std::endl
-                << "  image path where test images are located." << std::endl
-                << std::endl;
+        << "  environment variable to specify the location of the " << std::endl
+        << "  image path where test images are located." << std::endl
+        << std::endl;
       return EXIT_FAILURE;
     }
 
@@ -281,148 +284,15 @@ int main(int argc, const char **argv)
     // Convert a YUV pixel value to a RGB value
     vpImageConvert::YUVToRGB(y, u, v, r, g, b);
     std::cout << "   y(" << (int)y << ") u(" << (int)u << ") v(" << (int)v << ") = r(" << (int)r << ") g(" << (int)g
-              << ") b(" << (int)b << ")" << std::endl;
+      << ") b(" << (int)b << ")" << std::endl;
 
     vpChrono chrono;
-#ifdef VISP_HAVE_OPENCV
-#if VISP_HAVE_OPENCV_VERSION < 0x020408
-    double t0 = vpTime::measureTimeMs();
-    /////////////////////////
-    // Convert a IplImage to a vpImage<vpRGBa>
-    ////////////////////////
-    std::cout << "** Convert an IplImage to a vpImage<vpRGBa>" << std::endl;
-    IplImage *image = NULL; /*!< The image read / acquired */
-    filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.ppm");
-
-    /* Read the color image */
-
-    std::cout << "   Reading the color image with opencv: " << filename << std::endl;
-    if ((image = cvLoadImage(filename.c_str(), CV_LOAD_IMAGE_COLOR)) == NULL) {
-      std::cout << "   Cannot read image: " << filename << std::endl;
-      return EXIT_FAILURE;
-    }
-    vpImageConvert::convert(image, Ic);
-    filename = vpIoTools::createFilePath(opath, "Klimt_color_cv.ppm");
-    std::cout << "   Resulting image saved in: " << filename << std::endl;
-    vpImageIo::write(Ic, filename);
-
-    std::cout << "   Convert result in " << filename << std::endl;
-
-    filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.pgm");
-
-    /* Read the pgm image */
-    std::cout << "   Reading the greyscale image with opencv: " << filename << std::endl;
-    if (image != NULL)
-      cvReleaseImage(&image);
-    if ((image = cvLoadImage(filename.c_str(), CV_LOAD_IMAGE_GRAYSCALE)) == NULL) {
-      std::cout << "   Cannot read image: " << filename << std::endl;
-      return EXIT_FAILURE;
-    }
-    vpImageConvert::convert(image, Ic);
-    filename = vpIoTools::createFilePath(opath, "Klimt_grey_cv.ppm");
-    std::cout << "   Resulting image saved in: " << filename << std::endl;
-    vpImageIo::write(Ic, filename);
-
-    std::cout << "   Convert result in " << filename << std::endl;
-
-    ///////////////////////////
-    // Convert a IplImage to a vpImage<unsigned char>
-    ////////////////////////////
-    std::cout << "** Convert an IplImage to a vpImage<unsigned char>" << std::endl;
-    filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.ppm");
-
-    /* Read the color image */
-
-    std::cout << "   Reading the color image with opencv: " << filename << std::endl;
-    if (image != NULL)
-      cvReleaseImage(&image);
-    if ((image = cvLoadImage(filename.c_str(), CV_LOAD_IMAGE_COLOR)) == NULL) {
-      std::cout << "   Cannot read image: " << filename << std::endl;
-      return EXIT_FAILURE;
-    }
-    vpImageConvert::convert(image, Ig);
-    filename = vpIoTools::createFilePath(opath, "Klimt_color_cv.pgm");
-    std::cout << "   Resulting image saved in: " << filename << std::endl;
-    vpImageIo::write(Ig, filename);
-
-    std::cout << "   Convert result in " << filename << std::endl;
-
-    filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.pgm");
-
-    /* Read the pgm image */
-
-    std::cout << "   Reading the greyscale image with opencv: " << filename << std::endl;
-    if (image != NULL)
-      cvReleaseImage(&image);
-    if ((image = cvLoadImage(filename.c_str(), CV_LOAD_IMAGE_GRAYSCALE)) == NULL) {
-      std::cout << "   Cannot read image: " << filename << std::endl;
-      return EXIT_FAILURE;
-    }
-    vpImageConvert::convert(image, Ig);
-    filename = vpIoTools::createFilePath(opath, "Klimt_grey_cv.pgm");
-    std::cout << "   Resulting image saved in: " << filename << std::endl;
-    vpImageIo::write(Ig, filename);
-
-    std::cout << "   Convert result in " << filename << std::endl;
-
-    ////////////////////////////////////
-    // Convert a vpImage<vpRGBa> to a IplImage
-    ////////////////////////////////////
-    std::cout << "** Convert a vpImage<vpRGBa> to an IplImage" << std::endl;
-    filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.ppm");
-
-    /* Read the color image */
-
-    // Load a color image from the disk
-    std::cout << "   Load " << filename << std::endl;
-    vpImageIo::read(Ic, filename);
-    vpImageConvert::convert(Ic, image);
-    filename = vpIoTools::createFilePath(opath, "Klimt_ipl_color_cv.ppm");
-    /* Save the the current image */
-    std::cout << "   Write " << filename << std::endl;
-    if ((cvSaveImage(filename.c_str(), image)) == 0) {
-      std::cout << "   Cannot write image: " << filename << std::endl;
-      if (image != NULL)
-        cvReleaseImage(&image);
-      return EXIT_FAILURE;
-    }
-    std::cout << "   Convert result in " << filename << std::endl;
-
-    ////////////////////////////////////////
-    // Convert a vpImage<unsigned char> to an IplImage
-    ////////////////////////////////////////
-    std::cout << "** Convert a vpImage<unsigned char> to an IplImage" << std::endl;
-    filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.pgm");
-
-    /* Read the grey image */
-
-    // Load a color image from the disk
-    std::cout << "   Load " << filename << std::endl;
-    vpImageIo::read(Ig, filename);
-    vpImageConvert::convert(Ig, image);
-    filename = vpIoTools::createFilePath(opath, "Klimt_ipl_grey_cv.pgm");
-    /* Save the the current image */
-
-    std::cout << "   Write " << filename << std::endl;
-    if ((cvSaveImage(filename.c_str(), image)) == 0) {
-      std::cout << "   Cannot write image: " << std::endl << filename << std::endl;
-      if (image != NULL)
-        cvReleaseImage(&image);
-      return EXIT_FAILURE;
-    }
-    std::cout << "   Convert result in " << filename << std::endl;
-
-    if (image != NULL)
-      cvReleaseImage(&image);
-    double t1 = vpTime::measureTimeMs();
-    std::cout << "== Conversion c interface : " << t1 - t0 << " ms" << std::endl;
-#endif
 
     /* ------------------------------------------------------------------------ */
     /*                  conversion for the new c++ interface                    */
     /* ------------------------------------------------------------------------ */
 
-#if VISP_HAVE_OPENCV_VERSION >= 0x020100
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGCODECS) && defined(HAVE_OPENCV_HIGHGUI) && defined(HAVE_OPENCV_IMGPROC)
     chrono.start();
     /////////////////////////
     // Convert a cv::Mat to a vpImage<vpRGBa>
@@ -433,11 +303,11 @@ int main(int argc, const char **argv)
     std::cout << "   Reading the color image with c++ interface of opencv: " << filename << std::endl;
 #if VISP_HAVE_OPENCV_VERSION >= 0x030000
     int flags = cv::IMREAD_COLOR;
-#elif VISP_HAVE_OPENCV_VERSION >= 0x020100
+#else
     int flags = CV_LOAD_IMAGE_COLOR;
 #endif
     imageMat = cv::imread(filename, flags); // Force to a three channel BGR color image.
-    if (imageMat.data == NULL) {
+    if (imageMat.data == nullptr) {
       std::cout << "   Cannot read image: " << filename << std::endl;
       return EXIT_FAILURE;
     }
@@ -449,14 +319,14 @@ int main(int argc, const char **argv)
     filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.pgm");
     /* Read the pgm image */
 
-    std::cout << "   Reading the greyscale image with opencv: " << filename << std::endl;
+    std::cout << "   Reading the grayscale image with opencv: " << filename << std::endl;
 #if VISP_HAVE_OPENCV_VERSION >= 0x030000
     flags = cv::IMREAD_GRAYSCALE;
-#elif VISP_HAVE_OPENCV_VERSION >= 0x020100
+#else
     flags = CV_LOAD_IMAGE_GRAYSCALE;
 #endif
     imageMat = cv::imread(filename, flags); // Forced to grayscale.
-    if (imageMat.data == NULL) {
+    if (imageMat.data == nullptr) {
       std::cout << "   Cannot read image: " << filename << std::endl;
       return EXIT_FAILURE;
     }
@@ -476,11 +346,11 @@ int main(int argc, const char **argv)
     std::cout << "   Reading the color image with opencv: " << filename << std::endl;
 #if VISP_HAVE_OPENCV_VERSION >= 0x030000
     flags = cv::IMREAD_COLOR;
-#elif VISP_HAVE_OPENCV_VERSION >= 0x020100
+#else
     flags = CV_LOAD_IMAGE_COLOR;
 #endif
     imageMat = cv::imread(filename, flags); // Force to a three channel BGR color image.
-    if (imageMat.data == NULL) {
+    if (imageMat.data == nullptr) {
       std::cout << "   Cannot read image: " << filename << std::endl;
       return EXIT_FAILURE;
     }
@@ -496,11 +366,11 @@ int main(int argc, const char **argv)
     std::cout << "   Reading the greyscale image with opencv: " << filename << std::endl;
 #if VISP_HAVE_OPENCV_VERSION >= 0x030000
     flags = cv::IMREAD_GRAYSCALE;
-#elif VISP_HAVE_OPENCV_VERSION >= 0x020100
+#else
     flags = CV_LOAD_IMAGE_GRAYSCALE;
 #endif
     imageMat = cv::imread(filename, flags);
-    if (imageMat.data == NULL) {
+    if (imageMat.data == nullptr) {
       std::cout << "   Cannot read image: " << filename << std::endl;
       return EXIT_FAILURE;
     }
@@ -556,7 +426,6 @@ int main(int argc, const char **argv)
     chrono.stop();
     std::cout << "== Conversion c++ interface : " << chrono.getDurationMs() << " ms" << std::endl;
 #endif
-#endif
 
     ////////////////////////////////////
     // Split a vpImage<vpRGBa> to vpImage<unsigned char>
@@ -570,10 +439,10 @@ int main(int argc, const char **argv)
     std::cout << "   Load " << filename << std::endl;
     vpImageIo::read(Ic, filename);
     vpImage<unsigned char> R, G, B, a;
-    vpImageConvert::split(Ic, &R, NULL, &B);
+    vpImageConvert::split(Ic, &R, nullptr, &B);
     chrono.start();
     for (int iteration = 0; iteration < nbIterations; iteration++) {
-      vpImageConvert::split(Ic, &R, NULL, &B);
+      vpImageConvert::split(Ic, &R, nullptr, &B);
     }
     chrono.stop();
 
@@ -612,8 +481,8 @@ int main(int argc, const char **argv)
     // HSV color
     ////////////////////////////////////
     std::cout << "** Convert a vpImage<vpRGBa> in RGB color space to a "
-                 "vpImage<vpRGBa> in HSV color"
-              << std::endl;
+      "vpImage<vpRGBa> in HSV color"
+      << std::endl;
     unsigned int size = Ic.getSize();
     unsigned int w = Ic.getWidth(), h = Ic.getHeight();
     std::vector<unsigned char> hue(size);
@@ -625,7 +494,7 @@ int main(int argc, const char **argv)
     vpImage<unsigned char> I_saturation(&saturation.front(), h, w);
     vpImage<unsigned char> I_value(&value.front(), h, w);
     vpImage<vpRGBa> I_HSV;
-    vpImageConvert::merge(&I_hue, &I_saturation, &I_value, NULL, I_HSV);
+    vpImageConvert::merge(&I_hue, &I_saturation, &I_value, nullptr, I_HSV);
 
     filename = vpIoTools::createFilePath(opath, "Klimt_HSV.ppm");
     std::cout << "   Resulting image saved in: " << filename << std::endl;
@@ -649,11 +518,11 @@ int main(int argc, const char **argv)
       for (unsigned int j = 0; j < Ic.getWidth(); j++) {
         if (Ic[i][j].R != I_HSV2RGBa[i][j].R || Ic[i][j].G != I_HSV2RGBa[i][j].G || Ic[i][j].B != I_HSV2RGBa[i][j].B) {
           std::cerr << "Ic[i][j].R=" << static_cast<unsigned>(Ic[i][j].R)
-                    << " ; I_HSV2RGBa[i][j].R=" << static_cast<unsigned>(I_HSV2RGBa[i][j].R) << std::endl;
+            << " ; I_HSV2RGBa[i][j].R=" << static_cast<unsigned>(I_HSV2RGBa[i][j].R) << std::endl;
           std::cerr << "Ic[i][j].G=" << static_cast<unsigned>(Ic[i][j].G)
-                    << " ; I_HSV2RGBa[i][j].G=" << static_cast<unsigned>(I_HSV2RGBa[i][j].G) << std::endl;
+            << " ; I_HSV2RGBa[i][j].G=" << static_cast<unsigned>(I_HSV2RGBa[i][j].G) << std::endl;
           std::cerr << "Ic[i][j].B=" << static_cast<unsigned>(Ic[i][j].B)
-                    << " ; I_HSV2RGBa[i][j].B=" << static_cast<unsigned>(I_HSV2RGBa[i][j].B) << std::endl;
+            << " ; I_HSV2RGBa[i][j].B=" << static_cast<unsigned>(I_HSV2RGBa[i][j].B) << std::endl;
           throw vpException(vpException::fatalError, "Problem with conversion between RGB <==> HSV");
         }
       }
@@ -687,7 +556,7 @@ int main(int argc, const char **argv)
       std::vector<unsigned char> rgb_array(I_color.getSize() * 3);
       vpImageConvert::RGBaToRGB((unsigned char *)I_color.bitmap, &rgb_array.front(), I_color.getSize());
 
-#if (VISP_HAVE_OPENCV_VERSION >= 0x020101)
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGCODECS) && defined(HAVE_OPENCV_HIGHGUI) && defined(HAVE_OPENCV_IMGPROC)
       // BGR cv::Mat to Grayscale
       std::cout << "\n   BGR cv::Mat to Grayscale" << std::endl;
       filename = vpIoTools::createFilePath(ipath, "Klimt/Klimt.ppm");
@@ -721,11 +590,11 @@ int main(int argc, const char **argv)
       std::cout << "\n   RGB to Grayscale + Flip + Crop" << std::endl;
       cv::Rect rect_roi(11, 17, 347, 449);
       cv::Mat colorMat_crop = colorMat(rect_roi);
-      cv::Mat colorMat_crop_continous = colorMat(rect_roi).clone();
+      cv::Mat colorMat_crop_continuous = colorMat(rect_roi).clone();
       std::cout << "   colorMat_crop: " << colorMat_crop.cols << "x" << colorMat_crop.rows << " is continuous? "
-                << colorMat_crop.isContinuous() << std::endl;
-      std::cout << "   colorMat_crop_continous: " << colorMat_crop_continous.cols << "x" << colorMat_crop_continous.rows
-                << " is continuous? " << colorMat_crop_continous.isContinuous() << std::endl;
+        << colorMat_crop.isContinuous() << std::endl;
+      std::cout << "   colorMat_crop_continuous: " << colorMat_crop_continuous.cols << "x" << colorMat_crop_continuous.rows
+        << " is continuous? " << colorMat_crop_continuous.isContinuous() << std::endl;
 
       vpImage<vpRGBa> I_color_crop((unsigned int)(rect_roi.height - rect_roi.y),
                                    (unsigned int)(rect_roi.width - rect_roi.x));
@@ -754,7 +623,7 @@ int main(int argc, const char **argv)
       // Test BGR to Grayscale + Flip + Crop
       std::cout << "\n   BGR to Grayscale + Flip + Crop" << std::endl;
       vpImage<unsigned char> I_bgr2gray_flip_crop_sse(I_color_crop.getHeight(), I_color_crop.getWidth());
-      vpImageConvert::convert(colorMat_crop_continous, I_bgr2gray_flip_crop_sse, true);
+      vpImageConvert::convert(colorMat_crop_continuous, I_bgr2gray_flip_crop_sse, true);
 
       filename = vpIoTools::createFilePath(opath, "I_bgr2gray_flip_crop_sse.pgm");
       std::cout << "   Resulting image saved in: " << filename << std::endl;
@@ -773,7 +642,8 @@ int main(int argc, const char **argv)
     }
 
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e.getMessage() << std::endl;
     return EXIT_FAILURE;
   }

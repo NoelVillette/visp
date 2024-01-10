@@ -1,7 +1,7 @@
 #############################################################################
 #
 # ViSP, open source Visual Servoing Platform software.
-# Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+# Copyright (C) 2005 - 2023 by Inria. All rights reserved.
 #
 # This software is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # GPL, please contact Inria about acquiring a ViSP Professional
 # Edition License.
 #
-# See http://visp.inria.fr for more information.
+# See https://visp.inria.fr for more information.
 #
 # This software was developed at:
 # Inria Rennes - Bretagne Atlantique
@@ -30,9 +30,6 @@
 #
 # Description:
 # CDash configuration.
-#
-# Authors:
-# Fabien Spindler
 #
 #############################################################################
 
@@ -284,8 +281,8 @@ if(VISP_HAVE_XML2)
   set(BUILDNAME "${BUILDNAME}-xml")
 endif()
 # PThread
-if(VISP_HAVE_PTHREAD)
-  set(BUILDNAME "${BUILDNAME}-pthread")
+if(VISP_HAVE_THREADS)
+  set(BUILDNAME "${BUILDNAME}-threads")
 endif()
 # OpenMP
 if(VISP_HAVE_OPENMP)

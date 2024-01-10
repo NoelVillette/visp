@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Test for Afma 4 dof robot.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 /*!
   \file moveAfma4.cpp
 
@@ -78,10 +75,10 @@ void usage(const char *name, const char *badparam)
 {
   fprintf(stdout, "\n\
 Example of a positioning control followed by a velocity control \n\
-of the Afma4 robot.\n						   \
+of the Afma4 robot.\n\
 \n\
 SYNOPSIS\n\
-  %s [-m] [-h]\n						      \
+  %s [-m] [-h]\n\
 ",
           name);
 
@@ -123,7 +120,7 @@ bool getOptions(int argc, const char **argv, bool &control)
       control = false;
       break;
     case 'h':
-      usage(argv[0], NULL);
+      usage(argv[0], nullptr);
       return false;
       break;
 
@@ -136,7 +133,7 @@ bool getOptions(int argc, const char **argv, bool &control)
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL);
+    usage(argv[0], nullptr);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg << std::endl << std::endl;
     return false;

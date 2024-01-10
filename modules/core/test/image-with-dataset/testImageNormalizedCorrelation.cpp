@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Test vpImageTools::normalizedCorrelation().
  *
- *****************************************************************************/
+*****************************************************************************/
 /*!
   \example testImageNormalizedCorrelation.cpp
 
@@ -89,7 +89,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath)
       ipath = optarg_;
       break;
     case 'h':
-      usage(argv[0], NULL, ipath);
+      usage(argv[0], nullptr, ipath);
       return false;
       break;
 
@@ -106,7 +106,7 @@ bool getOptions(int argc, const char **argv, std::string &ipath)
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL, ipath);
+    usage(argv[0], nullptr, ipath);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -169,7 +169,7 @@ int main(int argc, const char **argv)
     }
 
     // Compare ipath and env_ipath. If they differ, we take into account
-    // the input path comming from the command line option
+    // the input path coming from the command line option
     if (!opt_ipath.empty() && !env_ipath.empty()) {
       if (ipath != env_ipath) {
         std::cout << std::endl << "WARNING: " << std::endl;
@@ -181,7 +181,7 @@ int main(int argc, const char **argv)
 
     // Test if an input path is set
     if (opt_ipath.empty() && env_ipath.empty()) {
-      usage(argv[0], NULL, ipath);
+      usage(argv[0], nullptr, ipath);
       std::cerr << std::endl << "ERROR:" << std::endl;
       std::cerr << "  Use -i <visp image path> option or set VISP_INPUT_IMAGE_PATH " << std::endl
                 << "  environment variable to specify the location of the " << std::endl
@@ -226,8 +226,8 @@ int main(int argc, const char **argv)
 
     vpImagePoint max_loc, max_loc_gold;
     double max_correlation = -1.0, max_correlation_gold = -1.0;
-    I_score.getMinMaxLoc(NULL, &max_loc, NULL, &max_correlation);
-    I_score_gold.getMinMaxLoc(NULL, &max_loc_gold, NULL, &max_correlation_gold);
+    I_score.getMinMaxLoc(nullptr, &max_loc, nullptr, &max_correlation);
+    I_score_gold.getMinMaxLoc(nullptr, &max_loc_gold, nullptr, &max_correlation_gold);
 
     std::cout << "Compare regular and SSE version of vpImageTools::normalizedCorrelation()" << std::endl;
     std::cout << "vpImageTools::normalizedCorrelation(): " << max_correlation << " ; " << t << " ms" << std::endl;

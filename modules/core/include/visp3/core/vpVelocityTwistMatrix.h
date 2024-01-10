@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * Velocity twist transformation matrix.
- *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
 
 #ifndef vpVelocityTwistMatrix_h
 #define vpVelocityTwistMatrix_h
@@ -184,11 +178,6 @@ public:
   vpVelocityTwistMatrix(const vpRotationMatrix &R);
   vpVelocityTwistMatrix(const vpThetaUVector &thetau);
 
-  /*!
-    Destructor.
-  */
-  virtual ~vpVelocityTwistMatrix(){};
-
   vpVelocityTwistMatrix buildFrom(const vpTranslationVector &t, const vpRotationMatrix &R);
   vpVelocityTwistMatrix buildFrom(const vpTranslationVector &t, const vpThetaUVector &thetau);
   vpVelocityTwistMatrix buildFrom(const vpHomogeneousMatrix &M, bool full = true);
@@ -223,7 +212,7 @@ public:
     (void)ncols;
     (void)flagNullify;
     throw(vpException(vpException::fatalError, "Cannot resize a velocity twist matrix"));
-  };
+  }
 
 #if defined(VISP_BUILD_DEPRECATED_FUNCTIONS)
   /*!
@@ -234,7 +223,7 @@ public:
      \deprecated Provided only for compat with previous releases.
      This function does nothing.
    */
-  vp_deprecated void init(){};
+  vp_deprecated void init() { }
   /*!
      \deprecated You should rather use eye().
    */

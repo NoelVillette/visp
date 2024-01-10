@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +29,7 @@
  *
  * Description:
  * Moving edges.
- *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+ */
 
 /*!
   \file vpMeLine.cpp
@@ -84,30 +79,21 @@ static void project(double a, double b, double c, double i, double j, double &ip
   if (fabs(a) > fabs(b)) {
     jp = (vpMath::sqr(a) * j - a * b * i - c * b) / (vpMath::sqr(a) + vpMath::sqr(b));
     ip = (-c - b * jp) / a;
-  } else {
+  }
+  else {
     ip = (vpMath::sqr(b) * i - a * b * j - c * a) / (vpMath::sqr(a) + vpMath::sqr(b));
     jp = (-c - a * ip) / b;
   }
 }
 
-/*!
-
-  Basic constructor that calls the constructor of the class vpMeTracker.
-
-*/
 vpMeLine::vpMeLine()
   : rho(0.), theta(0.), delta(0.), delta_1(0.), angle(0.), angle_1(90), sign(1), _useIntensityForRho(true), a(0.),
-    b(0.), c(0.)
-{
-}
-/*!
+  b(0.), c(0.)
+{ }
 
-  Copy constructor.
-
-*/
 vpMeLine::vpMeLine(const vpMeLine &meline)
   : vpMeTracker(meline), rho(0.), theta(0.), delta(0.), delta_1(0.), angle(0.), angle_1(90), sign(1),
-    _useIntensityForRho(true), a(0.), b(0.), c(0.)
+  _useIntensityForRho(true), a(0.), b(0.), c(0.)
 
 {
   rho = meline.rho;
@@ -126,25 +112,8 @@ vpMeLine::vpMeLine(const vpMeLine &meline)
   PExt[1] = meline.PExt[1];
 }
 
-/*!
-
-  Basic destructor.
-
-*/
 vpMeLine::~vpMeLine() { list.clear(); }
 
-/*!
-
-  Construct a list of vpMeSite moving edges at a particular sampling
-  step between the two extremities of the line.
-
-  \param I : Image in which the line appears.
-  \param doNotTrack : Inherited parameter, not used.
-
-  \exception vpTrackingException::initializationError : Moving edges not
-  initialized.
-
-*/
 void vpMeLine::sample(const vpImage<unsigned char> &I, bool doNotTrack)
 {
   (void)doNotTrack;
@@ -209,59 +178,37 @@ void vpMeLine::sample(const vpImage<unsigned char> &I, bool doNotTrack)
   vpCDEBUG(1) << n_sample << " point inserted in the list " << std::endl;
 }
 
-/*!
-  Display line.
-
-  \warning To effectively display the line a call to
-  vpDisplay::flush() is needed.
-
-  \param I : Image in which the line appears.
-
-  \param col : Color of the displayed line. Note that a moving edge
-  that is considered as an outlier is displayed in green.
-
- */
-void vpMeLine::display(const vpImage<unsigned char> &I, vpColor col)
+void vpMeLine::display(const vpImage<unsigned char> &I, const vpColor &color, unsigned int thickness)
 {
-  vpMeLine::display(I, PExt[0], PExt[1], list, a, b, c, col);
+  vpMeLine::displayLine(I, PExt[0], PExt[1], list, a, b, c, color, thickness);
 }
 
-/*!
-
-  Initilization of the tracking. Ask the user to click on two points
-  from the line to track.
-
-  \param I : Image in which the line appears.
-*/
 void vpMeLine::initTracking(const vpImage<unsigned char> &I)
 {
   vpImagePoint ip1, ip2;
 
+  vpDisplay::flush(I);
+
   std::cout << "Click on the line first point..." << std::endl;
-  while (vpDisplay::getClick(I, ip1) != true)
-    ;
+  while (vpDisplay::getClick(I, ip1) != true) { }
+
   vpDisplay::displayCross(I, ip1, 7, vpColor::red);
   vpDisplay::flush(I);
   std::cout << "Click on the line second point..." << std::endl;
-  while (vpDisplay::getClick(I, ip2) != true)
-    ;
+  while (vpDisplay::getClick(I, ip2) != true) { }
+
   vpDisplay::displayCross(I, ip2, 7, vpColor::red);
   vpDisplay::flush(I);
 
   try {
     initTracking(I, ip1, ip2);
-  } catch (...) {
+  }
+  catch (...) {
     vpERROR_TRACE("Error caught");
     throw;
   }
 }
 
-/*!
-
-  Least squares method used to make the tracking more robust. It
-  ensures that the points taken into account to compute the right
-  equation belong to the line.
-*/
 void vpMeLine::leastSquare()
 {
   vpMatrix A(numberOfSignal(), 2);
@@ -288,8 +235,8 @@ void vpMeLine::leastSquare()
   }
 
   if ((fabs(b) >= 0.9)) // Construction du systeme Ax=B
-                        // a i + j + c = 0
-                        // A = (i 1)   B = (-j)
+    // a i + j + c = 0
+    // A = (i 1)   B = (-j)
   {
     nos_1 = numberOfSignal();
     unsigned int k = 0;
@@ -412,15 +359,6 @@ void vpMeLine::leastSquare()
   normalizeAngle(delta);
 }
 
-/*!
-
-  Initialization of the tracking. The line is defined thanks to the
-  coordinates of two points.
-
-  \param I : Image in which the line appears.
-  \param ip1 : Coordinates of the first point.
-  \param ip2 : Coordinates of the second point.
-*/
 void vpMeLine::initTracking(const vpImage<unsigned char> &I, const vpImagePoint &ip1, const vpImagePoint &ip2)
 {
   vpCDEBUG(1) << " begin vpMeLine::initTracking()" << std::endl;
@@ -464,16 +402,14 @@ void vpMeLine::initTracking(const vpImage<unsigned char> &I, const vpImagePoint 
     // Call track(I) to give the good sign to a and b and to initialise c
     // which can be used for the display
     track(I);
-  } catch (...) {
+  }
+  catch (...) {
     vpERROR_TRACE("Error caught");
     throw;
   }
   vpCDEBUG(1) << " end vpMeLine::initTracking()" << std::endl;
 }
 
-/*!
-  Suppression of the points which belong no more to the line.
-*/
 void vpMeLine::suppressPoints()
 {
   // Loop through list of sites to track
@@ -487,9 +423,6 @@ void vpMeLine::suppressPoints()
   }
 }
 
-/*!
-  Seek in the list of available points the two extremities of the line.
-*/
 void vpMeLine::setExtremities()
 {
   double imin = +1e6;
@@ -536,17 +469,6 @@ void vpMeLine::setExtremities()
   }
 }
 
-/*!
-
-  Seek along the line defined by its equation, the two extremities of
-  the line. This function is useful in case of translation of the
-  line.
-
-  \param I : Image in which the line appears.
-
-  \exception vpTrackingException::initializationError : Moving edges not
-  initialized.
-*/
 void vpMeLine::seekExtremities(const vpImage<unsigned char> &I)
 {
   vpCDEBUG(1) << "begin vpMeLine::sample() : " << std::endl;
@@ -608,7 +530,8 @@ void vpMeLine::seekExtremities(const vpImage<unsigned char> &I)
 
           vpDisplay::displayCross(I, ip, 5, vpColor::green);
         }
-      } else {
+      }
+      else {
         if (vpDEBUG_ENABLE(3)) {
           ip.set_i(P.i);
           ip.set_j(P.j);
@@ -636,7 +559,8 @@ void vpMeLine::seekExtremities(const vpImage<unsigned char> &I)
           ip.set_j(P.j);
           vpDisplay::displayCross(I, ip, 5, vpColor::green);
         }
-      } else {
+      }
+      else {
         if (vpDEBUG_ENABLE(3)) {
           ip.set_i(P.i);
           ip.set_j(P.j);
@@ -652,17 +576,6 @@ void vpMeLine::seekExtremities(const vpImage<unsigned char> &I)
   vpCDEBUG(1) << n_sample << " point inserted in the list " << std::endl;
 }
 
-/*!
-
-  Resample the line if the number of sample is less than 80% of the
-  expected value.
-
-  \note The expected value is computed thanks to the length of the
-  line and the parameter which indicates the number of pixel between
-  two points (vpMe::sample_step).
-
-  \param I : Image in which the line appears.
-*/
 void vpMeLine::reSample(const vpImage<unsigned char> &I)
 {
   double i1, j1, i2, j2;
@@ -698,10 +611,6 @@ void vpMeLine::reSample(const vpImage<unsigned char> &I)
   }
 }
 
-/*!
-
-  Set the alpha value of the different vpMeSite to the value of delta.
-*/
 void vpMeLine::updateDelta()
 {
   vpMeSite p_me;
@@ -737,12 +646,6 @@ void vpMeLine::updateDelta()
   delta_1 = delta;
 }
 
-/*!
-
-  Track the line in the image I.
-
-  \param I : Image in which the line appears.
-*/
 void vpMeLine::track(const vpImage<unsigned char> &I)
 {
   vpCDEBUG(1) << "begin vpMeLine::track()" << std::endl;
@@ -762,7 +665,8 @@ void vpMeLine::track(const vpImage<unsigned char> &I)
     // Estimation des parametres de la droite aux moindres carre
     try {
       leastSquare();
-    } catch (...) {
+    }
+    catch (...) {
       vpERROR_TRACE("Error caught");
       throw;
     }
@@ -774,7 +678,8 @@ void vpMeLine::track(const vpImage<unsigned char> &I)
     setExtremities();
     try {
       leastSquare();
-    } catch (...) {
+    }
+    catch (...) {
       vpERROR_TRACE("Error caught");
       throw;
     }
@@ -812,12 +717,6 @@ void vpMeLine::update_indices(double theta, int i, int j, int incr, int &i1, int
   j2 = (int)(j - sin(theta) * incr);
 }
 
-/*!
-
-  Compute the two parameters \f$(\rho, \theta)\f$ of the line.
-
-  \param I : Image in which the line appears.
-*/
 void vpMeLine::computeRhoTheta(const vpImage<unsigned char> &I)
 {
   // rho = -c ;
@@ -831,25 +730,6 @@ void vpMeLine::computeRhoTheta(const vpImage<unsigned char> &I)
     theta += M_PI;
 
   if (_useIntensityForRho) {
-
-    /*  while(theta < -M_PI)	theta += 2*M_PI ;
-    while(theta >= M_PI)	theta -= 2*M_PI ;
-
-    // If theta is between -90 and -180 get the equivalent
-    // between 0 and 90
-    if(theta <-M_PI/2)
-      {
-        theta += M_PI ;
-        rho *= -1 ;
-      }
-    // If theta is between 90 and 180 get the equivalent
-    // between 0 and -90
-    if(theta >M_PI/2)
-      {
-        theta -= M_PI ;
-        rho *= -1 ;
-      }
-    */
     // convention pour choisir le signe de rho
     int i, j;
     i = vpMath::round((PExt[0].ifloat + PExt[1].ifloat) / 2);
@@ -872,9 +752,9 @@ void vpMeLine::computeRhoTheta(const vpImage<unsigned char> &I)
       double co_rho_lim1 = fabs(((double)(height_ - i)) / cos(theta));
       double co_rho_lim2 = fabs(((double)(width_ - j)) / sin(theta));
 
-      double rho_lim = (std::min)(rho_lim1, rho_lim2);
-      double co_rho_lim = (std::min)(co_rho_lim1, co_rho_lim2);
-      incr = (int)std::floor((std::min)(rho_lim, co_rho_lim));
+      double rho_lim = std::min<double>(rho_lim1, rho_lim2);
+      double co_rho_lim = std::min<double>(co_rho_lim1, co_rho_lim2);
+      incr = (int)std::floor(std::min<double>(rho_lim, co_rho_lim));
       if (incr < INCR_MIN) {
         vpERROR_TRACE("increment is too small");
         throw(vpTrackingException(vpTrackingException::fatalError, "increment is too small"));
@@ -895,8 +775,8 @@ void vpMeLine::computeRhoTheta(const vpImage<unsigned char> &I)
         end = false;
         if (incr == 1) {
           throw(vpException(vpException::fatalError, "In vpMeLine cannot determine rho sign, since "
-                                                     "there is no gray level difference between both "
-                                                     "sides of the line"));
+                            "there is no gray level difference between both "
+                            "sides of the line"));
         }
       }
       update_indices(theta, i, j, incr, i1, i2, j1, j2);
@@ -942,30 +822,10 @@ void vpMeLine::computeRhoTheta(const vpImage<unsigned char> &I)
   }
 }
 
-/*!
-
-   Get the value of \f$\rho\f$, the distance between the origin and the
-   point on the line with belong to the normal to the line crossing
-   the origin.
-
-   Depending on the convention described at the beginning of this
-   class, \f$\rho\f$ is signed.
-
-*/
 double vpMeLine::getRho() const { return rho; }
 
-/*!
-   Get the value of the angle \f$\theta\f$.
-*/
 double vpMeLine::getTheta() const { return theta; }
 
-/*!
-
-  Get the extremities of the line.
-
-  \param ip1 : Coordinates of the first extremity.
-  \param ip2 : Coordinates of the second extremity.
-*/
 void vpMeLine::getExtremities(vpImagePoint &ip1, vpImagePoint &ip2)
 {
   /*Return the coordinates of the extremities of the line*/
@@ -975,18 +835,6 @@ void vpMeLine::getExtremities(vpImagePoint &ip1, vpImagePoint &ip2)
   ip2.set_j(PExt[1].jfloat);
 }
 
-/*!
-
-  Computes the intersection point of two lines. The result is given in
-  the (i,j) frame.
-
-  \param line1 : The first line.
-  \param line2 : The second line.
-  \param ip : The coordinates of the intersection point.
-
-  \return Returns a boolean value which depends on the computation
-  success. True means that the computation ends successfully.
-*/
 bool vpMeLine::intersection(const vpMeLine &line1, const vpMeLine &line2, vpImagePoint &ip)
 {
   double a1 = line1.a;
@@ -1035,20 +883,23 @@ bool vpMeLine::intersection(const vpMeLine &line1, const vpMeLine &line2, vpImag
     ip.set_j(j);
 
     return (true);
-  } catch (...) {
+  }
+  catch (...) {
     return (false);
   }
 }
 
+#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
 /*!
-  Display of a moving line thanks to its equation parameters and its
-  extremities.
+  \deprecated This static function is deprecated. You should rather use vpMeLine::displayLine().
+
+  Display of a moving line thanks to its equation parameters and its extremities.
 
   \param I : The image used as background.
 
-  \param PExt1 : First extrimity
+  \param PExt1 : First extremity
 
-  \param PExt2 : Second extrimity
+  \param PExt2 : Second extremity
 
   \param A : Parameter a of the line equation a*i + b*j + c = 0
 
@@ -1061,57 +912,21 @@ bool vpMeLine::intersection(const vpMeLine &line1, const vpMeLine &line2, vpImag
   \param thickness : Thickness of the line.
 */
 void vpMeLine::display(const vpImage<unsigned char> &I, const vpMeSite &PExt1, const vpMeSite &PExt2, const double &A,
-                       const double &B, const double &C, const vpColor &color, unsigned int thickness)
+  const double &B, const double &C, const vpColor &color, unsigned int thickness)
 {
-  vpImagePoint ip1, ip2;
-
-  if (fabs(A) < fabs(B)) {
-    double i1, j1, i2, j2;
-    i1 = 0;
-    j1 = (-A * i1 - C) / B;
-    i2 = I.getHeight() - 1.0;
-    j2 = (-A * i2 - C) / B;
-
-    ip1.set_i(i1);
-    ip1.set_j(j1);
-    ip2.set_i(i2);
-    ip2.set_j(j2);
-    vpDisplay::displayLine(I, ip1, ip2, color);
-    // vpDisplay::flush(I);
-
-  } else {
-    double i1, j1, i2, j2;
-    j1 = 0;
-    i1 = -(B * j1 + C) / A;
-    j2 = I.getWidth() - 1.0;
-    i2 = -(B * j2 + C) / A;
-
-    ip1.set_i(i1);
-    ip1.set_j(j1);
-    ip2.set_i(i2);
-    ip2.set_j(j2);
-    vpDisplay::displayLine(I, ip1, ip2, color);
-    // vpDisplay::flush(I);
-  }
-
-  ip1.set_i(PExt1.ifloat);
-  ip1.set_j(PExt1.jfloat);
-  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
-
-  ip1.set_i(PExt2.ifloat);
-  ip1.set_j(PExt2.jfloat);
-  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
+  vpMeLine::displayLine(I, PExt1, PExt2, A, B, C, color, thickness);
 }
 
 /*!
-  Display of a moving line thanks to its equation parameters and its
-  extremities.
+  \deprecated This static function is deprecated. You should rather use vpMeLine::displayLine().
+
+  Display of a moving line thanks to its equation parameters and its extremities.
 
   \param I : The image used as background.
 
-  \param PExt1 : First extrimity
+  \param PExt1 : First extremity
 
-  \param PExt2 : Second extrimity
+  \param PExt2 : Second extremity
 
   \param A : Parameter a of the line equation a*i + b*j + c = 0
 
@@ -1124,57 +939,21 @@ void vpMeLine::display(const vpImage<unsigned char> &I, const vpMeSite &PExt1, c
   \param thickness : Thickness of the line.
 */
 void vpMeLine::display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vpMeSite &PExt2, const double &A,
-                       const double &B, const double &C, const vpColor &color, unsigned int thickness)
+  const double &B, const double &C, const vpColor &color, unsigned int thickness)
 {
-  vpImagePoint ip1, ip2;
-
-  if (fabs(A) < fabs(B)) {
-    double i1, j1, i2, j2;
-    i1 = 0;
-    j1 = (-A * i1 - C) / B;
-    i2 = I.getHeight() - 1.0;
-    j2 = (-A * i2 - C) / B;
-
-    ip1.set_i(i1);
-    ip1.set_j(j1);
-    ip2.set_i(i2);
-    ip2.set_j(j2);
-    vpDisplay::displayLine(I, ip1, ip2, color);
-    // vpDisplay::flush(I);
-
-  } else {
-    double i1, j1, i2, j2;
-    j1 = 0;
-    i1 = -(B * j1 + C) / A;
-    j2 = I.getWidth() - 1.0;
-    i2 = -(B * j2 + C) / A;
-
-    ip1.set_i(i1);
-    ip1.set_j(j1);
-    ip2.set_i(i2);
-    ip2.set_j(j2);
-    vpDisplay::displayLine(I, ip1, ip2, color);
-    // vpDisplay::flush(I);
-  }
-
-  ip1.set_i(PExt1.ifloat);
-  ip1.set_j(PExt1.jfloat);
-  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
-
-  ip1.set_i(PExt2.ifloat);
-  ip1.set_j(PExt2.jfloat);
-  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
+  vpMeLine::displayLine(I, PExt1, PExt2, A, B, C, color, thickness);
 }
 
 /*!
-  Display of a moving line thanks to its equation parameters and its
-  extremities with all the site list.
+  \deprecated This static function is deprecated. You should rather use vpMeLine::displayLine().
+
+  Display of a moving line thanks to its equation parameters and its extremities with all the site list.
 
   \param I : The image used as background.
 
-  \param PExt1 : First extrimity
+  \param PExt1 : First extremity
 
-  \param PExt2 : Second extrimity
+  \param PExt2 : Second extremity
 
   \param site_list : vpMeSite list
 
@@ -1189,73 +968,22 @@ void vpMeLine::display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vp
   \param thickness : Thickness of the line.
 */
 void vpMeLine::display(const vpImage<unsigned char> &I, const vpMeSite &PExt1, const vpMeSite &PExt2,
-                       const std::list<vpMeSite> &site_list, const double &A, const double &B, const double &C,
-                       const vpColor &color, unsigned int thickness)
+  const std::list<vpMeSite> &site_list, const double &A, const double &B, const double &C,
+  const vpColor &color, unsigned int thickness)
 {
-  vpImagePoint ip;
-
-  for (std::list<vpMeSite>::const_iterator it = site_list.begin(); it != site_list.end(); ++it) {
-    vpMeSite pix = *it;
-    ip.set_i(pix.ifloat);
-    ip.set_j(pix.jfloat);
-
-    if (pix.getState() == vpMeSite::M_ESTIMATOR)
-      vpDisplay::displayCross(I, ip, 5, vpColor::green, thickness);
-    else
-      vpDisplay::displayCross(I, ip, 5, color, thickness);
-
-    // vpDisplay::flush(I);
-  }
-
-  vpImagePoint ip1, ip2;
-
-  if (fabs(A) < fabs(B)) {
-    double i1, j1, i2, j2;
-    i1 = 0;
-    j1 = (-A * i1 - C) / B;
-    i2 = I.getHeight() - 1.0;
-    j2 = (-A * i2 - C) / B;
-
-    ip1.set_i(i1);
-    ip1.set_j(j1);
-    ip2.set_i(i2);
-    ip2.set_j(j2);
-    vpDisplay::displayLine(I, ip1, ip2, color);
-    // vpDisplay::flush(I);
-
-  } else {
-    double i1, j1, i2, j2;
-    j1 = 0;
-    i1 = -(B * j1 + C) / A;
-    j2 = I.getWidth() - 1.0;
-    i2 = -(B * j2 + C) / A;
-
-    ip1.set_i(i1);
-    ip1.set_j(j1);
-    ip2.set_i(i2);
-    ip2.set_j(j2);
-    vpDisplay::displayLine(I, ip1, ip2, color);
-    // vpDisplay::flush(I);
-  }
-
-  ip1.set_i(PExt1.ifloat);
-  ip1.set_j(PExt1.jfloat);
-  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
-
-  ip1.set_i(PExt2.ifloat);
-  ip1.set_j(PExt2.jfloat);
-  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
+  vpMeLine::displayLine(I, PExt1, PExt2, site_list, A, B, C, color, thickness);
 }
 
 /*!
-  Display of a moving line thanks to its equation parameters and its
-  extremities with all the site list.
+  \deprecated This static function is deprecated. You should rather use vpMeLine::displayLine().
+
+  Display of a moving line thanks to its equation parameters and its extremities with all the site list.
 
   \param I : The image used as background.
 
-  \param PExt1 : First extrimity
+  \param PExt1 : First extremity
 
-  \param PExt2 : Second extrimity
+  \param PExt2 : Second extremity
 
   \param site_list : vpMeSite list
 
@@ -1270,8 +998,99 @@ void vpMeLine::display(const vpImage<unsigned char> &I, const vpMeSite &PExt1, c
   \param thickness : Thickness of the line.
 */
 void vpMeLine::display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vpMeSite &PExt2,
-                       const std::list<vpMeSite> &site_list, const double &A, const double &B, const double &C,
-                       const vpColor &color, unsigned int thickness)
+  const std::list<vpMeSite> &site_list, const double &A, const double &B, const double &C,
+  const vpColor &color, unsigned int thickness)
+{
+
+  vpMeLine::displayLine(I, PExt1, PExt2, site_list, A, B, C, color, thickness);
+}
+#endif // Deprecated
+
+void vpMeLine::displayLine(const vpImage<unsigned char> &I, const vpMeSite &PExt1, const vpMeSite &PExt2, const double &A,
+  const double &B, const double &C, const vpColor &color, unsigned int thickness)
+{
+  vpImagePoint ip1, ip2;
+
+  if (fabs(A) < fabs(B)) {
+    double i1, j1, i2, j2;
+    i1 = 0;
+    j1 = (-A * i1 - C) / B;
+    i2 = I.getHeight() - 1.0;
+    j2 = (-A * i2 - C) / B;
+
+    ip1.set_i(i1);
+    ip1.set_j(j1);
+    ip2.set_i(i2);
+    ip2.set_j(j2);
+    vpDisplay::displayLine(I, ip1, ip2, color);
+  }
+  else {
+    double i1, j1, i2, j2;
+    j1 = 0;
+    i1 = -(B * j1 + C) / A;
+    j2 = I.getWidth() - 1.0;
+    i2 = -(B * j2 + C) / A;
+
+    ip1.set_i(i1);
+    ip1.set_j(j1);
+    ip2.set_i(i2);
+    ip2.set_j(j2);
+    vpDisplay::displayLine(I, ip1, ip2, color);
+  }
+
+  ip1.set_i(PExt1.ifloat);
+  ip1.set_j(PExt1.jfloat);
+  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
+
+  ip1.set_i(PExt2.ifloat);
+  ip1.set_j(PExt2.jfloat);
+  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
+}
+
+void vpMeLine::displayLine(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vpMeSite &PExt2, const double &A,
+                           const double &B, const double &C, const vpColor &color, unsigned int thickness)
+{
+  vpImagePoint ip1, ip2;
+
+  if (fabs(A) < fabs(B)) {
+    double i1, j1, i2, j2;
+    i1 = 0;
+    j1 = (-A * i1 - C) / B;
+    i2 = I.getHeight() - 1.0;
+    j2 = (-A * i2 - C) / B;
+
+    ip1.set_i(i1);
+    ip1.set_j(j1);
+    ip2.set_i(i2);
+    ip2.set_j(j2);
+    vpDisplay::displayLine(I, ip1, ip2, color);
+  }
+  else {
+    double i1, j1, i2, j2;
+    j1 = 0;
+    i1 = -(B * j1 + C) / A;
+    j2 = I.getWidth() - 1.0;
+    i2 = -(B * j2 + C) / A;
+
+    ip1.set_i(i1);
+    ip1.set_j(j1);
+    ip2.set_i(i2);
+    ip2.set_j(j2);
+    vpDisplay::displayLine(I, ip1, ip2, color);
+  }
+
+  ip1.set_i(PExt1.ifloat);
+  ip1.set_j(PExt1.jfloat);
+  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
+
+  ip1.set_i(PExt2.ifloat);
+  ip1.set_j(PExt2.jfloat);
+  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
+}
+
+void vpMeLine::displayLine(const vpImage<unsigned char> &I, const vpMeSite &PExt1, const vpMeSite &PExt2,
+                           const std::list<vpMeSite> &site_list, const double &A, const double &B, const double &C,
+                           const vpColor &color, unsigned int thickness)
 {
   vpImagePoint ip;
 
@@ -1284,8 +1103,6 @@ void vpMeLine::display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vp
       vpDisplay::displayCross(I, ip, 5, vpColor::green, thickness);
     else
       vpDisplay::displayCross(I, ip, 5, color, thickness);
-
-    // vpDisplay::flush(I);
   }
 
   vpImagePoint ip1, ip2;
@@ -1302,9 +1119,8 @@ void vpMeLine::display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vp
     ip2.set_i(i2);
     ip2.set_j(j2);
     vpDisplay::displayLine(I, ip1, ip2, color);
-    // vpDisplay::flush(I);
-
-  } else {
+  }
+  else {
     double i1, j1, i2, j2;
     j1 = 0;
     i1 = -(B * j1 + C) / A;
@@ -1316,7 +1132,61 @@ void vpMeLine::display(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vp
     ip2.set_i(i2);
     ip2.set_j(j2);
     vpDisplay::displayLine(I, ip1, ip2, color);
-    // vpDisplay::flush(I);
+  }
+
+  ip1.set_i(PExt1.ifloat);
+  ip1.set_j(PExt1.jfloat);
+  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
+
+  ip1.set_i(PExt2.ifloat);
+  ip1.set_j(PExt2.jfloat);
+  vpDisplay::displayCross(I, ip1, 10, vpColor::green, thickness);
+}
+
+void vpMeLine::displayLine(const vpImage<vpRGBa> &I, const vpMeSite &PExt1, const vpMeSite &PExt2,
+                           const std::list<vpMeSite> &site_list, const double &A, const double &B, const double &C,
+                           const vpColor &color, unsigned int thickness)
+{
+  vpImagePoint ip;
+
+  for (std::list<vpMeSite>::const_iterator it = site_list.begin(); it != site_list.end(); ++it) {
+    vpMeSite pix = *it;
+    ip.set_i(pix.ifloat);
+    ip.set_j(pix.jfloat);
+
+    if (pix.getState() == vpMeSite::M_ESTIMATOR)
+      vpDisplay::displayCross(I, ip, 5, vpColor::green, thickness);
+    else
+      vpDisplay::displayCross(I, ip, 5, color, thickness);
+  }
+
+  vpImagePoint ip1, ip2;
+
+  if (fabs(A) < fabs(B)) {
+    double i1, j1, i2, j2;
+    i1 = 0;
+    j1 = (-A * i1 - C) / B;
+    i2 = I.getHeight() - 1.0;
+    j2 = (-A * i2 - C) / B;
+
+    ip1.set_i(i1);
+    ip1.set_j(j1);
+    ip2.set_i(i2);
+    ip2.set_j(j2);
+    vpDisplay::displayLine(I, ip1, ip2, color);
+  }
+  else {
+    double i1, j1, i2, j2;
+    j1 = 0;
+    i1 = -(B * j1 + C) / A;
+    j2 = I.getWidth() - 1.0;
+    i2 = -(B * j2 + C) / A;
+
+    ip1.set_i(i1);
+    ip1.set_j(j1);
+    ip2.set_i(i2);
+    ip2.set_j(j2);
+    vpDisplay::displayLine(I, ip1, ip2, color);
   }
 
   ip1.set_i(PExt1.ifloat);

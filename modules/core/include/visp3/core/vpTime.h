@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * Time management and measurement.
- *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
 
 #ifndef vpTime_h
 #define vpTime_h
@@ -47,9 +41,7 @@
 #include <iostream>
 #include <string>
 #include <visp3/core/vpConfig.h>
-#if VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11
 #include <chrono>
-#endif
 
 #include <visp3/core/vpException.h>
 
@@ -100,8 +92,7 @@ public:
 
 private:
   double m_durationMs;
-#if VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11 &&                                                                       \
-    (defined(_MSC_VER) && _MSC_VER >= 1900 /* VS2015 */ || !defined(_MSC_VER))
+#if (defined(_MSC_VER) && _MSC_VER >= 1900 /* VS2015 */ || !defined(_MSC_VER))
   std::chrono::steady_clock::time_point m_lastTimePoint;
 #else
   double m_lastTimePoint;

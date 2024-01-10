@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * IDS uEye interface.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef _vpUeyeGrabber_h_
 #define _vpUeyeGrabber_h_
@@ -86,8 +86,8 @@ public:
   vpUeyeGrabber();
   virtual ~vpUeyeGrabber();
 
-  void acquire(vpImage<unsigned char> &I, double *timestamp_camera = NULL, std::string *timestamp_system = NULL);
-  void acquire(vpImage<vpRGBa> &I, double *timestamp_camera = NULL, std::string *timestamp_system = NULL);
+  void acquire(vpImage<unsigned char> &I, double *timestamp_camera = nullptr, std::string *timestamp_system = nullptr);
+  void acquire(vpImage<vpRGBa> &I, double *timestamp_camera = nullptr, std::string *timestamp_system = nullptr);
 
   std::string getActiveCameraModel() const;
   std::string getActiveCameraSerialNumber() const;

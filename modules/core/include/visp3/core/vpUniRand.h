@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,8 +29,7 @@
  *
  * Description:
  * Pseudo random number generator.
- *
- *****************************************************************************/
+ */
 /*
  * PCG Random Number Generation for C.
  *
@@ -74,13 +72,9 @@ typedef unsigned __int32 uint32_t;
 #include <inttypes.h>
 #endif
 
-#if (VISP_CXX_STANDARD <= VISP_CXX_STANDARD_11)
-  #include <algorithm> // std::random_shuffle
-#else
-  #include <algorithm> // std::shuffle
-  #include <random>    // std::mt19937
-  #include <numeric>   // std::iota
-#endif
+#include <algorithm> // std::shuffle
+#include <random>    // std::mt19937
+#include <numeric>   // std::iota
 
 #include <vector>
 /*!
@@ -116,24 +110,24 @@ typedef unsigned __int32 uint32_t;
   4.86741
   2
   5.65826
-  Original vector = [	0	1	2	3	4	5	6	7	8	9 ]
-  Shuffled vector = [	2	4	7	8	5	1	3	6	9	0 ]
+  Original vector = [ 0 1 2 3 4 5 6 7 8 9 ]
+  Shuffled vector = [ 2 4 7 8 5 1 3 6 9 0 ]
   \endcode
 */
 class VISP_EXPORT vpUniRand
 {
 private:
-  struct pcg_state_setseq_64 { // Internals are *Private*.
+  struct vpPcgStateSetseq_64_t
+  { // Internals are *Private*.
     uint64_t state;            // RNG state.  All values are possible.
     uint64_t inc;              // Controls which RNG sequence (stream) is
                                // selected. Must *always* be odd.
 
-    pcg_state_setseq_64(uint64_t state_ = 0x853c49e6748fea9bULL, uint64_t inc_ = 0xda3e39cb94b95bdbULL)
+    vpPcgStateSetseq_64_t(uint64_t state_ = 0x853c49e6748fea9bULL, uint64_t inc_ = 0xda3e39cb94b95bdbULL)
       : state(state_), inc(inc_)
-    {
-    }
+    { }
   };
-  typedef struct pcg_state_setseq_64 pcg32_random_t;
+  typedef struct vpPcgStateSetseq_64_t pcg32_random_t;
 
 public:
   vpUniRand();
@@ -149,7 +143,7 @@ public:
 
   /**
  * @brief Create a new vector that is a shuffled version of the \b inputVector.
- * 
+ *
  * @tparam T : A class that possesses a copy constructor.
  * @param inputVector : The input vector that must be shuffled. It will not be modified.
  * @return std::vector<T> A vector containing the same objects than \b inputVector, but that are shuffled.
@@ -158,11 +152,7 @@ public:
   inline static std::vector<T> shuffleVector(const std::vector<T> &inputVector)
   {
     std::vector<T> shuffled = inputVector;
-    #if (VISP_CXX_STANDARD <= VISP_CXX_STANDARD_11)
-      std::random_shuffle ( shuffled.begin(), shuffled.end() );
-    #else
-      std::shuffle(shuffled.begin(), shuffled.end(), std::mt19937{std::random_device{}()});
-    #endif
+    std::shuffle(shuffled.begin(), shuffled.end(), std::mt19937 { std::random_device{}() });
     return shuffled;
   }
 

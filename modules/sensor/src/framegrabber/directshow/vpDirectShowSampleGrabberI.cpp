@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -35,7 +35,7 @@
  * Bruno Renier
  * Anthony Saunier
  *
- *****************************************************************************/
+*****************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #include <visp3/core/vpImageConvert.h>
@@ -51,7 +51,7 @@ vpDirectShowSampleGrabberI::vpDirectShowSampleGrabberI()
   : acqGrayDemand(false), acqRGBaDemand(false), specialMediaType(false), invertedSource(false)
 {
   // semaphore(0), max value = 1
-  copySem = CreateSemaphore(NULL, 0, 1, NULL);
+  copySem = CreateSemaphore(nullptr, 0, 1, nullptr);
 }
 
 /*!
@@ -65,7 +65,7 @@ vpDirectShowSampleGrabberI::~vpDirectShowSampleGrabberI()
 
 STDMETHODIMP vpDirectShowSampleGrabberI::QueryInterface(REFIID riid, void **ppvObject)
 {
-  if (NULL == ppvObject)
+  if (nullptr == ppvObject)
     return E_POINTER;
   if (riid == __uuidof(IUnknown)) {
     *ppvObject = static_cast<IUnknown *>(this);
@@ -94,7 +94,7 @@ STDMETHODIMP vpDirectShowSampleGrabberI::BufferCB(double Time, BYTE *pBuffer, lo
       BITMAPINFOHEADER bmpInfo = pVih->bmiHeader;
 
       // if biHeight > 0 and the source is not special
-      // then  the image needs to be verticaly flipped
+      // then  the image needs to be vertically flipped
       bool flip;
       if (!specialMediaType)
         flip = bmpInfo.biHeight >= 0;
@@ -270,7 +270,7 @@ STDMETHODIMP vpDirectShowSampleGrabberI::BufferCB(double Time, BYTE *pBuffer, lo
     }
 
     // increment the semaphore - allows acquire to continue execution
-    ReleaseSemaphore(copySem, 1, NULL);
+    ReleaseSemaphore(copySem, 1, nullptr);
   }
   return S_OK;
 }

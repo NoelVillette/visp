@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +29,7 @@
  *
  * Description:
  * Convert image types.
- *
- * Authors:
- * Souriya Trinh
- *
- *****************************************************************************/
+ */
 /* Autostretch HSV 0.10 --- image filter plug-in for GIMP
  *
  * Copyright (C) 1997 Scott Goehring
@@ -54,7 +49,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 /*!
   \file vpImgproc.cpp
@@ -68,17 +63,9 @@
 #include <visp3/core/vpMath.h>
 #include <visp3/imgproc/vpImgproc.h>
 
-/*!
-  \ingroup group_imgproc_brightness
-
-  Adjust the brightness of a grayscale image such as the new intensity is
-  alpha x old_intensity + beta.
-
-  \param I : The grayscale image to adjust the brightness.
-  \param alpha : Multiplication coefficient.
-  \param beta : Constant value added to the old intensity.
-*/
-void vp::adjust(vpImage<unsigned char> &I, double alpha, double beta)
+namespace vp
+{
+void adjust(vpImage<unsigned char> &I, double alpha, double beta)
 {
   // Construct the look-up table
   unsigned char lut[256];
@@ -90,18 +77,7 @@ void vp::adjust(vpImage<unsigned char> &I, double alpha, double beta)
   I.performLut(lut);
 }
 
-/*!
-  \ingroup group_imgproc_brightness
-
-  Adjust the brightness of a grayscale image such as the new intensity is
-  alpha x old_intensity + beta.
-
-  \param I1 : The original grayscale image.
-  \param I2 : The grayscale image after adjusting pixel intensities.
-  \param alpha : Multiplication coefficient.
-  \param beta : Constant value added to the old intensity.
-*/
-void vp::adjust(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2, double alpha, double beta)
+void adjust(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2, double alpha, double beta)
 {
   // Copy I1 to I2
   I2 = I1;
@@ -109,17 +85,7 @@ void vp::adjust(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2, do
   vp::adjust(I2, alpha, beta);
 }
 
-/*!
-  \ingroup group_imgproc_brightness
-
-  Adjust the brightness of a color image such as the new intensity is alpha x
-  old_intensity + beta.
-
-  \param I : The color image to adjust the brightness.
-  \param alpha : Multiplication coefficient.
-  \param beta : Constant value added to the old intensity.
-*/
-void vp::adjust(vpImage<vpRGBa> &I, double alpha, double beta)
+void adjust(vpImage<vpRGBa> &I, double alpha, double beta)
 {
   // Construct the look-up table
   vpRGBa lut[256];
@@ -134,18 +100,7 @@ void vp::adjust(vpImage<vpRGBa> &I, double alpha, double beta)
   I.performLut(lut);
 }
 
-/*!
-  \ingroup group_imgproc_brightness
-
-  Adjust the brightness of a color image such as the new intensity is alpha x
-  old_intensity + beta.
-
-  \param I1 : The original color image.
-  \param I2 : The color image after adjusting pixel intensities.
-  \param alpha : Multiplication coefficient.
-  \param beta : Constant value added to the old intensity.
-*/
-void vp::adjust(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, double alpha, double beta)
+void adjust(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, double alpha, double beta)
 {
   // Copy I1 to I2
   I2 = I1;
@@ -153,97 +108,24 @@ void vp::adjust(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, double alpha, do
   vp::adjust(I2, alpha, beta);
 }
 
-/*!
-  \ingroup group_imgproc_histogram
-
-  Adjust the contrast of a grayscale image by performing an histogram
-  equalization. The intensity distribution is redistributed over the full [0 -
-  255] range such as the cumulative histogram distribution becomes linear.
-
-  \param I : The grayscale image to apply histogram equalization.
-*/
-void vp::equalizeHistogram(vpImage<unsigned char> &I)
+void equalizeHistogram(vpImage<unsigned char> &I)
 {
-  if (I.getWidth() * I.getHeight() == 0) {
+  vpImage<unsigned char> Icpy = I;
+  vp::equalizeHistogram(Icpy, I);
+}
+
+void equalizeHistogram(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2)
+{
+  if (I1.getWidth() * I1.getHeight() == 0) {
     return;
   }
 
   // Calculate the histogram
   vpHistogram hist;
-  hist.calculate(I);
-
-  // Calculate the cumulative distribution function
-  unsigned int cdf[256];
-  unsigned int cdfMin = /*std::numeric_limits<unsigned int>::max()*/ UINT_MAX, cdfMax = 0;
-  unsigned int minValue =
-                   /*std::numeric_limits<unsigned int>::max()*/ UINT_MAX,
-               maxValue = 0;
-  cdf[0] = hist[0];
-
-  if (cdf[0] < cdfMin && cdf[0] > 0) {
-    cdfMin = cdf[0];
-    minValue = 0;
-  }
-
-  for (unsigned int i = 1; i < 256; i++) {
-    cdf[i] = cdf[i - 1] + hist[i];
-
-    if (cdf[i] < cdfMin && cdf[i] > 0) {
-      cdfMin = cdf[i];
-      minValue = i;
-    }
-
-    if (cdf[i] > cdfMax) {
-      cdfMax = cdf[i];
-      maxValue = i;
-    }
-  }
-
-  unsigned int nbPixels = I.getWidth() * I.getHeight();
-  if (nbPixels == cdfMin) {
-    // Only one brightness value in the image
-    return;
-  }
-
-  // Construct the look-up table
-  unsigned char lut[256];
-  for (unsigned int x = minValue; x <= maxValue; x++) {
-    lut[x] = vpMath::round((cdf[x] - cdfMin) / (double)(nbPixels - cdfMin) * 255.0);
-  }
-
-  I.performLut(lut);
+  hist.equalize(I1, I2);
 }
 
-/*!
-  \ingroup group_imgproc_histogram
-
-  Adjust the contrast of a grayscale image by performing an histogram
-  equalization. The intensity distribution is redistributed over the full [0 -
-  255] range such as the cumulative histogram distribution becomes linear.
-
-  \param I1 : The first grayscale image.
-  \param I2 : The second grayscale image after histogram equalization.
-*/
-void vp::equalizeHistogram(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2)
-{
-  I2 = I1;
-  vp::equalizeHistogram(I2);
-}
-
-/*!
-  \ingroup group_imgproc_histogram
-
-  Adjust the contrast of a color image by performing an histogram
-  equalization. The intensity distribution is redistributed over the full [0 -
-  255] range such as the cumulative histogram distribution becomes linear. The
-  alpha channel is ignored / copied from the source alpha channel.
-
-  \param I : The color image to apply histogram equalization.
-  \param useHSV : If true, the histogram equalization is performed on the
-  value channel (in HSV space), otherwise the histogram equalization is
-  performed independently on the RGB channels.
-*/
-void vp::equalizeHistogram(vpImage<vpRGBa> &I, bool useHSV)
+void equalizeHistogram(vpImage<vpRGBa> &I, bool useHSV)
 {
   if (I.getWidth() * I.getHeight() == 0) {
     return;
@@ -285,7 +167,8 @@ void vp::equalizeHistogram(vpImage<vpRGBa> &I, bool useHSV)
 
       cpt++;
     }
-  } else {
+  }
+  else {
     vpImage<unsigned char> hue(I.getHeight(), I.getWidth());
     vpImage<unsigned char> saturation(I.getHeight(), I.getWidth());
     vpImage<unsigned char> value(I.getHeight(), I.getWidth());
@@ -304,40 +187,19 @@ void vp::equalizeHistogram(vpImage<vpRGBa> &I, bool useHSV)
   }
 }
 
-/*!
-  \ingroup group_imgproc_histogram
-
-  Adjust the contrast of a color image by performing an histogram
-  equalization. The intensity distribution is redistributed over the full [0 -
-  255] range such as the cumulative histogram distribution becomes linear. The
-  alpha channel is ignored / copied from the source alpha channel.
-
-  \param I1 : The first color image.
-  \param I2 : The second color image after histogram equalization.
-  \param useHSV : If true, the histogram equalization is performed on the
-  value channel (in HSV space), otherwise the histogram equalization is
-  performed independently on the RGB channels.
-*/
-void vp::equalizeHistogram(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, bool useHSV)
+void equalizeHistogram(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, bool useHSV)
 {
   I2 = I1;
   vp::equalizeHistogram(I2, useHSV);
 }
 
-/*!
-  \ingroup group_imgproc_gamma
-
-  Perform a gamma correction on a grayscale image.
-
-  \param I : The grayscale image to apply gamma correction.
-  \param gamma : Gamma value.
-*/
-void vp::gammaCorrection(vpImage<unsigned char> &I, double gamma)
+void gammaCorrection(vpImage<unsigned char> &I, double gamma)
 {
   double inverse_gamma = 1.0;
   if (gamma > 0) {
     inverse_gamma = 1.0 / gamma;
-  } else {
+  }
+  else {
     throw vpException(vpException::badValue, "The gamma value must be positive !");
   }
 
@@ -350,35 +212,19 @@ void vp::gammaCorrection(vpImage<unsigned char> &I, double gamma)
   I.performLut(lut);
 }
 
-/*!
-  \ingroup group_imgproc_gamma
-
-  Perform a gamma correction on a grayscale image.
-
-  \param I1 : The first grayscale image.
-  \param I2 : The second grayscale image after gamma correction.
-  \param gamma : Gamma value.
-*/
-void vp::gammaCorrection(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2, double gamma)
+void gammaCorrection(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2, double gamma)
 {
   I2 = I1;
   vp::gammaCorrection(I2, gamma);
 }
 
-/*!
-  \ingroup group_imgproc_gamma
-
-  Perform a gamma correction on a color image.
-
-  \param I : The color image to apply gamma correction.
-  \param gamma : Gamma value.
-*/
-void vp::gammaCorrection(vpImage<vpRGBa> &I, double gamma)
+void gammaCorrection(vpImage<vpRGBa> &I, double gamma)
 {
   double inverse_gamma = 1.0;
   if (gamma > 0) {
     inverse_gamma = 1.0 / gamma;
-  } else {
+  }
+  else {
     throw vpException(vpException::badValue, "The gamma value must be positive !");
   }
 
@@ -394,29 +240,13 @@ void vp::gammaCorrection(vpImage<vpRGBa> &I, double gamma)
   I.performLut(lut);
 }
 
-/*!
-  \ingroup group_imgproc_gamma
-
-  Perform a gamma correction on a color image.
-
-  \param I1 : The first color image.
-  \param I2 : The second color image after gamma correction.
-  \param gamma : Gamma value.
-*/
-void vp::gammaCorrection(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, double gamma)
+void gammaCorrection(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, double gamma)
 {
   I2 = I1;
   vp::gammaCorrection(I2, gamma);
 }
 
-/*!
-  \ingroup group_imgproc_contrast
-
-  Stretch the contrast of a grayscale image.
-
-  \param I : The grayscale image to stretch the contrast.
-*/
-void vp::stretchContrast(vpImage<unsigned char> &I)
+void stretchContrast(vpImage<unsigned char> &I)
 {
   // Find min and max intensity values
   unsigned char min = 255, max = 0;
@@ -430,36 +260,22 @@ void vp::stretchContrast(vpImage<unsigned char> &I)
     for (unsigned int x = min; x <= max; x++) {
       lut[x] = 255 * (x - min) / range;
     }
-  } else {
+  }
+  else {
     lut[min] = min;
   }
 
   I.performLut(lut);
 }
 
-/*!
-  \ingroup group_imgproc_contrast
-
-  Stretch the contrast of a grayscale image.
-
-  \param I1 : The first input grayscale image.
-  \param I2 : The second output grayscale image.
-*/
-void vp::stretchContrast(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2)
+void stretchContrast(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2)
 {
   // Copy I1 to I2
   I2 = I1;
   vp::stretchContrast(I2);
 }
 
-/*!
-  \ingroup group_imgproc_contrast
-
-  Stretch the contrast of a color image.
-
-  \param I : The color image to stretch the contrast.
-*/
-void vp::stretchContrast(vpImage<vpRGBa> &I)
+void stretchContrast(vpImage<vpRGBa> &I)
 {
   // Find min and max intensity values
   vpRGBa min = 255, max = 0;
@@ -496,7 +312,8 @@ void vp::stretchContrast(vpImage<vpRGBa> &I)
     for (unsigned int x = min.R; x <= max.R; x++) {
       lut[x].R = 255 * (x - min.R) / rangeR;
     }
-  } else {
+  }
+  else {
     lut[min.R].R = min.R;
   }
 
@@ -505,7 +322,8 @@ void vp::stretchContrast(vpImage<vpRGBa> &I)
     for (unsigned int x = min.G; x <= max.G; x++) {
       lut[x].G = 255 * (x - min.G) / rangeG;
     }
-  } else {
+  }
+  else {
     lut[min.G].G = min.G;
   }
 
@@ -514,7 +332,8 @@ void vp::stretchContrast(vpImage<vpRGBa> &I)
     for (unsigned int x = min.B; x <= max.B; x++) {
       lut[x].B = 255 * (x - min.B) / rangeB;
     }
-  } else {
+  }
+  else {
     lut[min.B].B = min.B;
   }
 
@@ -523,43 +342,28 @@ void vp::stretchContrast(vpImage<vpRGBa> &I)
     for (unsigned int x = min.A; x <= max.A; x++) {
       lut[x].A = 255 * (x - min.A) / rangeA;
     }
-  } else {
+  }
+  else {
     lut[min.A].A = min.A;
   }
 
   I.performLut(lut);
 }
 
-/*!
-  \ingroup group_imgproc_contrast
-
-  Stretch the contrast of a color image.
-
-  \param I1 : The first input color image.
-  \param I2 : The second output color image.
-*/
-void vp::stretchContrast(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2)
+void stretchContrast(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2)
 {
   // Copy I1 to I2
   I2 = I1;
   vp::stretchContrast(I2);
 }
 
-/*!
-  \ingroup group_imgproc_contrast
-
-  Stretch the contrast of a color image in the HSV color space.
-  The saturation and value components are stretch so the hue is preserved.
-
-  \param I : The color image to stetch the contrast in the HSV color space.
-*/
-void vp::stretchContrastHSV(vpImage<vpRGBa> &I)
+void stretchContrastHSV(vpImage<vpRGBa> &I)
 {
   unsigned int size = I.getWidth() * I.getHeight();
 
   // Convert RGB to HSV
   vpImage<double> hueImage(I.getHeight(), I.getWidth()), saturationImage(I.getHeight(), I.getWidth()),
-      valueImage(I.getHeight(), I.getWidth());
+    valueImage(I.getHeight(), I.getWidth());
   vpImageConvert::RGBaToHSV((unsigned char *)I.bitmap, hueImage.bitmap, saturationImage.bitmap, valueImage.bitmap,
                             size);
 
@@ -597,38 +401,28 @@ void vp::stretchContrastHSV(vpImage<vpRGBa> &I)
                             size);
 }
 
-/*!
-  \ingroup group_imgproc_contrast
-
-  Stretch the contrast of a color image in the HSV color space.
-  The saturation and value components are stretch so the hue is preserved.
-
-  \param I1 : The first input color image.
-  \param I2 : The second output color image.
-*/
-void vp::stretchContrastHSV(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2)
+void stretchContrastHSV(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2)
 {
   // Copy I1 to I2
   I2 = I1;
   vp::stretchContrastHSV(I2);
 }
 
-/*!
-  \ingroup group_imgproc_sharpening
-
-  Sharpen a grayscale image using the unsharp mask technique.
-
-  \param I : The grayscale image to sharpen.
-  \param sigma : Standard deviation for Gaussian kernel.
-  \param weight : Weight (between [0 - 1[) for the sharpening process.
- */
-void vp::unsharpMask(vpImage<unsigned char> &I, float sigma, double weight)
+void unsharpMask(vpImage<unsigned char> &I, float sigma, double weight)
 {
   if (weight < 1.0 && weight >= 0.0) {
+#if defined(VISP_HAVE_SIMDLIB)
     // Gaussian blurred image
     vpGaussianFilter gaussian_filter(I.getWidth(), I.getHeight(), sigma);
     vpImage<unsigned char> I_blurred;
     gaussian_filter.apply(I, I_blurred);
+#else
+    // Gaussian blurred image
+    vpImage<double> I_blurred;
+    unsigned int size = 7;
+    (void)sigma;
+    vpImageFilter::gaussianBlur(I, I_blurred, size);
+#endif
 
     // Unsharp mask
     for (unsigned int cpt = 0; cpt < I.getSize(); cpt++) {
@@ -638,165 +432,45 @@ void vp::unsharpMask(vpImage<unsigned char> &I, float sigma, double weight)
   }
 }
 
-/*!
-  \ingroup group_imgproc_sharpening
-
-  Sharpen a grayscale image using the unsharp mask technique.
-
-  \param I1 : The first input grayscale image.
-  \param I2 : The second output grayscale image.
-  \param sigma : Standard deviation for Gaussian kernel.
-  \param weight : Weight (between [0 - 1[) for the sharpening process.
-*/
-void vp::unsharpMask(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2, float sigma, double weight)
+void unsharpMask(const vpImage<unsigned char> &I, vpImage<unsigned char> &Ires, float sigma, double weight)
 {
-  // Copy I1 to I2
-  I2 = I1;
-  vp::unsharpMask(I2, sigma, weight);
+  // Copy I to Ires
+  Ires = I;
+  vp::unsharpMask(Ires, sigma, weight);
 }
 
-/*!
-  \ingroup group_imgproc_sharpening
-
-  Sharpen a color image using the unsharp mask technique.
-
-  \param I : The color image to sharpen.
-  \param sigma : Standard deviation for Gaussian kernel.
-  \param weight : Weight (between [0 - 1[) for the sharpening process.
- */
-void vp::unsharpMask(vpImage<vpRGBa> &I, float sigma, double weight)
+void unsharpMask(vpImage<vpRGBa> &I, float sigma, double weight)
 {
   if (weight < 1.0 && weight >= 0.0) {
+#if defined(VISP_HAVE_SIMDLIB)
     // Gaussian blurred image
     vpGaussianFilter gaussian_filter(I.getWidth(), I.getHeight(), sigma);
     vpImage<vpRGBa> I_blurred;
     gaussian_filter.apply(I, I_blurred);
-
-    // Unsharp mask
-    for (unsigned int cpt = 0; cpt < I.getSize(); cpt++) {
-      double val_R = (I.bitmap[cpt].R - weight * I_blurred.bitmap[cpt].R) / (1 - weight);
-      double val_G = (I.bitmap[cpt].G - weight * I_blurred.bitmap[cpt].G) / (1 - weight);
-      double val_B = (I.bitmap[cpt].B - weight * I_blurred.bitmap[cpt].B) / (1 - weight);
-
-      I.bitmap[cpt].R = vpMath::saturate<unsigned char>(val_R);
-      I.bitmap[cpt].G = vpMath::saturate<unsigned char>(val_G);
-      I.bitmap[cpt].B = vpMath::saturate<unsigned char>(val_B);
-    }
-  }
-}
-
-/*!
-  \ingroup group_imgproc_sharpening
-
-  Sharpen a color image using the unsharp mask technique.
-
-  \param I1 : The first input color image.
-  \param I2 : The second output color image.
-  \param sigma : Standard deviation for Gaussian kernel.
-  \param weight : Weight (between [0 - 1[) for the sharpening process.
-*/
-void vp::unsharpMask(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, float sigma, double weight)
-{
-  // Copy I1 to I2
-  I2 = I1;
-  vp::unsharpMask(I2, sigma, weight);
-}
-
-#ifdef VISP_BUILD_DEPRECATED_FUNCTIONS
-/*!
-  \ingroup group_imgproc_sharpening
-
-  \deprecated This function is deprecated. You should rather use unsharpMask() with sigma Gaussian parameter.
-  You can use sigma = 1.0f to have similar results.
-
-  Sharpen a grayscale image using the unsharp mask technique.
-
-  \param I : The grayscale image to sharpen.
-  \param size : Size (must be odd) of the Gaussian blur kernel.
-  \param weight : Weight (between [0 - 1[) for the sharpening process.
- */
-void vp::unsharpMask(vpImage<unsigned char> &I, unsigned int size, double weight)
-{
-  if (weight < 1.0 && weight >= 0.0) {
-    // Gaussian blurred image
-    vpImage<double> I_blurred;
-    vpImageFilter::gaussianBlur(I, I_blurred, size);
-
-    // Unsharp mask
-    for (unsigned int cpt = 0; cpt < I.getSize(); cpt++) {
-      double val = (I.bitmap[cpt] - weight * I_blurred.bitmap[cpt]) / (1 - weight);
-      I.bitmap[cpt] = vpMath::saturate<unsigned char>(val); // val > 255 ? 255 : (val < 0 ? 0 : val);
-    }
-  }
-}
-
-/*!
-  \ingroup group_imgproc_sharpening
-
-  \deprecated This function is deprecated. You should rather use unsharpMask() with sigma Gaussian parameter.
-  You can use sigma = 1.0f to have similar results.
-
-  Sharpen a grayscale image using the unsharp mask technique.
-
-  \param I1 : The first input grayscale image.
-  \param I2 : The second output grayscale image.
-  \param size : Size (must be odd) of the Gaussian blur kernel.
-  \param weight : Weight (between [0 - 1[) for the sharpening process.
-*/
-void vp::unsharpMask(const vpImage<unsigned char> &I1, vpImage<unsigned char> &I2, unsigned int size, double weight)
-{
-  // Copy I1 to I2
-  I2 = I1;
-#if 0
-  vp::unsharpMask(I2, size, weight);
 #else
-  // To avoid:
-  // warning: ‘void vp::unsharpMask(vpImage<unsigned char>&, unsigned int, double)’ is deprecated
-  // [-Wdeprecated-declarations]
-  if (weight < 1.0 && weight >= 0.0) {
-    // Gaussian blurred image
-    vpImage<double> I_blurred;
-    vpImageFilter::gaussianBlur(I2, I_blurred, size);
-
-    // Unsharp mask
-    for (unsigned int cpt = 0; cpt < I2.getSize(); cpt++) {
-      double val = (I2.bitmap[cpt] - weight * I_blurred.bitmap[cpt]) / (1 - weight);
-      I2.bitmap[cpt] = vpMath::saturate<unsigned char>(val); // val > 255 ? 255 : (val < 0 ? 0 : val);
-    }
-  }
-#endif
-}
-
-/*!
-  \ingroup group_imgproc_sharpening
-
-  \deprecated This function is deprecated. You should rather use unsharpMask() with sigma Gaussian parameter.
-  You can use sigma = 1.0f to have similar results.
-
-  Sharpen a color image using the unsharp mask technique.
-
-  \param I : The color image to sharpen.
-  \param size : Size (must be odd) of the Gaussian blur kernel.
-  \param weight : Weight (between [0 - 1[) for the sharpening process.
- */
-void vp::unsharpMask(vpImage<vpRGBa> &I, unsigned int size, double weight)
-{
-  if (weight < 1.0 && weight >= 0.0) {
     // Gaussian blurred image
     vpImage<double> I_blurred_R, I_blurred_G, I_blurred_B;
     vpImage<unsigned char> I_R, I_G, I_B;
+    unsigned int size = 7;
+    (void)sigma;
 
     vpImageConvert::split(I, &I_R, &I_G, &I_B);
     vpImageFilter::gaussianBlur(I_R, I_blurred_R, size);
     vpImageFilter::gaussianBlur(I_G, I_blurred_G, size);
     vpImageFilter::gaussianBlur(I_B, I_blurred_B, size);
+#endif
 
     // Unsharp mask
     for (unsigned int cpt = 0; cpt < I.getSize(); cpt++) {
+#if defined(VISP_HAVE_SIMDLIB)
+      double val_R = (I.bitmap[cpt].R - weight * I_blurred.bitmap[cpt].R) / (1 - weight);
+      double val_G = (I.bitmap[cpt].G - weight * I_blurred.bitmap[cpt].G) / (1 - weight);
+      double val_B = (I.bitmap[cpt].B - weight * I_blurred.bitmap[cpt].B) / (1 - weight);
+#else
       double val_R = (I.bitmap[cpt].R - weight * I_blurred_R.bitmap[cpt]) / (1 - weight);
       double val_G = (I.bitmap[cpt].G - weight * I_blurred_G.bitmap[cpt]) / (1 - weight);
       double val_B = (I.bitmap[cpt].B - weight * I_blurred_B.bitmap[cpt]) / (1 - weight);
-
+#endif
       I.bitmap[cpt].R = vpMath::saturate<unsigned char>(val_R);
       I.bitmap[cpt].G = vpMath::saturate<unsigned char>(val_G);
       I.bitmap[cpt].B = vpMath::saturate<unsigned char>(val_B);
@@ -804,49 +478,11 @@ void vp::unsharpMask(vpImage<vpRGBa> &I, unsigned int size, double weight)
   }
 }
 
-/*!
-  \ingroup group_imgproc_sharpening
-
-  \deprecated This function is deprecated. You should rather use unsharpMask() with sigma Gaussian parameter.
-  You can use sigma = 1.0f to have similar results.
-
-  Sharpen a color image using the unsharp mask technique.
-
-  \param I1 : The first input color image.
-  \param I2 : The second output color image.
-  \param size : Size (must be odd) of the Gaussian blur kernel.
-  \param weight : Weight (between [0 - 1[) for the sharpening process.
-*/
-void vp::unsharpMask(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, unsigned int size, double weight)
+void unsharpMask(const vpImage<vpRGBa> &I, vpImage<vpRGBa> &Ires, float sigma, double weight)
 {
-  // Copy I1 to I2
-  I2 = I1;
-#if 0
-  vp::unsharpMask(I2, size, weight);
-#else
-  // To avoid:
-  // warning: ‘void vp::unsharpMask(vpImage<vpRGBa>&, unsigned int, double)’ is deprecated [-Wdeprecated-declarations]
-  if (weight < 1.0 && weight >= 0.0) {
-    // Gaussian blurred image
-    vpImage<double> I_blurred_R, I_blurred_G, I_blurred_B;
-    vpImage<unsigned char> I_R, I_G, I_B;
-
-    vpImageConvert::split(I2, &I_R, &I_G, &I_B);
-    vpImageFilter::gaussianBlur(I_R, I_blurred_R, size);
-    vpImageFilter::gaussianBlur(I_G, I_blurred_G, size);
-    vpImageFilter::gaussianBlur(I_B, I_blurred_B, size);
-
-    // Unsharp mask
-    for (unsigned int cpt = 0; cpt < I2.getSize(); cpt++) {
-      double val_R = (I2.bitmap[cpt].R - weight * I_blurred_R.bitmap[cpt]) / (1 - weight);
-      double val_G = (I2.bitmap[cpt].G - weight * I_blurred_G.bitmap[cpt]) / (1 - weight);
-      double val_B = (I2.bitmap[cpt].B - weight * I_blurred_B.bitmap[cpt]) / (1 - weight);
-
-      I2.bitmap[cpt].R = vpMath::saturate<unsigned char>(val_R);
-      I2.bitmap[cpt].G = vpMath::saturate<unsigned char>(val_G);
-      I2.bitmap[cpt].B = vpMath::saturate<unsigned char>(val_B);
-    }
-  }
-#endif
+  // Copy I to Ires
+  Ires = I;
+  vp::unsharpMask(Ires, sigma, weight);
 }
-#endif // Deprecated
+
+};

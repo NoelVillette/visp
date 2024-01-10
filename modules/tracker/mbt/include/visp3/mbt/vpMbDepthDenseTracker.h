@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,8 +29,7 @@
  *
  * Description:
  * Model-based tracker using depth dense features.
- *
- *****************************************************************************/
+ */
 
 #ifndef _vpMbDepthDenseTracker_h_
 #define _vpMbDepthDenseTracker_h_
@@ -49,26 +47,26 @@ class VISP_EXPORT vpMbDepthDenseTracker : public virtual vpMbTracker
 {
 public:
   vpMbDepthDenseTracker();
-  virtual ~vpMbDepthDenseTracker();
+  virtual ~vpMbDepthDenseTracker() override;
 
   virtual void display(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cMo, const vpCameraParameters &cam,
-                       const vpColor &col, unsigned int thickness = 1, bool displayFullModel = false);
+                       const vpColor &col, unsigned int thickness = 1, bool displayFullModel = false) override;
 
   virtual void display(const vpImage<vpRGBa> &I, const vpHomogeneousMatrix &cMo, const vpCameraParameters &cam,
-                       const vpColor &col, unsigned int thickness = 1, bool displayFullModel = false);
+                       const vpColor &col, unsigned int thickness = 1, bool displayFullModel = false) override;
 
-  virtual inline vpColVector getError() const { return m_error_depthDense; }
+  virtual inline vpColVector getError() const override { return m_error_depthDense; }
 
   virtual std::vector<std::vector<double> > getModelForDisplay(unsigned int width, unsigned int height,
                                                                const vpHomogeneousMatrix &cMo,
                                                                const vpCameraParameters &cam,
-                                                               bool displayFullModel = false);
+                                                               bool displayFullModel = false) override;
 
-  virtual inline vpColVector getRobustWeights() const { return m_w_depthDense; }
+  virtual inline vpColVector getRobustWeights() const override { return m_w_depthDense; }
 
-  virtual void init(const vpImage<unsigned char> &I);
+  virtual void init(const vpImage<unsigned char> &I) override;
 
-  virtual void loadConfigFile(const std::string &configFile, bool verbose = true);
+  virtual void loadConfigFile(const std::string &configFile, bool verbose = true) override;
 
   void reInitModel(const vpImage<unsigned char> &I, const std::string &cad_name, const vpHomogeneousMatrix &cMo,
                    bool verbose = false);
@@ -77,9 +75,9 @@ public:
                    const vpHomogeneousMatrix &cMo, bool verbose = false);
 #endif
 
-  virtual void resetTracker();
+  virtual void resetTracker() override;
 
-  virtual void setCameraParameters(const vpCameraParameters &camera);
+  virtual void setCameraParameters(const vpCameraParameters &camera) override;
 
   virtual void setDepthDenseFilteringMaxDistance(double maxDistance);
   virtual void setDepthDenseFilteringMethod(int method);
@@ -97,22 +95,22 @@ public:
     m_depthDenseSamplingStepY = stepY;
   }
 
-  virtual void setOgreVisibilityTest(const bool &v);
+  virtual void setOgreVisibilityTest(const bool &v) override;
 
-  virtual void setPose(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cdMo);
-  virtual void setPose(const vpImage<vpRGBa> &I_color, const vpHomogeneousMatrix &cdMo);
+  virtual void setPose(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cdMo) override;
+  virtual void setPose(const vpImage<vpRGBa> &I_color, const vpHomogeneousMatrix &cdMo) override;
 #ifdef VISP_HAVE_PCL
   virtual void setPose(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &point_cloud, const vpHomogeneousMatrix &cdMo);
 #endif
 
-  virtual void setScanLineVisibilityTest(const bool &v);
+  virtual void setScanLineVisibilityTest(const bool &v) override;
 
   void setUseDepthDenseTracking(const std::string &name, const bool &useDepthDenseTracking);
 
-  virtual void testTracking();
+  virtual void testTracking() override;
 
-  virtual void track(const vpImage<unsigned char> &);
-  virtual void track(const vpImage<vpRGBa> &);
+  virtual void track(const vpImage<unsigned char> &) override;
+  virtual void track(const vpImage<vpRGBa> &) override;
 #ifdef VISP_HAVE_PCL
   virtual void track(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &point_cloud);
 #endif
@@ -151,24 +149,25 @@ protected:
   void computeVisibility(unsigned int width, unsigned int height);
 
   void computeVVS();
-  virtual void computeVVSInit();
-  virtual void computeVVSInteractionMatrixAndResidu();
+  virtual void computeVVSInit() override;
+  virtual void computeVVSInteractionMatrixAndResidu() override;
   virtual void computeVVSWeights();
   using vpMbTracker::computeVVSWeights;
 
   virtual void initCircle(const vpPoint &p1, const vpPoint &p2, const vpPoint &p3, double radius, int idFace = 0,
-                          const std::string &name = "");
+                          const std::string &name = "") override;
 
   virtual void initCylinder(const vpPoint &p1, const vpPoint &p2, double radius, int idFace = 0,
-                            const std::string &name = "");
+                            const std::string &name = "") override;
 
-  virtual void initFaceFromCorners(vpMbtPolygon &polygon);
+  virtual void initFaceFromCorners(vpMbtPolygon &polygon) override;
 
-  virtual void initFaceFromLines(vpMbtPolygon &polygon);
+  virtual void initFaceFromLines(vpMbtPolygon &polygon) override;
 
 #ifdef VISP_HAVE_PCL
   void segmentPointCloud(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr &point_cloud);
 #endif
   void segmentPointCloud(const std::vector<vpColVector> &point_cloud, unsigned int width, unsigned int height);
+  void segmentPointCloud(const vpMatrix &point_cloud, unsigned int width, unsigned int height);
 };
 #endif

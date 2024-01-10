@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Bruno Renier
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
 \file vpDisplayD3D.cpp
@@ -50,7 +50,7 @@
 /*!
   \brief Basic constructor.
 */
-vpDisplayD3D::vpDisplayD3D() : vpDisplayWin32(new vpD3DRenderer()) {}
+vpDisplayD3D::vpDisplayD3D() : vpDisplayWin32(new vpD3DRenderer()) { }
 
 /*!
 
@@ -188,13 +188,8 @@ vpDisplayD3D::vpDisplayD3D(vpImage<unsigned char> &I, int winx, int winy, const 
   init(I, winx, winy, title);
 }
 
-/*!
-  \brief Basic destructor.
-*/
-vpDisplayD3D::~vpDisplayD3D() {}
-
 #elif !defined(VISP_BUILD_SHARED_LIBS)
 // Work around to avoid warning: libvisp_core.a(vpDisplayD3D.cpp.o) has no
 // symbols
-void dummy_vpDisplayD3D(){};
+void dummy_vpDisplayD3D() { };
 #endif

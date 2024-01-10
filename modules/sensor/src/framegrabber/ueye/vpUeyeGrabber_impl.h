@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,14 +31,14 @@
  * Description:
  * IDS uEye interface.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 class CameraList
 {
 public:
-  CameraList() : m_pCamList(NULL), m_CamInfo()
+  CameraList() : m_pCamList(nullptr), m_CamInfo()
   {
     // init the internal camera info structure
     ZeroMemory(&m_CamInfo, sizeof(UEYE_CAMERA_INFO));
@@ -73,7 +73,7 @@ public:
     if (is_GetCameraList(m_pCamList) == IS_SUCCESS) {
       DWORD dw = m_pCamList->dwCount;
       delete m_pCamList;
-      m_pCamList = NULL;
+      m_pCamList = nullptr;
 
       if (dw) {
         // Reallocate the required camera list size
@@ -101,7 +101,7 @@ public:
   {
     if (m_pCamList)
       delete m_pCamList;
-    m_pCamList = NULL;
+    m_pCamList = nullptr;
 
     ZeroMemory(&m_CamInfo, sizeof(UEYE_CAMERA_INFO));
   }

@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +29,7 @@
  *
  * Description:
  * TCP Server
- *
- * Authors:
- * Aurelien Yol
- *
- *****************************************************************************/
+ */
 
 #ifndef vpServer_H
 #define vpServer_H
@@ -57,8 +52,8 @@
   TCP provides reliable, ordered delivery of a stream of bytes from a program
   on one computer to another program on another computer.
 
-  Exemple of server's code, receiving and sending basic message.
-  It corresponds to the client used in the first exemple of vpClient class'
+  Example of server's code, receiving and sending basic message.
+  It corresponds to the client used in the first example of vpClient class'
   documentation.
 
   \code
@@ -98,8 +93,8 @@ int main(int argc,const char** argv)
 }
   \endcode
 
-  Exemple of server's code, receiving a vpImage on request form.
-  It correspond to the client used in the second exemple of vpClient class'
+  Example of server's code, receiving a vpImage on request form.
+  It correspond to the client used in the second example of vpClient class'
 documentation.
 
   \code
@@ -179,7 +174,7 @@ public:
   explicit vpServer(const int &port);
   vpServer(const std::string &adress_serv, const int &port_serv);
 
-  virtual ~vpServer();
+  virtual ~vpServer() override;
 
   bool checkForConnections();
 

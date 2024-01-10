@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Aurelien Yol
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <cmath>  // std::fabs()
 #include <limits> // numeric_limits
@@ -48,7 +48,7 @@
 
 /*!
   Compute the covariance matrix of the parameters x from a least squares
-  minimisation defined as: Ax = b
+  minimization defined as: Ax = b
 
   \param A : Matrix A from Ax = b.
 
@@ -77,7 +77,7 @@ vpMatrix vpMatrix::computeCovarianceMatrix(const vpMatrix &A, const vpColVector 
 
 /*!
   Compute the covariance matrix of the parameters x from a least squares
-  minimisation defined as: WAx = Wb
+  minimization defined as: WAx = Wb
 
   \param A : Matrix A from WAx = Wb.
 

@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Generic virtual robot.
  *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpDebug.h>
 #include <visp3/robot/vpRobot.h>
@@ -53,7 +50,7 @@ const double vpRobot::maxRotationVelocityDefault = 0.7;
 vpRobot::vpRobot(void)
   : stateRobot(vpRobot::STATE_STOP), frameRobot(vpRobot::CAMERA_FRAME),
     maxTranslationVelocity(maxTranslationVelocityDefault), maxRotationVelocity(maxRotationVelocityDefault), nDof(0),
-    eJe(), eJeAvailable(false), fJe(), fJeAvailable(false), areJointLimitsAvailable(false), qmin(NULL), qmax(NULL),
+    eJe(), eJeAvailable(false), fJe(), fJeAvailable(false), areJointLimitsAvailable(false), qmin(nullptr), qmax(nullptr),
     verbose_(true)
 {
 }
@@ -61,7 +58,7 @@ vpRobot::vpRobot(void)
 vpRobot::vpRobot(const vpRobot &robot)
   : stateRobot(vpRobot::STATE_STOP), frameRobot(vpRobot::CAMERA_FRAME),
     maxTranslationVelocity(maxTranslationVelocityDefault), maxRotationVelocity(maxRotationVelocityDefault), nDof(0),
-    eJe(), eJeAvailable(false), fJe(), fJeAvailable(false), areJointLimitsAvailable(false), qmin(NULL), qmax(NULL),
+    eJe(), eJeAvailable(false), fJe(), fJeAvailable(false), areJointLimitsAvailable(false), qmin(nullptr), qmax(nullptr),
     verbose_(true)
 {
   *this = robot;
@@ -72,13 +69,13 @@ vpRobot::vpRobot(const vpRobot &robot)
  */
 vpRobot::~vpRobot()
 {
-  if (qmin != NULL) {
+  if (qmin != nullptr) {
     delete[] qmin;
-    qmin = NULL;
+    qmin = nullptr;
   }
-  if (qmax != NULL) {
+  if (qmax != nullptr) {
     delete[] qmax;
-    qmax = NULL;
+    qmax = nullptr;
   }
 }
 

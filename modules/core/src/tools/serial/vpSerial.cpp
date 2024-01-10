@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Serial communication.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
@@ -270,12 +267,12 @@ bool vpSerial::read(char *c, long timeout_s)
   FD_ZERO(&readfds);
   FD_SET(static_cast<unsigned int>(m_fd), &readfds);
 
-  int ret = select(FD_SETSIZE, &readfds, (fd_set *)NULL, (fd_set *)NULL, &timeout);
+  int ret = select(FD_SETSIZE, &readfds, (fd_set *)nullptr, (fd_set *)nullptr, &timeout);
 
   if (ret < 0) {
     throw(vpException(vpException::fatalError, "Serial i/o exception"));
   } else if (ret == 0) {
-    // Timeout occured
+    // Timeout occurred
     return false;
   } else {
     ssize_t n = ::read(m_fd, c, 1); // read one character at a time
@@ -299,7 +296,7 @@ std::string vpSerial::readline(const std::string &eol)
   while (true) {
     size_t bytes_read = this->read(&c, 1);
     if (bytes_read == 0) {
-      break; // Timeout occured on reading 1 byte
+      break; // Timeout occurred on reading 1 byte
     }
     line.append(&c, 1);
     if (std::string(line, line.size() - eol_len, eol_len) == eol) {

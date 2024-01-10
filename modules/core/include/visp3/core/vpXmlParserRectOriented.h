@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -29,12 +28,8 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Description:
- * XML parser to load and save oriented rectangles in a XML file
- *
- * Authors:
- * Marc Pouliquen
- *
- *****************************************************************************/
+ * XML parser to load and save oriented rectangles in a XML file.
+ */
 
 /*!
   \file vpXmlParserRectOriented.h
@@ -47,6 +42,7 @@
 
 #include <visp3/core/vpConfig.h>
 
+#if defined(VISP_HAVE_PUGIXML)
 #include <visp3/core/vpRectOriented.h>
 
 /*!
@@ -112,4 +108,5 @@ private:
   class Impl;
   Impl *m_impl;
 };
+#endif
 #endif // vpXmlParserRectOriented_h

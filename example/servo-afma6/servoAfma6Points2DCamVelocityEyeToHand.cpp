@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -33,7 +33,7 @@
  *   eye-to-hand control
  *   velocity computed in the camera frame
  *
- *****************************************************************************/
+*****************************************************************************/
 /*!
   \file servoAfma6Points2DCamVelocityEyeToHand.cpp
 
@@ -117,7 +117,7 @@ int main()
 
 #ifdef VISP_HAVE_X11
     vpDisplayX display(I, 100, 100, "Current image");
-#elif defined(VISP_HAVE_OPENCV)
+#elif defined(HAVE_OPENCV_HIGHGUI)
     vpDisplayOpenCV display(I, 100, 100, "Current image");
 #elif defined(VISP_HAVE_GTK)
     vpDisplayGTK display(I, 100, 100, "Current image");
@@ -176,7 +176,7 @@ int main()
     }
 
     // compute the initial pose using Dementhon method followed by a non
-    // linear minimisation method
+    // linear minimization method
     pose.computePose(vpPose::DEMENTHON_LAGRANGE_VIRTUAL_VS, cMo);
 
     std::cout << cMo << std::endl;
@@ -286,7 +286,7 @@ int main()
         exit(1);
       }
 
-      // compute the initial pose using  a non linear minimisation method
+      // compute the initial pose using  a non linear minimization method
       pose.clearPoint();
 
       for (i = 0; i < nbPoint; i++) {

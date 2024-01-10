@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,11 +31,7 @@
  * Description: Class which enables to project an image in the 3D space
  * and get the view of a virtual camera.
  *
- * Authors:
- * Amaury Dame
- * Nicolas Melchior
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpImageConvert.h>
 #include <visp3/core/vpMatrixException.h>
@@ -61,8 +57,8 @@
 */
 vpImageSimulator::vpImageSimulator(const vpColorPlan &col)
   : cMt(), pt(), ptClipped(), interp(SIMPLE), normal_obj(), normal_Cam(), normal_Cam_optim(), distance(1.),
-    visible_result(1.), visible(false), X0_2_optim(NULL), frobeniusNorm_u(0.), fronbniusNorm_v(0.), vbase_u(),
-    vbase_v(), vbase_u_optim(NULL), vbase_v_optim(NULL), Xinter_optim(NULL), listTriangle(), colorI(col), Ig(), Ic(),
+    visible_result(1.), visible(false), X0_2_optim(nullptr), frobeniusNorm_u(0.), fronbniusNorm_v(0.), vbase_u(),
+    vbase_v(), vbase_u_optim(nullptr), vbase_v_optim(nullptr), Xinter_optim(nullptr), listTriangle(), colorI(col), Ig(), Ic(),
     rect(), cleanPrevImage(false), setBackgroundTexture(false), bgColor(vpColor::white), focal(), needClipping(false)
 {
   for (int i = 0; i < 4; i++)
@@ -98,8 +94,8 @@ vpImageSimulator::vpImageSimulator(const vpColorPlan &col)
 */
 vpImageSimulator::vpImageSimulator(const vpImageSimulator &text)
   : cMt(), pt(), ptClipped(), interp(SIMPLE), normal_obj(), normal_Cam(), normal_Cam_optim(), distance(1.),
-    visible_result(1.), visible(false), X0_2_optim(NULL), frobeniusNorm_u(0.), fronbniusNorm_v(0.), vbase_u(),
-    vbase_v(), vbase_u_optim(NULL), vbase_v_optim(NULL), Xinter_optim(NULL), listTriangle(), colorI(GRAY_SCALED), Ig(),
+    visible_result(1.), visible(false), X0_2_optim(nullptr), frobeniusNorm_u(0.), fronbniusNorm_v(0.), vbase_u(),
+    vbase_v(), vbase_u_optim(nullptr), vbase_v_optim(nullptr), Xinter_optim(nullptr), listTriangle(), colorI(GRAY_SCALED), Ig(),
     Ic(), rect(), cleanPrevImage(false), setBackgroundTexture(false), bgColor(vpColor::white), focal(),
     needClipping(false)
 {
@@ -216,7 +212,6 @@ void vpImageSimulator::getImage(vpImage<unsigned char> &I, const vpCameraParamet
     unsigned char *bitmap = I.bitmap;
     unsigned int width = I.getWidth();
     vpImagePoint ip;
-    int nb_point_dessine = 0;
 
     for (unsigned int i = (unsigned int)top; i < (unsigned int)bottom; i++) {
       for (unsigned int j = (unsigned int)left; j < (unsigned int)right; j++) {
@@ -228,7 +223,6 @@ void vpImageSimulator::getImage(vpImage<unsigned char> &I, const vpCameraParamet
           unsigned char Ipixelplan = 0;
           if (getPixel(ip, Ipixelplan)) {
             *(bitmap + i * width + j) = Ipixelplan;
-            nb_point_dessine++;
           }
         } else if (colorI == COLORED) {
           vpRGBa Ipixelplan;
@@ -236,7 +230,6 @@ void vpImageSimulator::getImage(vpImage<unsigned char> &I, const vpCameraParamet
             unsigned char pixelgrey =
                 (unsigned char)(0.2126 * Ipixelplan.R + 0.7152 * Ipixelplan.G + 0.0722 * Ipixelplan.B);
             *(bitmap + i * width + j) = pixelgrey;
-            nb_point_dessine++;
           }
         }
       }
@@ -277,7 +270,6 @@ void vpImageSimulator::getImage(vpImage<unsigned char> &I, vpImage<unsigned char
     unsigned char *bitmap = I.bitmap;
     unsigned int width = I.getWidth();
     vpImagePoint ip;
-    int nb_point_dessine = 0;
 
     for (unsigned int i = (unsigned int)top; i < (unsigned int)bottom; i++) {
       for (unsigned int j = (unsigned int)left; j < (unsigned int)right; j++) {
@@ -288,7 +280,6 @@ void vpImageSimulator::getImage(vpImage<unsigned char> &I, vpImage<unsigned char
         unsigned char Ipixelplan = 0;
         if (getPixel(Isrc, ip, Ipixelplan)) {
           *(bitmap + i * width + j) = Ipixelplan;
-          nb_point_dessine++;
         }
       }
     }
@@ -338,7 +329,6 @@ void vpImageSimulator::getImage(vpImage<unsigned char> &I, const vpCameraParamet
     unsigned char *bitmap = I.bitmap;
     unsigned int width = I.getWidth();
     vpImagePoint ip;
-    int nb_point_dessine = 0;
 
     for (unsigned int i = (unsigned int)top; i < (unsigned int)bottom; i++) {
       for (unsigned int j = (unsigned int)left; j < (unsigned int)right; j++) {
@@ -351,7 +341,6 @@ void vpImageSimulator::getImage(vpImage<unsigned char> &I, const vpCameraParamet
           if (getPixel(ip, Ipixelplan)) {
             if (Xinter_optim[2] < zBuffer[i][j] || zBuffer[i][j] < 0) {
               *(bitmap + i * width + j) = Ipixelplan;
-              nb_point_dessine++;
               zBuffer[i][j] = Xinter_optim[2];
             }
           }
@@ -362,7 +351,6 @@ void vpImageSimulator::getImage(vpImage<unsigned char> &I, const vpCameraParamet
               unsigned char pixelgrey =
                   (unsigned char)(0.2126 * Ipixelplan.R + 0.7152 * Ipixelplan.G + 0.0722 * Ipixelplan.B);
               *(bitmap + i * width + j) = pixelgrey;
-              nb_point_dessine++;
               zBuffer[i][j] = Xinter_optim[2];
             }
           }
@@ -403,7 +391,6 @@ void vpImageSimulator::getImage(vpImage<vpRGBa> &I, const vpCameraParameters &ca
     vpRGBa *bitmap = I.bitmap;
     unsigned int width = I.getWidth();
     vpImagePoint ip;
-    int nb_point_dessine = 0;
 
     for (unsigned int i = (unsigned int)top; i < (unsigned int)bottom; i++) {
       for (unsigned int j = (unsigned int)left; j < (unsigned int)right; j++) {
@@ -419,13 +406,11 @@ void vpImageSimulator::getImage(vpImage<vpRGBa> &I, const vpCameraParameters &ca
             pixelcolor.G = Ipixelplan;
             pixelcolor.B = Ipixelplan;
             *(bitmap + i * width + j) = pixelcolor;
-            nb_point_dessine++;
           }
         } else if (colorI == COLORED) {
           vpRGBa Ipixelplan;
           if (getPixel(ip, Ipixelplan)) {
             *(bitmap + i * width + j) = Ipixelplan;
-            nb_point_dessine++;
           }
         }
       }
@@ -466,7 +451,6 @@ void vpImageSimulator::getImage(vpImage<vpRGBa> &I, vpImage<vpRGBa> &Isrc, const
     vpRGBa *bitmap = I.bitmap;
     unsigned int width = I.getWidth();
     vpImagePoint ip;
-    int nb_point_dessine = 0;
 
     for (unsigned int i = (unsigned int)top; i < (unsigned int)bottom; i++) {
       for (unsigned int j = (unsigned int)left; j < (unsigned int)right; j++) {
@@ -477,7 +461,6 @@ void vpImageSimulator::getImage(vpImage<vpRGBa> &I, vpImage<vpRGBa> &Isrc, const
         vpRGBa Ipixelplan;
         if (getPixel(Isrc, ip, Ipixelplan)) {
           *(bitmap + i * width + j) = Ipixelplan;
-          nb_point_dessine++;
         }
       }
     }
@@ -485,7 +468,7 @@ void vpImageSimulator::getImage(vpImage<vpRGBa> &I, vpImage<vpRGBa> &Isrc, const
 }
 
 /*!
-  Get the view of the virtual camera. Be carefull, the image I is modified.
+  Get the view of the virtual camera. Be careful, the image I is modified.
   The projected image is not added as an overlay!
 
   To take into account the projection of several images, a matrix \f$ zBuffer
@@ -526,7 +509,6 @@ void vpImageSimulator::getImage(vpImage<vpRGBa> &I, const vpCameraParameters &ca
     vpRGBa *bitmap = I.bitmap;
     unsigned int width = I.getWidth();
     vpImagePoint ip;
-    int nb_point_dessine = 0;
 
     for (unsigned int i = (unsigned int)top; i < (unsigned int)bottom; i++) {
       for (unsigned int j = (unsigned int)left; j < (unsigned int)right; j++) {
@@ -543,7 +525,6 @@ void vpImageSimulator::getImage(vpImage<vpRGBa> &I, const vpCameraParameters &ca
               pixelcolor.G = Ipixelplan;
               pixelcolor.B = Ipixelplan;
               *(bitmap + i * width + j) = pixelcolor;
-              nb_point_dessine++;
               zBuffer[i][j] = Xinter_optim[2];
             }
           }
@@ -552,7 +533,6 @@ void vpImageSimulator::getImage(vpImage<vpRGBa> &I, const vpCameraParameters &ca
           if (getPixel(ip, Ipixelplan)) {
             if (Xinter_optim[2] < zBuffer[i][j] || zBuffer[i][j] < 0) {
               *(bitmap + i * width + j) = Ipixelplan;
-              nb_point_dessine++;
               zBuffer[i][j] = Xinter_optim[2];
             }
           }
@@ -1261,8 +1241,8 @@ bool vpImageSimulator::getPixel(const vpImagePoint &iP, unsigned char &Ipixelpla
 
   // recuperation des coordonnes de l'intersection dans le plan objet
   // repere plan object :
-  //	centre = X0_2_optim[i] (premier point definissant le plan)
-  //	base =  u:(X[1]-X[0]) et v:(X[3]-X[0])
+  //  centre = X0_2_optim[i] (premier point definissant le plan)
+  //  base =  u:(X[1]-X[0]) et v:(X[3]-X[0])
   // ici j'ai considere que le plan est un rectangle => coordonnees sont
   // simplement obtenu par un produit scalaire
   double u = 0, v = 0;
@@ -1314,8 +1294,8 @@ bool vpImageSimulator::getPixel(vpImage<unsigned char> &Isrc, const vpImagePoint
 
   // recuperation des coordonnes de l'intersection dans le plan objet
   // repere plan object :
-  //	centre = X0_2_optim[i] (premier point definissant le plan)
-  //	base =  u:(X[1]-X[0]) et v:(X[3]-X[0])
+  //  centre = X0_2_optim[i] (premier point definissant le plan)
+  //  base =  u:(X[1]-X[0]) et v:(X[3]-X[0])
   // ici j'ai considere que le plan est un rectangle => coordonnees sont
   // simplement obtenu par un produit scalaire
   double u = 0, v = 0;
@@ -1366,8 +1346,8 @@ bool vpImageSimulator::getPixel(const vpImagePoint &iP, vpRGBa &Ipixelplan)
 
   // recuperation des coordonnes de l'intersection dans le plan objet
   // repere plan object :
-  //	centre = X0_2_optim[i] (premier point definissant le plan)
-  //	base =  u:(X[1]-X[0]) et v:(X[3]-X[0])
+  //  centre = X0_2_optim[i] (premier point definissant le plan)
+  //  base =  u:(X[1]-X[0]) et v:(X[3]-X[0])
   // ici j'ai considere que le plan est un rectangle => coordonnees sont
   // simplement obtenu par un produit scalaire
   double u = 0, v = 0;
@@ -1418,8 +1398,8 @@ bool vpImageSimulator::getPixel(vpImage<vpRGBa> &Isrc, const vpImagePoint &iP, v
 
   // recuperation des coordonnes de l'intersection dans le plan objet
   // repere plan object :
-  //	centre = X0_2_optim[i] (premier point definissant le plan)
-  //	base =  u:(X[1]-X[0]) et v:(X[3]-X[0])
+  //  centre = X0_2_optim[i] (premier point definissant le plan)
+  //  base =  u:(X[1]-X[0]) et v:(X[3]-X[0])
   // ici j'ai considere que le plan est un rectangle => coordonnees sont
   // simplement obtenu par un produit scalaire
   double u = 0, v = 0;

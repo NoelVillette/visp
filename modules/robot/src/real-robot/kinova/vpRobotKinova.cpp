@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Interface for Kinova Jaco robot.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
@@ -56,7 +53,7 @@
  */
 vpRobotKinova::vpRobotKinova()
   : m_eMc(), m_plugin_location("./"), m_verbose(false), m_plugin_loaded(false), m_devices_count(0),
-    m_devices_list(NULL), m_active_device(-1), m_command_layer(CMD_LAYER_UNSET), m_command_layer_handle()
+    m_devices_list(nullptr), m_active_device(-1), m_command_layer(CMD_LAYER_UNSET), m_command_layer_handle()
 {
   init();
 }
@@ -431,7 +428,7 @@ void vpRobotKinova::setVelocity(const vpRobot::vpControlFrameType frame, const v
 
 /*
 
-  THESE FUNCTIONS ARE NOT MENDATORY BUT ARE USUALLY USEFUL
+  THESE FUNCTIONS ARE NOT MANDATORY BUT ARE USUALLY USEFUL
 
 */
 
@@ -491,7 +488,7 @@ void vpRobotKinova::getJointPosition(vpColVector &q)
  * the cartesian position of the end-effector in the robot base frame as a 6-dim vector, with first the 3 translations
  * expressed in meter, and then the 3 Euler rotations Rxyz expressed in radians.
  *
- * The following code shows how to use this fonction and convert the resulting position into an homogeneous matrix
+ * The following code shows how to use this function and convert the resulting position into an homogeneous matrix
  * that gives the transformation between the robot base frame and the end-effector:
  * \code
  * vpColVector position;
@@ -764,10 +761,10 @@ void vpRobotKinova::loadPlugin()
 #endif
 
   // Verify that all functions has been loaded correctly
-  if ((KinovaCloseAPI == NULL) || (KinovaGetAngularCommand == NULL) || (KinovaGetAngularCommand == NULL) ||
-      (KinovaGetCartesianCommand == NULL) || (KinovaGetDevices == NULL) || (KinovaInitAPI == NULL) ||
-      (KinovaInitFingers == NULL) || (KinovaMoveHome == NULL) || (KinovaSendBasicTrajectory == NULL) ||
-      (KinovaSetActiveDevice == NULL) || (KinovaSetAngularControl == NULL) || (KinovaSetCartesianControl == NULL)) {
+  if ((KinovaCloseAPI == nullptr) || (KinovaGetAngularCommand == nullptr) || (KinovaGetAngularCommand == nullptr) ||
+      (KinovaGetCartesianCommand == nullptr) || (KinovaGetDevices == nullptr) || (KinovaInitAPI == nullptr) ||
+      (KinovaInitFingers == nullptr) || (KinovaMoveHome == nullptr) || (KinovaSendBasicTrajectory == nullptr) ||
+      (KinovaSetActiveDevice == nullptr) || (KinovaSetAngularControl == nullptr) || (KinovaSetCartesianControl == nullptr)) {
     throw(vpException(vpException::fatalError, "Cannot load plugin from \"%s\" folder", m_plugin_location.c_str()));
   }
   if (m_verbose) {

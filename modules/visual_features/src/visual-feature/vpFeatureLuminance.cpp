@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Luminance feature.
  *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpDisplay.h>
 #include <visp3/core/vpException.h>
@@ -58,7 +55,7 @@
 */
 void vpFeatureLuminance::init()
 {
-  if (flags == NULL)
+  if (flags == nullptr)
     flags = new bool[nbParameters];
   for (unsigned int i = 0; i < nbParameters; i++)
     flags[i] = false;
@@ -87,7 +84,7 @@ void vpFeatureLuminance::init(unsigned int _nbr, unsigned int _nbc, double _Z)
 
   s.resize(dim_s);
 
-  if (pixInfo != NULL)
+  if (pixInfo != nullptr)
     delete[] pixInfo;
 
   pixInfo = new vpLuminance[dim_s];
@@ -98,11 +95,11 @@ void vpFeatureLuminance::init(unsigned int _nbr, unsigned int _nbc, double _Z)
 /*!
   Default constructor that build a visual feature.
 */
-vpFeatureLuminance::vpFeatureLuminance() : Z(1), nbr(0), nbc(0), bord(10), pixInfo(NULL), firstTimeIn(0), cam()
+vpFeatureLuminance::vpFeatureLuminance() : Z(1), nbr(0), nbc(0), bord(10), pixInfo(nullptr), firstTimeIn(0), cam()
 {
   nbParameters = 1;
   dim_s = 0;
-  flags = NULL;
+  flags = nullptr;
 
   init();
 }
@@ -111,7 +108,7 @@ vpFeatureLuminance::vpFeatureLuminance() : Z(1), nbr(0), nbc(0), bord(10), pixIn
  Copy constructor.
  */
 vpFeatureLuminance::vpFeatureLuminance(const vpFeatureLuminance &f)
-  : vpBasicFeature(f), Z(1), nbr(0), nbc(0), bord(10), pixInfo(NULL), firstTimeIn(0), cam()
+  : vpBasicFeature(f), Z(1), nbr(0), nbc(0), bord(10), pixInfo(nullptr), firstTimeIn(0), cam()
 {
   *this = f;
 }
@@ -140,7 +137,7 @@ vpFeatureLuminance &vpFeatureLuminance::operator=(const vpFeatureLuminance &f)
 */
 vpFeatureLuminance::~vpFeatureLuminance()
 {
-  if (pixInfo != NULL)
+  if (pixInfo != nullptr)
     delete[] pixInfo;
 }
 

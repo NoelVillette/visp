@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Test some vpMath functionalities.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example testRobust.cpp
@@ -116,7 +113,7 @@ bool getOptions(int argc, const char **argv, std::string &ofilename)
       ofilename = optarg_;
       break;
     case 'h':
-      usage(argv[0], NULL, ofilename);
+      usage(argv[0], nullptr, ofilename);
       return false;
       break;
 
@@ -132,7 +129,7 @@ bool getOptions(int argc, const char **argv, std::string &ofilename)
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL, ofilename);
+    usage(argv[0], nullptr, ofilename);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -166,7 +163,7 @@ int main(int argc, const char **argv)
         // Create the dirname
         vpIoTools::makeDirectory(ofilename);
       } catch (...) {
-        usage(argv[0], NULL, ofilename);
+        usage(argv[0], nullptr, ofilename);
         std::cerr << std::endl << "ERROR:" << std::endl;
         std::cerr << "  Cannot create " << ofilename << std::endl;
         std::cerr << "  Check your -o " << ofilename << " option " << std::endl;
@@ -189,7 +186,7 @@ int main(int argc, const char **argv)
     std::cout << "Create file: " << ofilename << std::endl;
     f.open(ofilename.c_str());
     if (f.fail()) {
-      usage(argv[0], NULL, ofilename);
+      usage(argv[0], nullptr, ofilename);
       std::cerr << std::endl << "ERROR:" << std::endl;
       std::cerr << "  Cannot create the file: " << ofilename << std::endl;
       std::cerr << "  Check your -o " << ofilename << " option " << std::endl;

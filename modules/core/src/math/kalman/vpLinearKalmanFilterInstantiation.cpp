@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,11 +31,7 @@
  * Description:
  * Kalman filtering.
  *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpLinearKalmanFilterInstantiation.cpp
@@ -156,7 +152,7 @@ int main()
   // Does the filtering
   vpColVector vm(2); // Measured velocities
   for ( ; ; ) {
-    // Get the two dimentional velocity measures
+    // Get the two dimensional velocity measures
     // vm[0] = ...;
     // vm[1] = ...;
 
@@ -191,7 +187,7 @@ void vpLinearKalmanFilterInstantiation::initFilter(unsigned int n_signal, vpColV
 }
 
 /*!
-  Modelisation of a constant speed state model with white noise. The
+  Modelization of a constant speed state model with white noise. The
   measure is assumed to be the position of the target.
 
   The considered state model is the following
@@ -340,7 +336,7 @@ void vpLinearKalmanFilterInstantiation::initStateConstVel_MeasurePos(unsigned in
 
 /*!
 
-  Modelisation of a constant speed state model with colored noise. The
+  Modelization of a constant speed state model with colored noise. The
   measure is assumed to be the velocity of the target.
 
   This state model assume that there is some memory associated with
@@ -476,7 +472,7 @@ int main()
   // Does the filtering
   vpColVector vm(2); // Measured velocities
   for ( ; ; ) {
-    // Get the two dimentional velocity measures
+    // Get the two dimensional velocity measures
     // vm[0] = ...;
     // vm[1] = ...;
 
@@ -548,7 +544,7 @@ void vpLinearKalmanFilterInstantiation::initStateConstVelWithColoredNoise_Measur
 
 /*!
 
-  Modelisation of a constant acceleration state model with colored noise. The
+  Modelization of a constant acceleration state model with colored noise. The
   measure is assumed to be the velocity of the target.
 
   This state model assume that there is some memory associated with
@@ -695,7 +691,7 @@ int main()
   // Does the filtering
   vpColVector vm(2); // Measured velocities
   for ( ; ; ) {
-    // Get the two dimentional velocity measures
+    // Get the two dimensional velocity measures
     // vm[0] = ...;
     // vm[1] = ...;
 
@@ -810,7 +806,6 @@ void vpLinearKalmanFilterInstantiation::filter(vpColVector &z)
     case unknown:
       vpERROR_TRACE("Kalman state model is not set");
       throw(vpException(vpException::notInitialized, "Kalman state model is not set"));
-      break;
     }
     iter++;
 
@@ -819,7 +814,6 @@ void vpLinearKalmanFilterInstantiation::filter(vpColVector &z)
     if (model == stateConstVel_MeasurePos) {
       for (unsigned int i = 0; i < size_measure * nsignal; i++) {
         double z_prev = Xest[size_state * i]; // Previous mesured position
-        //	std::cout << "Mesure pre: " << z_prev << std::endl;
         Xest[size_state * i] = z[i];
         Xest[size_state * i + 1] = (z[i] - z_prev) / dt;
       }

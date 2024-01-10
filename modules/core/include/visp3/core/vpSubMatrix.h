@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -29,12 +28,8 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
  * Description:
- * Mask on a vpMatrix .
- *
- * Authors:
- * Laneurit Jean
- *
- *****************************************************************************/
+ * Mask on a vpMatrix.
+ */
 
 #ifndef _vpSubMatrix_h_
 #define _vpSubMatrix_h_
@@ -57,7 +52,7 @@
 
   \author Jean Laneurit (IRISA - INRIA Rennes)
 
-  \sa vpMatrix vpColvector vpRowVector
+  \sa vpMatrix vpColVector vpRowVector
 */
 class VISP_EXPORT vpSubMatrix : public vpMatrix
 {
@@ -82,7 +77,7 @@ public:
   vpSubMatrix(vpMatrix &m, const unsigned int &row, const unsigned int &col, const unsigned int &nrows,
               const unsigned int &ncols);
   //! Destructor
-  virtual ~vpSubMatrix();
+  virtual ~vpSubMatrix() override;
 
   //! Initialisation of vpMatrix
   void init(vpMatrix &m, const unsigned int &row, const unsigned int &col, const unsigned int &nrows,

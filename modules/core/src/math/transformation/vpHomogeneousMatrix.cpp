@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2022 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Homogeneous matrix.
  *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpHomogeneousMatrix.cpp
@@ -151,7 +148,6 @@ vpHomogeneousMatrix::vpHomogeneousMatrix(const std::vector<float> &v) : vpArray2
   (*this)[3][3] = 1.;
 }
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
 /*!
   Construct an homogeneous matrix from a list of 12 or 16 double values.
   \param list : List of double.
@@ -161,7 +157,6 @@ vpHomogeneousMatrix::vpHomogeneousMatrix(const std::vector<float> &v) : vpArray2
 
 int main()
 {
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpHomogeneousMatrix M {
     0, 0, 1, 0.1,
     0, 1, 0, 0.2,
@@ -173,7 +168,6 @@ int main()
     1, 0, 0, 0.3,
     0, 0, 0, 1 };
   std::cout << "N:\n" << N << std::endl;
-#endif
 }
   \endcode
   It produces the following output:
@@ -199,7 +193,8 @@ vpHomogeneousMatrix::vpHomogeneousMatrix(const std::initializer_list<double> &li
     data[13] = 0.;
     data[14] = 0.;
     data[15] = 1.;
-  } else if (list.size() == 16) {
+  }
+  else if (list.size() == 16) {
     std::copy(list.begin(), list.end(), data);
     for (size_t i = 12; i < 15; i++) {
       if (std::fabs(data[i]) > std::numeric_limits<double>::epsilon()) {
@@ -215,7 +210,8 @@ vpHomogeneousMatrix::vpHomogeneousMatrix(const std::initializer_list<double> &li
                         "List element 15 (%f) should be 1.",
                         data[15]));
     }
-  } else {
+  }
+  else {
     throw(vpException(vpException::fatalError,
                       "Cannot initialize homogeneous matrix from a list (%d elements) that has not 12 or 16 elements",
                       list.size()));
@@ -236,14 +232,14 @@ vpHomogeneousMatrix::vpHomogeneousMatrix(const std::initializer_list<double> &li
       data[8] = R[2][0];
       data[9] = R[2][1];
       data[10] = R[2][2];
-    } else {
+    }
+    else {
       throw(vpException(
-          vpException::fatalError,
-          "Homogeneous matrix initialization fails since its elements are not valid (rotation part or last row)"));
+        vpException::fatalError,
+        "Homogeneous matrix initialization fails since its elements are not valid (rotation part or last row)"));
     }
   }
 }
-#endif
 
 /*!
   Construct an homogeneous matrix from a vector of double.
@@ -628,6 +624,25 @@ vpTranslationVector vpHomogeneousMatrix::operator*(const vpTranslationVector &t)
 }
 
 /*!
+  Operator that allows to multiply a rotation matrix by a rotation matrix.
+
+  \param[in] R : Rotation matrix.
+
+  \return The product between the homogeneous matrix and the rotation matrix `R`.
+
+  The following snippet shows how to use this method:
+  \code
+  vpHomogeneousMatrix c1_M_c2;
+  vpRotationMatrix c2_R_c3;
+  vpHomogeneousMatrix c1_M_c3 = c1_M_c2 * c2_R_c3;
+  \endcode
+*/
+vpHomogeneousMatrix vpHomogeneousMatrix::operator*(const vpRotationMatrix &R) const
+{
+  return (vpHomogeneousMatrix((*this).getTranslationVector(), (*this).getRotationMatrix() * R));
+}
+
+/*!
   Set homogeneous matrix first element.
 
   \param val : Value of the matrix first element.
@@ -746,7 +761,7 @@ bool vpHomogeneousMatrix::isAnHomogeneousMatrix(double threshold) const
 
   const double epsilon = std::numeric_limits<double>::epsilon();
   return R.isARotationMatrix(threshold) && vpMath::nul((*this)[3][0], epsilon) && vpMath::nul((*this)[3][1], epsilon) &&
-         vpMath::nul((*this)[3][2], epsilon) && vpMath::equal((*this)[3][3], 1.0, epsilon);
+    vpMath::nul((*this)[3][2], epsilon) && vpMath::equal((*this)[3][3], 1.0, epsilon);
 }
 
 /*!
@@ -907,55 +922,24 @@ void vpHomogeneousMatrix::eye()
 */
 void vpHomogeneousMatrix::inverse(vpHomogeneousMatrix &M) const { M = inverse(); }
 
-/*!
-  Write an homogeneous matrix in an output file stream.
-
-  \param f : Output file stream. The homogeneous matrix is saved as a
-  4 by 4 matrix.
-
-  The code below shows how to save an homogeneous matrix in a file.
-
-  \code
-  // Contruct an homogeneous matrix
-  vpTranslationVector t(1,2,3);
-  vpRxyzVector r(M_PI, 0, -M_PI/4.);
-  vpRotationMatrix R(r);
-  vpHomogeneousMatrix M(t, R);
-
-  // Save the content of the matrix in "homogeneous.dat"
-  std::ofstream f("homogeneous.dat");
-  M.save(f);
-  \endcode
-
-  \sa load()
-*/
 void vpHomogeneousMatrix::save(std::ofstream &f) const
 {
   if (!f.fail()) {
     f << *this;
-  } else {
+  }
+  else {
     throw(vpException(vpException::ioError, "Cannot save homogeneous matrix: ostream not open"));
   }
 }
 
-/*!
+void vpHomogeneousMatrix::save(const std::string &filename) const
+{
+  std::ofstream f;
+  f.open(filename.c_str());
+  save(f);
+  f.close();
+}
 
-  Read an homogeneous matrix from an input file stream. The
-  homogeneous matrix is considered as a 4 by 4 matrix.
-
-  \param f : Input file stream.
-
-  The code below shows how to get an homogeneous matrix from a file.
-
-  \code
-  vpHomogeneousMatrix M;
-
-  std::ifstream f("homogeneous.dat");
-  M.load(f);
-  \endcode
-
-  \sa save()
-*/
 void vpHomogeneousMatrix::load(std::ifstream &f)
 {
   if (!f.fail()) {
@@ -964,9 +948,18 @@ void vpHomogeneousMatrix::load(std::ifstream &f)
         f >> (*this)[i][j];
       }
     }
-  } else {
+  }
+  else {
     throw(vpException(vpException::ioError, "Cannot load homogeneous matrix: ifstream not open"));
   }
+}
+
+void vpHomogeneousMatrix::load(const std::string &filename)
+{
+  std::ifstream f;
+  f.open(filename.c_str());
+  load(f);
+  f.close();
 }
 
 /*!
@@ -1146,7 +1139,7 @@ vpHomogeneousMatrix vpHomogeneousMatrix::compute3d3dTransformation(const std::ve
   The Euclidean mean of the rotation matrices is computed following Moakher's method (SIAM 2002).
 
   \param[in] vec_M : Set of homogeneous matrices.
-  \return The Euclidian mean of the homogeneous matrices.
+  \return The Euclidean mean of the homogeneous matrices.
 
   \sa vpTranslationVector::mean(), vpRotationMatrix::mean()
  */
@@ -1170,7 +1163,8 @@ vpHomogeneousMatrix vpHomogeneousMatrix::mean(const std::vector<vpHomogeneousMat
   double det = sv[0] * sv[1] * sv[2];
   if (det > 0) {
     meanR = U * V.t();
-  } else {
+  }
+  else {
     vpMatrix D(3, 3);
     D = 0.0;
     D[0][0] = D[1][1] = 1.0;
@@ -1196,3 +1190,35 @@ vpHomogeneousMatrix vpHomogeneousMatrix::mean(const std::vector<vpHomogeneousMat
 void vpHomogeneousMatrix::setIdentity() { eye(); }
 
 #endif //#if defined(VISP_BUILD_DEPRECATED_FUNCTIONS)
+
+#ifdef VISP_HAVE_NLOHMANN_JSON
+const std::string vpHomogeneousMatrix::jsonTypeName = "vpHomogeneousMatrix";
+#include <visp3/core/vpJsonParsing.h>
+void vpHomogeneousMatrix::convert_to_json(nlohmann::json &j) const
+{
+  const vpArray2D<double> *asArray = (vpArray2D<double>*) this;
+  to_json(j, *asArray);
+  j["type"] = vpHomogeneousMatrix::jsonTypeName;
+}
+
+void vpHomogeneousMatrix::parse_json(const nlohmann::json &j)
+{
+  vpArray2D<double> *asArray = (vpArray2D<double>*) this;
+  if (j.is_object() && j.contains("type")) { // Specific conversions
+    const bool converted = convertFromTypeAndBuildFrom<vpHomogeneousMatrix, vpPoseVector>(j, *this);
+    if (!converted) {
+      from_json(j, *asArray);
+    }
+  }
+  else { // Generic 2D array conversion
+    from_json(j, *asArray);
+  }
+
+  if (getCols() != 4 && getRows() != 4) {
+    throw vpException(vpException::badValue, "From JSON, tried to read something that is not a 4x4 matrix");
+  }
+  if (!isAnHomogeneousMatrix()) {
+    throw vpException(vpException::badValue, "From JSON read a non homogeneous matrix into a vpHomogeneousMatrix");
+  }
+}
+#endif

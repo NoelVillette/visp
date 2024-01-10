@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,14 +29,10 @@
  *
  * Description:
  * Generic rotation vector (cannot be used as is !).
- *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+ */
 
-#ifndef vpRotationVECTOR_H
-#define vpRotationVECTOR_H
+#ifndef _vpRotationVector_h_
+#define _vpRotationVector_h_
 
 /*!
   \file vpRotationVector.h
@@ -101,21 +96,16 @@ class VISP_EXPORT vpRotationVector : public vpArray2D<double>
 {
 public:
   //! Constructor that constructs a 0-size rotation vector.
-  vpRotationVector() : vpArray2D<double>(), m_index(0) {}
+  vpRotationVector() : vpArray2D<double>(), m_index(0) { }
 
   //! Constructor that constructs a vector of size n and initialize all values
   //! to zero.
-  explicit vpRotationVector(unsigned int n) : vpArray2D<double>(n, 1), m_index(0) {}
+  explicit vpRotationVector(unsigned int n) : vpArray2D<double>(n, 1), m_index(0) { }
 
   /*!
     Copy operator.
   */
-  vpRotationVector(const vpRotationVector &v) : vpArray2D<double>(v), m_index(0) {}
-
-  /*!
-    Destructor.
-  */
-  virtual ~vpRotationVector(){};
+  vpRotationVector(const vpRotationVector &v) : vpArray2D<double>(v), m_index(0) { }
 
   /** @name Inherited functionalities from vpRotationVector */
   //@{

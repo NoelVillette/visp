@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * Pose computation.
- *
- * Authors:
- * Eric Marchand
- * Francois Chaumette
- *
- *****************************************************************************/
+ */
 
 #include <float.h>
 #include <limits> // numeric_limits
@@ -43,8 +37,8 @@
 #include <string.h>
 
 // besoin de la librairie mathematique, en particulier des
-// fonctions de minimisation de Levenberg Marquartd
-#include <visp3/vision/vpLevenbergMarquartd.h>
+// fonctions de minimization de Levenberg Marquartd
+#include "private/vpLevenbergMarquartd.h"
 #include <visp3/vision/vpPose.h>
 
 #define NBR_PAR 6
@@ -60,22 +54,22 @@
 // ------------------------------------------------------------------------
 
 /*
- * MACRO	: MIJ
+ * MACRO  : MIJ
  *
- * ENTREE	:
- * m		Matrice.
- * i		Indice ligne   de l'element.
- * j		Indice colonne de l'element.
- * s		Taille en nombre d'elements d'une ligne de la matrice "m".
+ * ENTREE  :
+ * m    Matrice.
+ * i    Indice ligne   de l'element.
+ * j    Indice colonne de l'element.
+ * s    Taille en nombre d'elements d'une ligne de la matrice "m".
  *
- * DESCRIPTION	:
+ * DESCRIPTION  :
  * La macro-instruction calcule l'adresse de l'element de la "i"eme ligne et
  * de la "j"eme colonne de la matrice "m", soit &m[i][j].
  *
- * RETOUR	:
+ * RETOUR  :
  * L'adresse de m[i][j] est retournee.
  *
- * HISTORIQUE	:
+ * HISTORIQUE  :
  * 1.00 - 11/02/93 - Original.
  */
 #define MIJ(m, i, j, s) ((m) + ((long)(i) * (long)(s)) + (long)(j))
@@ -113,25 +107,25 @@ void eval_function(int npt, double *xc, double *f)
 }
 
 /*
- * PROCEDURE	: fcn
+ * PROCEDURE  : fcn
  *
- * ENTREES	:
- * m		Nombre d'equations.
- * n		Nombre de variables.
- * xc		Valeur courante des parametres.
- * fvecc	Resultat de l'evaluation de la fonction.
- * ldfjac	Plus grande dimension de la matrice jac.
- * iflag	Choix du calcul de la fonction ou du jacobien.
+ * ENTREES  :
+ * m    Nombre d'equations.
+ * n    Nombre de variables.
+ * xc    Valeur courante des parametres.
+ * fvecc  Resultat de l'evaluation de la fonction.
+ * ldfjac  Plus grande dimension de la matrice jac.
+ * iflag  Choix du calcul de la fonction ou du jacobien.
  *
- * SORTIE	:
- * jac		Jacobien de la fonction.
+ * SORTIE  :
+ * jac    Jacobien de la fonction.
  *
- * DESCRIPTION	:
+ * DESCRIPTION  :
  * La procedure calcule la fonction et le jacobien.
  * Si iflag == 1, la procedure calcule la fonction en "xc" et le resultat est
- * 		  stocke dans "fvecc" et "fjac" reste inchange.
+ *       stocke dans "fvecc" et "fjac" reste inchange.
  * Si iflag == 2, la procedure calcule le jacobien en "xc" et le resultat est
- * 		  stocke dans "fjac" et "fvecc" reste inchange.
+ *       stocke dans "fjac" et "fvecc" reste inchange.
  *
  *  HISTORIQUE     :
  * 1.00 - xx/xx/xx - Original.
@@ -165,7 +159,8 @@ void fcn(int m, int n, double *xc, double *fvecc, double *jac, int ldfjac, int i
       u1 = u[0] / tt;
       u2 = u[1] / tt; /* axe de rotation unitaire  */
       u3 = u[2] / tt;
-    } else
+    }
+    else
       u1 = u2 = u3 = 0.0;
     double co = cos(tt);
     double mco = 1.0 - co;
@@ -173,10 +168,10 @@ void fcn(int m, int n, double *xc, double *fvecc, double *jac, int ldfjac, int i
 
     for (int i = 0; i < npt; i++) {
       double x = XO[i];
-      double y = YO[i]; /* coordonnees du point i	*/
+      double y = YO[i]; /* coordonnees du point i  */
       double z = ZO[i];
 
-      /* coordonnees du point i dans le repere camera	*/
+      /* coordonnees du point i dans le repere camera  */
       double rx = rd[0][0] * x + rd[0][1] * y + rd[0][2] * z + xc[0];
       double ry = rd[1][0] * x + rd[1][1] * y + rd[1][2] * z + xc[1];
       double rz = rd[2][0] * x + rd[2][1] * y + rd[2][2] * z + xc[2];
@@ -227,7 +222,8 @@ void fcn(int m, int n, double *xc, double *fvecc, double *jac, int ldfjac, int i
         *MIJ(jac, 4, i, ldfjac) = u2 * dxit - u1 * u2 * dxiu1 / tt + (1 - u2 * u2) * dxiu2 / tt - u2 * u3 * dxiu3 / tt;
 
         *MIJ(jac, 5, i, ldfjac) = u3 * dxit - u1 * u3 * dxiu1 / tt - u2 * u3 * dxiu2 / tt + (1 - u3 * u3) * dxiu3 / tt;
-      } else {
+      }
+      else {
         *MIJ(jac, 3, i, ldfjac) = 0.0;
         *MIJ(jac, 4, i, ldfjac) = 0.0;
         *MIJ(jac, 5, i, ldfjac) = 0.0;
@@ -237,28 +233,21 @@ void fcn(int m, int n, double *xc, double *fvecc, double *jac, int ldfjac, int i
       *MIJ(jac, 2, npt + i, ldfjac) = -ry / (rz * rz);
       if (tt >= MINIMUM) {
         *MIJ(jac, 3, npt + i, ldfjac) =
-            u1 * dyit + (1 - u1 * u1) * dyiu1 / tt - u1 * u2 * dyiu2 / tt - u1 * u3 * dyiu3 / tt;
+          u1 * dyit + (1 - u1 * u1) * dyiu1 / tt - u1 * u2 * dyiu2 / tt - u1 * u3 * dyiu3 / tt;
         *MIJ(jac, 4, npt + i, ldfjac) =
-            u2 * dyit - u1 * u2 * dyiu1 / tt + (1 - u2 * u2) * dyiu2 / tt - u2 * u3 * dyiu3 / tt;
+          u2 * dyit - u1 * u2 * dyiu1 / tt + (1 - u2 * u2) * dyiu2 / tt - u2 * u3 * dyiu3 / tt;
         *MIJ(jac, 5, npt + i, ldfjac) =
-            u3 * dyit - u1 * u3 * dyiu1 / tt - u2 * u3 * dyiu2 / tt + (1 - u3 * u3) * dyiu3 / tt;
-      } else {
+          u3 * dyit - u1 * u3 * dyiu1 / tt - u2 * u3 * dyiu2 / tt + (1 - u3 * u3) * dyiu3 / tt;
+      }
+      else {
         *MIJ(jac, 3, npt + i, ldfjac) = 0.0;
         *MIJ(jac, 4, npt + i, ldfjac) = 0.0;
         *MIJ(jac, 5, npt + i, ldfjac) = 0.0;
       }
     }
-  } /* fin else if iflag ==2	*/
+  } /* fin else if iflag ==2  */
 }
 
-/*!
-\brief  Compute the pose using the Lowe non linear approach
-it consider the minimization of a residual using
-the levenberg marquartd approach.
-
-The approach has been proposed by D.G Lowe in 1992 paper \cite Lowe92a.
-
-*/
 void vpPose::poseLowe(vpHomogeneousMatrix &cMo)
 {
 #if (DEBUG_LEVEL1)
@@ -271,14 +260,14 @@ void vpPose::poseLowe(vpHomogeneousMatrix &cMo)
   int tst_lmder;
   double f[2 * NBPTMAX], sol[NBR_PAR];
   double tol, jac[NBR_PAR][2 * NBPTMAX], wa[2 * NBPTMAX + 50];
-  //  double	u[3];	/* vecteur de rotation */
-  //  double	rd[3][3]; /* matrice de rotation */
+  //  double  u[3];  /* vecteur de rotation */
+  //  double  rd[3][3]; /* matrice de rotation */
 
-  n = NBR_PAR;                                  /* nombres d'inconnues	*/
-  m = (int)(2 * npt);                           /* nombres d'equations	*/
-  lwa = 2 * NBPTMAX + 50;                       /* taille du vecteur de travail	*/
-  ldfjac = 2 * NBPTMAX;                         /* nombre d'elements max sur une ligne	*/
-  tol = std::numeric_limits<double>::epsilon(); /* critere d'arret	*/
+  n = NBR_PAR;                                  /* nombres d'inconnues  */
+  m = (int)(2 * npt);                           /* nombres d'equations  */
+  lwa = 2 * NBPTMAX + 50;                       /* taille du vecteur de travail  */
+  ldfjac = 2 * NBPTMAX;                         /* nombre d'elements max sur une ligne  */
+  tol = std::numeric_limits<double>::epsilon(); /* critere d'arret  */
 
   //  c = cam ;
   // for (i=0;i<3;i++)
@@ -306,7 +295,7 @@ void vpPose::poseLowe(vpHomogeneousMatrix &cMo)
   tst_lmder = lmder1(&fcn, m, n, sol, f, &jac[0][0], ldfjac, tol, &info, ipvt, lwa, wa);
   if (tst_lmder == -1) {
     std::cout << " in CCalculPose::PoseLowe(...) : ";
-    std::cout << "pb de minimisation,  returns FATAL_ERROR";
+    std::cout << "pb de minimization,  returns FATAL_ERROR";
     // return FATAL_ERROR ;
   }
 
@@ -333,9 +322,3 @@ void vpPose::poseLowe(vpHomogeneousMatrix &cMo)
 #undef MINIMUM
 
 #undef DEBUG_LEVEL1
-
-/*
- * Local variables:
- * c-basic-offset: 2
- * End:
- */

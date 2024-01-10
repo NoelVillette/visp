@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Define a graph for the vpPlot class.
  *
- * Authors:
- * Nicolas Melchior
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
@@ -146,7 +143,7 @@ public:
   //      : xorg(0.), yorg(0.), zoomx(1.), zoomy(1.), xmax(10), ymax(10),
   //      xmin(0), ymin(-10),
   //        xdelt(1), ydelt(1), gridx(true), gridy(true), gridColor(),
-  //        curveNbr(1), curveList(NULL), scaleInitialized(false),
+  //        curveNbr(1), curveList(nullptr), scaleInitialized(false),
   //        firstPoint(true), nbDivisionx(10), nbDivisiony(10), topLeft(),
   //        width(0), height(0), graphZone(), dTopLeft(), dWidth(0),
   //        dHeight(0), dGraphZone(), dTopLeft3D(), dGraphZone3D(), cam(),

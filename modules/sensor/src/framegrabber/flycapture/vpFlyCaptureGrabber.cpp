@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description: Class which enables to project an image in the 3D space
  * and get the view of a virtual camera.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpFlyCaptureGrabber.cpp
@@ -103,7 +100,7 @@ std::ostream &vpFlyCaptureGrabber::getCameraInfo(std::ostream &os)
 }
 
 /*!
-  Return the handler to the active camera or NULL if the camera is not
+  Return the handler to the active camera or nullptr if the camera is not
 connected. This function was designed to provide a direct access to the
 FlyCapture SDK to get access to advanced functionalities that are not
 implemented in this class.
@@ -187,8 +184,9 @@ FlyCapture2::Camera *vpFlyCaptureGrabber::getCameraHandler()
 
   if (m_connected == true) {
     return &m_camera;
-  } else {
-    return NULL;
+  }
+  else {
+    return nullptr;
   }
 }
 
@@ -454,13 +452,13 @@ void vpFlyCaptureGrabber::setProperty(const FlyCapture2::PropertyType &prop_type
     prop.absControl = propInfo.absValSupported;
     switch (prop_value) {
     case ABS_VALUE: {
-      float value_ = (std::max)((std::min)((float)value, (float)propInfo.absMax), (float)propInfo.absMin);
+      float value_ = std::max<float>(std::min<float>((float)value, (float)propInfo.absMax), (float)propInfo.absMin);
       prop.absValue = value_;
       break;
     }
     case VALUE_A: {
       unsigned int value_ =
-          (std::max)((std::min)((unsigned int)value, (unsigned int)propInfo.max), (unsigned int)propInfo.min);
+        std::max<unsigned int>(std::min<unsigned int>((unsigned int)value, (unsigned int)propInfo.max), (unsigned int)propInfo.min);
       prop.valueA = value_;
       break;
     }
@@ -874,7 +872,7 @@ allowed size.
   If the format7 video mode and pixel format are not supported, return an
 exception.
 
-  The following example shows how to use this fonction to capture a 640x480
+  The following example shows how to use this function to capture a 640x480
 roi:
 
   \code
@@ -1344,7 +1342,8 @@ void vpFlyCaptureGrabber::setCameraPower(bool on)
     if (error == FlyCapture2::PGRERROR_TIMEOUT) {
       // ignore timeout errors, camera may not be responding to
       // register reads during power-up
-    } else if (error != FlyCapture2::PGRERROR_OK) {
+    }
+    else if (error != FlyCapture2::PGRERROR_OK) {
       error.PrintErrorTrace();
       throw(vpException(vpException::fatalError, "Cannot power on the camera."));
     }
@@ -1406,5 +1405,5 @@ vpFlyCaptureGrabber &vpFlyCaptureGrabber::operator>>(vpImage<vpRGBa> &I)
 #else
 // Work around to avoid warning:
 // libvisp_flycapture.a(vpFlyCaptureGrabber.cpp.o) has no symbols
-void dummy_vpFlyCaptureGrabber(){};
+void dummy_vpFlyCaptureGrabber() { };
 #endif

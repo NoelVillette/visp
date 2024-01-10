@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Manage depth normal features for a particular face.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef _vpMbtFaceDepthNormal_h_
 #define _vpMbtFaceDepthNormal_h_
@@ -53,12 +53,14 @@
 class VISP_EXPORT vpMbtFaceDepthNormal
 {
 public:
-  enum vpFaceCentroidType {
+  enum vpFaceCentroidType
+  {
     GEOMETRIC_CENTROID, ///< Compute the geometric centroid
     MEAN_CENTROID       ///< Compute the mean centroid
   };
 
-  enum vpFeatureEstimationType {
+  enum vpFeatureEstimationType
+  {
     ROBUST_FEATURE_ESTIMATION = 0,
     ROBUST_SVD_PLANE_ESTIMATION = 1,
 #ifdef VISP_HAVE_PCL
@@ -98,7 +100,7 @@ public:
                               vpImage<unsigned char> &debugImage, std::vector<std::vector<vpImagePoint> > &roiPts_vec
 #endif
                               ,
-                              const vpImage<bool> *mask = NULL);
+                              const vpImage<bool> *mask = nullptr);
 #endif
   bool computeDesiredFeatures(const vpHomogeneousMatrix &cMo, unsigned int width, unsigned int height,
                               const std::vector<vpColVector> &point_cloud, vpColVector &desired_features,
@@ -108,7 +110,16 @@ public:
                               vpImage<unsigned char> &debugImage, std::vector<std::vector<vpImagePoint> > &roiPts_vec
 #endif
                               ,
-                              const vpImage<bool> *mask = NULL);
+                              const vpImage<bool> *mask = nullptr);
+  bool computeDesiredFeatures(const vpHomogeneousMatrix &cMo, unsigned int width, unsigned int height,
+                              const vpMatrix &point_cloud, vpColVector &desired_features,
+                              unsigned int stepX, unsigned int stepY
+#if DEBUG_DISPLAY_DEPTH_NORMAL
+                              ,
+                              vpImage<unsigned char> &debugImage, std::vector<std::vector<vpImagePoint> > &roiPts_vec
+#endif
+                              ,
+                              const vpImage<bool> *mask = nullptr);
 
   void computeInteractionMatrix(const vpHomogeneousMatrix &cMo, vpMatrix &L, vpColVector &features);
 
@@ -179,10 +190,10 @@ private:
     //! The second extremity clipped in the image frame
     vpImagePoint m_imPt2;
 
-    PolygonLine() : m_p1(NULL), m_p2(NULL), m_poly(), m_imPt1(), m_imPt2() {}
+    PolygonLine() : m_p1(nullptr), m_p2(nullptr), m_poly(), m_imPt1(), m_imPt2() { }
 
     PolygonLine(const PolygonLine &polyLine)
-      : m_p1(NULL), m_p2(NULL), m_poly(polyLine.m_poly), m_imPt1(polyLine.m_imPt1), m_imPt2(polyLine.m_imPt2)
+      : m_p1(nullptr), m_p2(nullptr), m_poly(polyLine.m_poly), m_imPt1(polyLine.m_imPt1), m_imPt2(polyLine.m_imPt2)
     {
       m_p1 = &m_poly.p[0];
       m_p2 = &m_poly.p[1];
@@ -211,7 +222,7 @@ private:
   public:
     std::vector<T> data;
 
-    Mat33() : data(9) {}
+    Mat33() : data(9) { }
 
     inline T operator[](const size_t i) const { return data[i]; }
 
@@ -221,7 +232,7 @@ private:
     {
       // determinant
       T det = data[0] * (data[4] * data[8] - data[7] * data[5]) - data[1] * (data[3] * data[8] - data[5] * data[6]) +
-              data[2] * (data[3] * data[7] - data[4] * data[6]);
+        data[2] * (data[3] * data[7] - data[4] * data[6]);
       T invdet = 1 / det;
 
       Mat33<T> minv;
@@ -301,4 +312,21 @@ protected:
 
   bool samePoint(const vpPoint &P1, const vpPoint &P2) const;
 };
+
+#ifdef VISP_HAVE_NLOHMANN_JSON
+#include<nlohmann/json.hpp>
+#ifdef VISP_HAVE_PCL
+NLOHMANN_JSON_SERIALIZE_ENUM(vpMbtFaceDepthNormal::vpFeatureEstimationType, {
+    {vpMbtFaceDepthNormal::ROBUST_FEATURE_ESTIMATION, "robust"},
+    {vpMbtFaceDepthNormal::ROBUST_SVD_PLANE_ESTIMATION, "robustSVD"},
+    {vpMbtFaceDepthNormal::PCL_PLANE_ESTIMATION, "pcl"}
+});
+#else
+NLOHMANN_JSON_SERIALIZE_ENUM(vpMbtFaceDepthNormal::vpFeatureEstimationType, {
+    {vpMbtFaceDepthNormal::ROBUST_FEATURE_ESTIMATION, "robust"},
+    {vpMbtFaceDepthNormal::ROBUST_SVD_PLANE_ESTIMATION, "robustSVD"}
+});
+#endif
+#endif
+
 #endif

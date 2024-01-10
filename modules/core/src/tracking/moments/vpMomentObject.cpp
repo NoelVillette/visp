@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Filip Novotny
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <stdexcept>
 #include <visp3/core/vpCameraParameters.h>
@@ -349,7 +349,7 @@ void vpMomentObject::fromImage(const vpImage<unsigned char> &image, unsigned cha
   }
 #endif
 
-  // Normalisation equivalent to sampling interval/pixel size delX x delY
+  // Normalization equivalent to sampling interval/pixel size delX x delY
   double norm_factor = 1. / (cam.get_px() * cam.get_py());
   for (std::vector<double>::iterator it = values.begin(); it != values.end(); ++it) {
     *it = (*it) * norm_factor;
@@ -416,7 +416,7 @@ void vpMomentObject::fromImage(const vpImage<unsigned char> &image, const vpCame
       }
     }
   } else {
-    /////////// BLACK BACKGROUND	///////////
+    /////////// BLACK BACKGROUND ///////////
     for (unsigned int j = 0; j < image.getRows(); j++) {
       for (unsigned int i = 0; i < image.getCols(); i++) {
         x = 0;
@@ -441,7 +441,7 @@ void vpMomentObject::fromImage(const vpImage<unsigned char> &image, const vpCame
   }
 
   if (normalize_with_pix_size) {
-    // Normalisation equivalent to sampling interval/pixel size delX x delY
+    // Normalization equivalent to sampling interval/pixel size delX x delY
     double norm_factor = 1. / (cam.get_px() * cam.get_py());
     for (std::vector<double>::iterator it = values.begin(); it != values.end(); ++it) {
       *it = (*it) * norm_factor;

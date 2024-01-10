@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * Test image conversion.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example testColorConversion.cpp
@@ -789,7 +789,7 @@ TEST_CASE("Split <==> Merge conversion", "[image_conversion]")
   CHECK((rgba == rgba_ref));
 }
 
-#if VISP_HAVE_OPENCV_VERSION >= 0x020100
+#if defined(VISP_HAVE_OPENCV) && defined(HAVE_OPENCV_IMGPROC)
 TEST_CASE("OpenCV Mat <==> vpImage conversion", "[image_conversion]")
 {
   SECTION("CV_8UC3 to vpRGBa")
@@ -847,6 +847,38 @@ TEST_CASE("OpenCV Mat <==> vpImage conversion", "[image_conversion]")
     for (int i = 0; i < img.rows; i++) {
       for (int j = 0; j < img.cols; j++) {
         REQUIRE(img.at<uchar>(i, j) == gray[i][j]);
+      }
+    }
+  }
+
+  SECTION("CV_16UC1 to uint16_t")
+  {
+    // Test when data in cv::Mat is continuous
+    unsigned int w = 3, h = 3;
+    cv::Mat img = (cv::Mat_<uint16_t>(h, w) << 65, 650, 6500, 65000, 60000, 6000, 600, 60, 6);
+    vpImage<uint16_t> gray16;
+    vpImageConvert::convert(img, gray16);
+
+    REQUIRE(gray16.getHeight() == h);
+    REQUIRE(gray16.getWidth() == w);
+
+    for (int i = 0; i < img.rows; i++) {
+      for (int j = 0; j < img.cols; j++) {
+        REQUIRE(img.at<uint16_t>(i, j) == gray16[i][j]);
+      }
+    }
+
+    // Test when data in cv::Mat is discontinuous
+    cv::Mat img_col1 = img.col(1);
+    vpImage<uint16_t> gray16_col1;
+    vpImageConvert::convert(img_col1, gray16_col1);
+
+    REQUIRE(gray16_col1.getHeight() == h);
+    REQUIRE(gray16_col1.getWidth() == 1);
+
+    for (int i = 0; i < img_col1.rows; i++) {
+      for (int j = 0; j < img_col1.cols; j++) {
+        REQUIRE(img_col1.at<uint16_t>(i, j) == gray16_col1[i][j]);
       }
     }
   }
@@ -912,7 +944,7 @@ void readBinaryFile(const std::string &filename, std::vector<uint16_t> &buffer)
   std::fclose(f);
 }
 
-#if (VISP_HAVE_DATASET_VERSION >= 0x040500)
+#if (VISP_HAVE_DATASET_VERSION >= 0x030500)
 TEST_CASE("Bayer conversion", "[image_conversion]")
 {
   // Load original Klimt image
@@ -932,7 +964,7 @@ TEST_CASE("Bayer conversion", "[image_conversion]")
     SECTION("BGGR")
     {
       const std::string filename =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_BGGR_12bits.raw");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_BGGR_12bits.raw");
       readBinaryFile(filename, buffer);
 
       col2im(buffer, I_Bayer_16U);
@@ -963,7 +995,7 @@ TEST_CASE("Bayer conversion", "[image_conversion]")
     SECTION("GBRG")
     {
       const std::string filename =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_GBRG_12bits.raw");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_GBRG_12bits.raw");
       readBinaryFile(filename, buffer);
 
       col2im(buffer, I_Bayer_16U);
@@ -994,7 +1026,7 @@ TEST_CASE("Bayer conversion", "[image_conversion]")
     SECTION("GRBG")
     {
       const std::string filename =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_GRBG_12bits.raw");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_GRBG_12bits.raw");
       readBinaryFile(filename, buffer);
 
       col2im(buffer, I_Bayer_16U);
@@ -1025,7 +1057,7 @@ TEST_CASE("Bayer conversion", "[image_conversion]")
     SECTION("RGGB")
     {
       const std::string filename =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_RGGB_12bits.raw");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_RGGB_12bits.raw");
       readBinaryFile(filename, buffer);
 
       col2im(buffer, I_Bayer_16U);
@@ -1063,7 +1095,7 @@ TEST_CASE("Bayer conversion", "[image_conversion]")
     SECTION("BGGR")
     {
       const std::string filename =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_BGGR_08bits.raw");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_BGGR_08bits.raw");
 
       std::FILE *f = std::fopen(filename.c_str(), "rb");
       size_t sread = std::fread(&buffer[0], sizeof buffer[0], buffer.size(), f);
@@ -1096,7 +1128,7 @@ TEST_CASE("Bayer conversion", "[image_conversion]")
     SECTION("GBRG")
     {
       const std::string filename =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_GBRG_08bits.raw");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_GBRG_08bits.raw");
 
       std::FILE *f = std::fopen(filename.c_str(), "rb");
       size_t sread = std::fread(&buffer[0], sizeof buffer[0], buffer.size(), f);
@@ -1129,7 +1161,7 @@ TEST_CASE("Bayer conversion", "[image_conversion]")
     SECTION("GRBG")
     {
       const std::string filename =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_GRBG_08bits.raw");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_GRBG_08bits.raw");
 
       std::FILE *f = std::fopen(filename.c_str(), "rb");
       size_t sread = std::fread(&buffer[0], sizeof buffer[0], buffer.size(), f);
@@ -1162,7 +1194,7 @@ TEST_CASE("Bayer conversion", "[image_conversion]")
     SECTION("RGGB")
     {
       const std::string filename =
-          vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_RGGB_08bits.raw");
+        vpIoTools::createFilePath(vpIoTools::getViSPImagesDataPath(), "Bayer/Klimt_Bayer_560x558_RGGB_08bits.raw");
 
       std::FILE *f = std::fopen(filename.c_str(), "rb");
       size_t sread = std::fread(&buffer[0], sizeof buffer[0], buffer.size(), f);
@@ -1194,6 +1226,7 @@ TEST_CASE("Bayer conversion", "[image_conversion]")
   }
 }
 #endif
+
 
 int main(int argc, char *argv[])
 {

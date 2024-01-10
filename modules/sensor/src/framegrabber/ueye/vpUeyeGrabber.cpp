@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,7 +31,7 @@
  * Description:
  * IDS uEye interface.
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 
@@ -95,7 +95,7 @@ class vpUeyeGrabber::vpUeyeGrabberImpl
 {
 public:
   vpUeyeGrabberImpl()
-    : m_hCamera((HIDS)0), m_activeCameraSelected(-1), m_pLastBuffer(NULL), m_cameraList(NULL), m_bLive(true),
+    : m_hCamera((HIDS)0), m_activeCameraSelected(-1), m_pLastBuffer(nullptr), m_cameraList(nullptr), m_bLive(true),
       m_bLiveStarted(false), m_verbose(false), m_I_temp()
   {
     ZeroMemory(&m_SensorInfo, sizeof(SENSORINFO));
@@ -140,7 +140,7 @@ public:
 
       if (ret == IS_SUCCESS) {
         INT dummy = 0;
-        char *pLast = NULL, *pMem = NULL;
+        char *pLast = nullptr, *pMem = nullptr;
 
         is_GetActSeqBuf(m_hCamera, &dummy, &pMem, &pLast);
         m_pLastBuffer = pLast;
@@ -149,14 +149,14 @@ public:
           return;
 
         int nNum = getImageNum(m_pLastBuffer);
-        if (timestamp_camera != NULL || timestamp_system != NULL) {
+        if (timestamp_camera != nullptr || timestamp_system != nullptr) {
           int nImageID = getImageID(m_pLastBuffer);
           UEYEIMAGEINFO ImageInfo;
           if (is_GetImageInfo(m_hCamera, nImageID, &ImageInfo, sizeof(ImageInfo)) == IS_SUCCESS) {
-            if (timestamp_camera != NULL) {
+            if (timestamp_camera != nullptr) {
               *timestamp_camera = static_cast<double>(ImageInfo.u64TimestampDevice) / 10000.;
             }
-            if (timestamp_system != NULL) {
+            if (timestamp_system != nullptr) {
               std::stringstream ss;
               ss << ImageInfo.TimestampSystem.wYear << ":" << std::setfill('0') << std::setw(2)
                  << ImageInfo.TimestampSystem.wMonth << ":" << std::setfill('0') << std::setw(2)
@@ -243,7 +243,7 @@ public:
 
       if (ret == IS_SUCCESS) {
         INT dummy = 0;
-        char *pLast = NULL, *pMem = NULL;
+        char *pLast = nullptr, *pMem = nullptr;
 
         is_GetActSeqBuf(m_hCamera, &dummy, &pMem, &pLast);
         m_pLastBuffer = pLast;
@@ -252,14 +252,14 @@ public:
           return;
 
         int nNum = getImageNum(m_pLastBuffer);
-        if (timestamp_camera != NULL || timestamp_system != NULL) {
+        if (timestamp_camera != nullptr || timestamp_system != nullptr) {
           int nImageID = getImageID(m_pLastBuffer);
           UEYEIMAGEINFO ImageInfo;
           if (is_GetImageInfo(m_hCamera, nImageID, &ImageInfo, sizeof(ImageInfo)) == IS_SUCCESS) {
-            if (timestamp_camera != NULL) {
+            if (timestamp_camera != nullptr) {
               *timestamp_camera = static_cast<double>(ImageInfo.u64TimestampDevice) / 10000.;
             }
-            if (timestamp_system != NULL) {
+            if (timestamp_system != nullptr) {
               std::stringstream ss;
               ss << ImageInfo.TimestampSystem.wYear << ":" << std::setfill('0') << std::setw(2)
                  << ImageInfo.TimestampSystem.wMonth << ":" << std::setfill('0') << std::setw(2)
@@ -321,7 +321,7 @@ public:
 
   bool allocImages()
   {
-    m_pLastBuffer = NULL;
+    m_pLastBuffer = nullptr;
     int nWidth = 0;
     int nHeight = 0;
 
@@ -424,7 +424,7 @@ public:
       enableEvent(IS_SET_EVENT_FRAME);
     }
 
-    m_pLastBuffer = NULL;
+    m_pLastBuffer = nullptr;
 
     return ret;
   }
@@ -471,8 +471,8 @@ public:
     int ret = 0;
     m_event = event;
 #ifndef __linux__
-    m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-    if (m_hEvent == NULL) {
+    m_hEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    if (m_hEvent == nullptr) {
       return -1;
     }
     ret = is_InitEvent(m_hCamera, m_hEvent, m_event);
@@ -497,14 +497,14 @@ public:
 
   void freeImages()
   {
-    m_pLastBuffer = NULL;
+    m_pLastBuffer = nullptr;
     // printf ("freeing image buffers\n");
     for (unsigned int i = 0; i < sizeof(m_Images) / sizeof(m_Images[0]); i++) {
-      if (NULL != m_Images[i].pBuf) {
+      if (nullptr != m_Images[i].pBuf) {
         is_FreeImageMem(m_hCamera, m_Images[i].pBuf, m_Images[i].nImageID);
       }
 
-      m_Images[i].pBuf = NULL;
+      m_Images[i].pBuf = nullptr;
       m_Images[i].nImageID = 0;
       m_Images[i].nImageSeqNum = 0;
     }
@@ -1027,14 +1027,14 @@ public:
 
     if (auto_wb) {
       dblAutoWb = 0.0;
-      is_SetAutoParameter(m_hCamera, IS_SET_AUTO_WB_ONCE, &dblAutoWb, NULL);
+      is_SetAutoParameter(m_hCamera, IS_SET_AUTO_WB_ONCE, &dblAutoWb, nullptr);
 
       dblAutoWb = 1.0;
-      is_SetAutoParameter(m_hCamera, IS_SET_ENABLE_AUTO_WHITEBALANCE, &dblAutoWb, NULL);
+      is_SetAutoParameter(m_hCamera, IS_SET_ENABLE_AUTO_WHITEBALANCE, &dblAutoWb, nullptr);
     } else {
       dblAutoWb = 0.0;
-      is_SetAutoParameter(m_hCamera, IS_SET_AUTO_WB_ONCE, &dblAutoWb, NULL);
-      is_SetAutoParameter(m_hCamera, IS_SET_ENABLE_AUTO_WHITEBALANCE, &dblAutoWb, NULL);
+      is_SetAutoParameter(m_hCamera, IS_SET_AUTO_WB_ONCE, &dblAutoWb, nullptr);
+      is_SetAutoParameter(m_hCamera, IS_SET_ENABLE_AUTO_WHITEBALANCE, &dblAutoWb, nullptr);
     }
   }
 
@@ -1124,7 +1124,7 @@ vpUeyeGrabber::~vpUeyeGrabber() { delete m_impl; }
  * Capture a new grayscale image.
  *
  * \param[out] I : Captured image.
- * \param[out] timestamp_camera : Time of image capture in milli-seconds with a resolution of 0.1 μs, or NULL if not
+ * \param[out] timestamp_camera : Time of image capture in milli-seconds with a resolution of 0.1 μs, or nullptr if not
  * wanted. The time of image capture is defined as:
  * - The time when a (hardware or software) trigger event is received by the camera in trigger mode.
  *   The delay between the receipt of the trigger signal and the start of exposure depends on the sensor.
@@ -1149,7 +1149,7 @@ void vpUeyeGrabber::acquire(vpImage<unsigned char> &I, double *timestamp_camera,
 /*!
  * Capture a new color image.
  * \param[out] I : Captured image.
- * \param[out] timestamp_camera : Time of image capture in milli-seconds with a resolution of 0.1 μs, or NULL if not
+ * \param[out] timestamp_camera : Time of image capture in milli-seconds with a resolution of 0.1 μs, or nullptr if not
  * wanted. The time of image capture is defined as:
  * - The time when a (hardware or software) trigger event is received by the camera in trigger mode.
  *   The delay between the receipt of the trigger signal and the start of exposure depends on the sensor.
@@ -1278,7 +1278,7 @@ bool vpUeyeGrabber::setActiveCamera(unsigned int cam_index)
 /*!
  * Updates active camera color mode.
  *
- * \warning Before caling this function the connexion with the active camera should be opened.
+ * \warning Before calling this function the connexion with the active camera should be opened.
  *
  * \param[in] color_mode : Desired color mode. Admissible values are "MONO8", "RGB8", "RGB32" or "BAYER8".
  * \note - When acquiring gray level images using acquire(vpImage<unsigned char> &) we strongly recommend to
@@ -1298,7 +1298,7 @@ bool vpUeyeGrabber::setColorMode(const std::string &color_mode)
 /*!
  * Updates active camera exposure / shutter either to auto mode, or to specified manual parameters.
  *
- * \warning Before caling this function the connexion with the active camera should be opened.
+ * \warning Before calling this function the connexion with the active camera should be opened.
  *
  * \param[in] auto_exposure : When true enable camera's hardware auto exposure / shutter.
  * This function returns false if the camera does not support auto exposure mode. When set to false, set manual exposure
@@ -1319,7 +1319,7 @@ bool vpUeyeGrabber::setExposure(bool auto_exposure, double exposure_ms)
  * Enabling auto frame rate mode requires to enable auto shutter mode.
  * Enabling auto frame rate mode will disable auto gain mode.
  *
- * \warning Before caling this function the connexion with the active camera should be opened.
+ * \warning Before calling this function the connexion with the active camera should be opened.
  *
  * \param[in] auto_frame_rate : Updates camera's hardware auto frame rate mode. When true enable auto frame rate mode.
  * When set to false, enables manual frame rate mode.
@@ -1353,7 +1353,7 @@ bool vpUeyeGrabber::setFrameRate(bool auto_frame_rate, double manual_frame_rate_
  *
  * Auto gain mode is disabled if auto frame rate mode is enabled.
  *
- * \warning Before caling this function the connexion with the active camera should be opened.
+ * \warning Before calling this function the connexion with the active camera should be opened.
  *
  * \param[in] auto_gain : Updates camera's hardware auto gain mode.
  * - Set to true to enable auto gain.  If this mode is not supported, returns false.
@@ -1372,7 +1372,7 @@ bool vpUeyeGrabber::setGain(bool auto_gain, int master_gain, bool gain_boost)
 /*!
  * Updates active camera image subsampling factor to reduce image size.
  *
- * \warning Before caling this function the connexion with the active camera should be opened.
+ * \warning Before calling this function the connexion with the active camera should be opened.
  *
  * \param[in] factor : Desired subsampling factor. The number of rows and columns
  * of the resulting image corresponds to the full resolution image size divided by this factor.
@@ -1384,7 +1384,7 @@ void vpUeyeGrabber::setSubsampling(int factor) { m_impl->setSubsampling(factor);
 /*!
  * Enables or disables the active camera auto white balance mode.
  *
- * \warning Before caling this function the connexion with the active camera should be opened.
+ * \warning Before calling this function the connexion with the active camera should be opened.
  *
  * \param auto_wb : If true enable auto white balance mode. If false, disable auto white balance mode.
  *

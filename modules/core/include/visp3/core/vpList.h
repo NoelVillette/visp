@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * List data structure.
- *
- * Authors:
- * Eric Marchand
- * Nicolas Mansard : Toward const-specification respect
- *
- *****************************************************************************/
+ */
 
 #ifndef VP_LIST_H
 #define VP_LIST_H
@@ -61,7 +55,7 @@ template <class type> class vpListElement
 {
   // private:
   //  vpListElement(const vpListElement &)
-  //    : prev(NULL), next(NULL), val()
+  //    : prev(nullptr), next(nullptr), val()
   //  {
   //    throw vpException(vpException::functionNotImplementedError,"Not
   //    implemented!");
@@ -72,7 +66,7 @@ template <class type> class vpListElement
   //  }
 
 public:
-  vpListElement() : prev(NULL), next(NULL), val(){};
+  vpListElement() : prev(nullptr), next(nullptr), val(){};
   vpListElement<type> *prev; ///! pointer to the previous element in the list
   vpListElement<type> *next; ///! pointer to the next element in the list
   type val;                  ///! value of the element
@@ -200,10 +194,10 @@ template <class type> void vpList<type>::init()
   first = x;
   last = y;
 
-  x->prev = NULL;
+  x->prev = nullptr;
   x->next = y;
   y->prev = x;
-  y->next = NULL;
+  y->next = nullptr;
 
   cur = x;
   nb = 0;
@@ -216,7 +210,7 @@ template <class type> void vpList<type>::init()
   \endverbatim
   \sa init()
  */
-template <class type> vpList<type>::vpList() : nb(0), first(NULL), last(NULL), cur(NULL) { init(); }
+template <class type> vpList<type>::vpList() : nb(0), first(nullptr), last(nullptr), cur(nullptr) { init(); }
 
 /*!
   \brief vpList destructor
@@ -226,8 +220,8 @@ template <class type> vpList<type>::~vpList()
 {
   kill();
 
-  /*if (first != NULL) */ delete first;
-  /*if (last != NULL)  */ delete last;
+  /*if (first != nullptr) */ delete first;
+  /*if (last != nullptr)  */ delete last;
 }
 
 /*!
@@ -607,7 +601,7 @@ template <class type> void vpList<type>::suppress(void)
   x = cur;
   cur = cur->next;
 
-  if (x != NULL)
+  if (x != nullptr)
     delete x;
 
   nb--;
@@ -679,7 +673,7 @@ template <class type> void vpList<type>::operator+=(const type &l)
 
   \param l : the list to copy
 */
-template <class type> vpList<type>::vpList(const vpList<type> &l) : nb(0), first(NULL), last(NULL), cur(NULL)
+template <class type> vpList<type>::vpList(const vpList<type> &l) : nb(0), first(nullptr), last(nullptr), cur(nullptr)
 {
   init();
   *this = l;

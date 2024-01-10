@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Test for Afma 6 dof robot.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \example testRobotViper850Pose.cpp
@@ -78,7 +75,7 @@ int main()
 // Create an image viewer for the image
 #ifdef VISP_HAVE_X11
     vpDisplayX display(I, 100, 100, "Current image");
-#elif defined(VISP_HAVE_OPENCV)
+#elif defined(HAVE_OPENCV_HIGHGUI)
     vpDisplayOpenCV display(I, 100, 100, "Current image");
 #elif defined(VISP_HAVE_GTK)
     vpDisplayGTK display(I, 100, 100, "Current image");
@@ -154,7 +151,7 @@ int main()
     }
 
     // From now, in target[i], we have the 3D coordinates of a point in the
-    // object frame, and their correspondances in the camera frame. We can now
+    // object frame, and their correspondences in the camera frame. We can now
     // compute the pose cMo between the camera and the object.
     vpPose pose;
     // Add the 4 points to compute the pose

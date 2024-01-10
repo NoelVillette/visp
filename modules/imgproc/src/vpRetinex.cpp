@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,11 +29,7 @@
  *
  * Description:
  * Convert image types.
- *
- * Authors:
- * Souriya Trinh
- *
- *****************************************************************************/
+ */
 /* Retinex_.java Using ImageJ Gaussian Filter
  * Retinex filter algorithm based on the plugin for GIMP.
  *
@@ -72,14 +67,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- */
+*/
 
 /*!
   \file vpRetinex.cpp
@@ -101,10 +96,12 @@ std::vector<double> retinexScalesDistribution(int scaleDiv, int level, int scale
 
   if (scaleDiv == 1) {
     scales[0] = scale / 2.0;
-  } else if (scaleDiv == 2) {
+  }
+  else if (scaleDiv == 2) {
     scales[0] = scale / 2.0;
     scales[1] = scale;
-  } else {
+  }
+  else {
     double size_step = scale / (double)scaleDiv;
     int i;
 
@@ -157,7 +154,7 @@ void MSRCR(vpImage<vpRGBa> &I, int _scale, int scaleDiv, int level, double dynam
   int kernelSize = _kernelSize;
   if (kernelSize == -1) {
     // Compute the kernel size from the input image size
-    kernelSize = (int)(std::min(I.getWidth(), I.getHeight()) / 2.0);
+    kernelSize = (int)(std::min<unsigned int>(I.getWidth(), I.getHeight()) / 2.0);
     kernelSize = (kernelSize - kernelSize % 2) + 1;
   }
 
@@ -195,7 +192,7 @@ void MSRCR(vpImage<vpRGBa> &I, int _scale, int scaleDiv, int level, double dynam
         // In fact one calculates a ratio between the original values and the
         // filtered values.
         doubleResRGB[(size_t)channel].bitmap[cpt] +=
-            weight * (std::log(doubleRGB[(size_t)channel].bitmap[cpt]) - std::log(blurImage.bitmap[cpt]));
+          weight * (std::log(doubleRGB[(size_t)channel].bitmap[cpt]) - std::log(blurImage.bitmap[cpt]));
       }
     }
   }
@@ -208,9 +205,9 @@ void MSRCR(vpImage<vpRGBa> &I, int _scale, int scaleDiv, int level, double dynam
 
     dest[cpt * 3] = gain * (std::log(alpha * doubleRGB[0].bitmap[cpt]) - logl) * doubleResRGB[0].bitmap[cpt] + offset;
     dest[cpt * 3 + 1] =
-        gain * (std::log(alpha * doubleRGB[1].bitmap[cpt]) - logl) * doubleResRGB[1].bitmap[cpt] + offset;
+      gain * (std::log(alpha * doubleRGB[1].bitmap[cpt]) - logl) * doubleResRGB[1].bitmap[cpt] + offset;
     dest[cpt * 3 + 2] =
-        gain * (std::log(alpha * doubleRGB[2].bitmap[cpt]) - logl) * doubleResRGB[2].bitmap[cpt] + offset;
+      gain * (std::log(alpha * doubleRGB[2].bitmap[cpt]) - logl) * doubleResRGB[2].bitmap[cpt] + offset;
   }
 
   double sum = std::accumulate(dest.begin(), dest.end(), 0.0);
@@ -218,11 +215,8 @@ void MSRCR(vpImage<vpRGBa> &I, int _scale, int scaleDiv, int level, double dynam
 
   std::vector<double> diff(dest.size());
 
-#if VISP_CXX_STANDARD > VISP_CXX_STANDARD_98
   std::transform(dest.begin(), dest.end(), diff.begin(), std::bind(std::minus<double>(), std::placeholders::_1, mean));
-#else
-  std::transform(dest.begin(), dest.end(), diff.begin(), std::bind2nd(std::minus<double>(), mean));
-#endif
+
 
   double sq_sum = std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
   double stdev = std::sqrt(sq_sum / dest.size());
@@ -242,25 +236,9 @@ void MSRCR(vpImage<vpRGBa> &I, int _scale, int scaleDiv, int level, double dynam
   }
 }
 
-/*!
-  \ingroup group_imgproc_retinex
-
-  Apply the Retinex algorithm (the input image is modified).
-  \param I : The color image after application of the Retinex technique.
-  \param scale : Specifies the depth of the retinex effect. Minimum value is
-  16, a value providing gross, unrefined filtering. Maximum value is 250.
-  Optimal and default value is 240. \param scaleDiv : Specifies the number of
-  iterations of the multiscale filter. Values larger than 2 exploit the
-  "multiscale" nature of the algorithm. \param level : Specifies distribution
-  of the Gaussian blurring kernel sizes for Scale division values > 2:
-    - 0, tends to treat all image intensities similarly,
-    - 1, enhances dark regions of the image,
-    - 2, enhances the bright regions of the image.
-  \param dynamic : Adjusts the color of the result. Large values produce less
-  saturated images. \param kernelSize : Kernel size for the gaussian blur
-  operation. If -1, the kernel size is calculated from the image size.
-*/
-void vp::retinex(vpImage<vpRGBa> &I, int scale, int scaleDiv, int level, const double dynamic, int kernelSize)
+namespace vp
+{
+void retinex(vpImage<vpRGBa> &I, int scale, int scaleDiv, int level, const double dynamic, int kernelSize)
 {
   // Assert scale
   if (scale < 16 || scale > 250) {
@@ -281,29 +259,10 @@ void vp::retinex(vpImage<vpRGBa> &I, int scale, int scaleDiv, int level, const d
   MSRCR(I, scale, scaleDiv, level, dynamic, kernelSize);
 }
 
-/*!
-  \ingroup group_imgproc_retinex
-
-  Apply the Retinex algorithm.
-  \param I1 : The input color image.
-  \param I2 : The output color image after application of the Retinex
-  technique. \param scale : Specifies the depth of the retinex effect. Minimum
-  value is 16, a value providing gross, unrefined filtering. Maximum value is
-  250. Optimal and default value is 240. \param scaleDiv : Specifies the
-  number of iterations of the multiscale filter. Values larger than 2 exploit
-  the "multiscale" nature of the algorithm. \param level : Specifies
-  distribution of the Gaussian blurring kernel sizes for Scale division values
-  > 2:
-    - 0, tends to treat all image intensities similarly,
-    - 1, enhances dark regions of the image,
-    - 2, enhances the bright regions of the image.
-  \param dynamic : Adjusts the color of the result. Large values produce less
-  saturated images. \param kernelSize : Kernel size for the gaussian blur
-  operation. If -1, the kernel size is calculated from the image size.
-*/
-void vp::retinex(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, int scale, int scaleDiv, int level, double dynamic,
+void retinex(const vpImage<vpRGBa> &I1, vpImage<vpRGBa> &I2, int scale, int scaleDiv, int level, double dynamic,
                  int kernelSize)
 {
   I2 = I1;
   vp::retinex(I2, scale, scaleDiv, level, dynamic, kernelSize);
 }
+};

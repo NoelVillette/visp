@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,18 +29,13 @@
  *
  * Description:
  * Template tracker.
- *
- * Authors:
- * Amaury Dame
- * Aurelien Yol
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
+
 /*!
- \file vpTemplateTrackerWarpHomographySL3.h
- \brief warping function of an homography: the homography is defined on the
- sl3 lie algebra  H=exp(Sum(p[i]* A_i)) A_i is the basis of the SL3 Algebra
-*/
+ *\file vpTemplateTrackerWarpHomographySL3.h
+ *\brief warping function of an homography: the homography is defined on the
+ *sl3 lie algebra  H=exp(Sum(p[i]* A_i)) A_i is the basis of the SL3 Algebra
+ */
 
 #ifndef vpTemplateTrackerWarpHomographySL3_hh
 #define vpTemplateTrackerWarpHomographySL3_hh
@@ -52,9 +46,9 @@
 #include <visp3/vision/vpHomography.h>
 
 /*!
-  \class vpTemplateTrackerWarpHomographySL3
-  \ingroup group_tt_warp
-*/
+ * \class vpTemplateTrackerWarpHomographySL3
+ * \ingroup group_tt_warp
+ */
 class VISP_EXPORT vpTemplateTrackerWarpHomographySL3 : public vpTemplateTrackerWarp
 {
 protected:
@@ -64,7 +58,6 @@ protected:
 
 public:
   vpTemplateTrackerWarpHomographySL3();
-  virtual ~vpTemplateTrackerWarpHomographySL3();
 
   void computeCoeff(const vpColVector &p);
   void computeDenom(vpColVector &X, const vpColVector &);
@@ -96,7 +89,7 @@ public:
   void warpX(const int &v1, const int &u1, double &v2, double &u2, const vpColVector &);
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-  void warpXInv(const vpColVector &, vpColVector &, const vpColVector &) {}
+  void warpXInv(const vpColVector &, vpColVector &, const vpColVector &) { }
 #endif
 };
 #endif

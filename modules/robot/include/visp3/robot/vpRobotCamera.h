@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Defines the simplest robot : a free flying camera.
  *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #ifndef vpRobotCamera_H
 #define vpRobotCamera_H
@@ -114,27 +111,26 @@ protected:
 
 public:
   vpRobotCamera();
-  virtual ~vpRobotCamera();
 
   /** @name Inherited functionalities from vpRobotCamera */
   //@{
   void get_cVe(vpVelocityTwistMatrix &cVe) const;
-  void get_eJe(vpMatrix &eJe);
+  void get_eJe(vpMatrix &eJe) override;
 
   void getPosition(vpHomogeneousMatrix &cMw) const;
-  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q);
+  void getPosition(const vpRobot::vpControlFrameType frame, vpColVector &q) override;
 
   void setPosition(const vpHomogeneousMatrix &cMw);
-  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &v);
+  void setVelocity(const vpRobot::vpControlFrameType frame, const vpColVector &v) override;
   //@}
 
 private:
-  void init();
+  void init() override;
 
   // Non implemented virtual pure functions
-  void get_fJe(vpMatrix & /*_fJe */){};
-  void getDisplacement(const vpRobot::vpControlFrameType /* frame */, vpColVector & /* q */){};
-  void setPosition(const vpRobot::vpControlFrameType /* frame */, const vpColVector & /* q */){};
+  void get_fJe(vpMatrix & /*_fJe */) override { };
+  void getDisplacement(const vpRobot::vpControlFrameType /* frame */, vpColVector & /* q */) override { };
+  void setPosition(const vpRobot::vpControlFrameType /* frame */, const vpColVector & /* q */) override { };
 };
 
 #endif

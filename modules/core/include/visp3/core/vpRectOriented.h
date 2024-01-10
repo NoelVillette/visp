@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -30,12 +29,7 @@
  *
  * Description:
  * Defines a (possibly oriented) rectangle in the plane.
- *
- * Author:
- * Pierre Chatelain
- * Marc Pouliquen
- *
- *****************************************************************************/
+ */
 
 #ifndef vpRectOriented_h
 #define vpRectOriented_h
@@ -53,21 +47,13 @@ class VISP_EXPORT vpRectOriented
 {
 public:
   vpRectOriented();
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpRectOriented(const vpRectOriented &rect) = default;
-#else
-  vpRectOriented(const vpRectOriented &rect);
-#endif
 
   vpRectOriented(const vpImagePoint &center, double width, double height, double theta = 0);
 
   vpRectOriented(const vpRect &rect);
 
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpRectOriented &operator=(const vpRectOriented &rect) = default;
-#else
-  vpRectOriented &operator=(const vpRectOriented &rect);
-#endif
 
   vpRectOriented &operator=(const vpRect &rect);
 

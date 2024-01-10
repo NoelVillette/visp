@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Jean-Luc CORRE
  *
- *****************************************************************************/
+*****************************************************************************/
 #ifndef vpArit_h
 #define vpArit_h
 
@@ -175,20 +175,20 @@ typedef struct {
   }
 
 /*
- * 				POSITION
- *				________
+ *         POSITION
+ *        ________
  *
  * La structure "Position" definit le positionnement d'un objet.
  * Matrice de positionnement = R.S.T
- * avec R = Rx.Ry.Rz	Matrice de rotation autour des axes (Ox,Oy,Oz),
- *			Les angles sont donnes en degres;
- *	S = Sx.Sy.Sz	Matrice d'homothetie sur les axes;
- *	T = Tx.Ty.Tz	Matrice de translation sur les axes.
+ * avec R = Rx.Ry.Rz  Matrice de rotation autour des axes (Ox,Oy,Oz),
+ *      Les angles sont donnes en degres;
+ *  S = Sx.Sy.Sz  Matrice d'homothetie sur les axes;
+ *  T = Tx.Ty.Tz  Matrice de translation sur les axes.
  */
 typedef struct {
-  Vector rotate;    /* vecteur rotation	*/
-  Vector scale;     /* vecteur homothetie	*/
-  Vector translate; /* vecteur translation	*/
+  Vector rotate;    /* vecteur rotation  */
+  Vector scale;     /* vecteur homothetie  */
+  Vector translate; /* vecteur translation  */
 } AritPosition;
 
 #define IDENTITY_ROTATE                                                                                                \

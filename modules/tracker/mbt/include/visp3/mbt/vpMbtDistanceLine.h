@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -32,11 +32,9 @@
  * Manage the line of a polygon used in the model-based tracker.
  *
  * Authors:
- * Nicolas Melchior
  * Romain Tallonneau
- * Eric Marchand
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
  \file vpMbtDistanceLine.h
@@ -114,11 +112,11 @@ public:
   // private:
   //#ifndef DOXYGEN_SHOULD_SKIP_THIS
   //    vpMbtDistanceLine(const vpMbtDistanceLine &)
-  //      : name(), index(0), cam(), me(NULL), isTrackedLine(true),
+  //      : name(), index(0), cam(), me(nullptr), isTrackedLine(true),
   //      isTrackedLineWithVisibility(true),
   //        wmean(1), featureline(), poly(), useScanLine(false), meline(),
-  //        line(NULL), p1(NULL), p2(NULL), L(), error(), nbFeature(),
-  //        nbFeatureTotal(0), Reinit(false), hiddenface(NULL),
+  //        line(nullptr), p1(nullptr), p2(nullptr), L(), error(), nbFeature(),
+  //        nbFeatureTotal(0), Reinit(false), hiddenface(nullptr),
   //        Lindex_polygon(), Lindex_polygon_tracked(), isvisible(false)
   //    {
   //      throw vpException(vpException::functionNotImplementedError, "Not
@@ -149,7 +147,7 @@ public:
   void displayMovingEdges(const vpImage<vpRGBa> &I);
 
   /*!
-   Get the camera paramters.
+   Get the camera parameters.
 
    \param camera : The vpCameraParameters used to store the camera parameters.
   */
@@ -194,7 +192,7 @@ public:
   void initInteractionMatrixError();
 
   bool initMovingEdge(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cMo, bool doNotTrack,
-                      const vpImage<bool> *mask = NULL);
+                      const vpImage<bool> *mask = nullptr);
 
   /*!
    Return if the line is used for tracking.
@@ -211,10 +209,10 @@ public:
   inline bool isVisible() const { return isvisible; }
 
   void reinitMovingEdge(const vpImage<unsigned char> &I, const vpHomogeneousMatrix &cMo,
-                        const vpImage<bool> *mask = NULL);
+                        const vpImage<bool> *mask = nullptr);
 
   /*!
-   Set the camera paramters.
+   Set the camera parameters.
    \param camera : The camera parameters.
   */
   inline void setCameraParameters(const vpCameraParameters &camera) { this->cam = camera; }

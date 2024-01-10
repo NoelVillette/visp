@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Anthony Saunier
  *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpConfig.h>
 #include <visp3/core/vpDebug.h>
@@ -43,8 +43,7 @@
 #include <stdlib.h>
 #include <string>
 
-#if (defined(VISP_HAVE_GTK) || defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI) || defined(VISP_HAVE_D3D9) ||          \
-     defined(VISP_HAVE_OPENCV))
+#if defined(VISP_HAVE_GTK) || defined(VISP_HAVE_X11) || defined(VISP_HAVE_GDI) || defined(VISP_HAVE_D3D9) || defined(VISP_HAVE_OPENCV)
 
 #include <visp3/core/vpImage.h>
 #include <visp3/core/vpIoTools.h>
@@ -81,13 +80,13 @@ Test video devices or display.\n\
 SYNOPSIS\n\
   %s [-l] [-c] [-d] [-h]\n\
 ",
-          name);
+name);
 
   fprintf(stdout, "\n\
 OPTIONS:                                               Default\n\
   -c\n\
-     Disable the mouse click. Useful to automaze the \n\
-     execution of this program without humain intervention.\n\
+     Disable the mouse click. Useful to automate the \n\
+     execution of this program without human intervention.\n\
 \n\
   -d \n\
      Turn off the display.\n\
@@ -123,7 +122,7 @@ static bool getOptions(int argc, const char **argv, bool &list, bool &click_allo
       list = true;
       break;
     case 'h':
-      usage(argv[0], NULL);
+      usage(argv[0], nullptr);
       return false;
       break;
     case 'c':
@@ -142,7 +141,7 @@ static bool getOptions(int argc, const char **argv, bool &list, bool &click_allo
 
   if ((c == 1) || (c == -1)) {
     // standalone param or error
-    usage(argv[0], NULL);
+    usage(argv[0], nullptr);
     std::cerr << "ERROR: " << std::endl;
     std::cerr << "  Bad argument " << optarg_ << std::endl << std::endl;
     return false;
@@ -248,18 +247,34 @@ template <typename Type> static void draw(vpImage<Type> &I)
   iP1.set_j(400);
   vpDisplay::displayRectangle(I, iP1, 45, w, h, vpColor::green, 3);
 
-  std::vector<vpImagePoint> polygon;
-  polygon.push_back(vpImagePoint(250, 500));
-  polygon.push_back(vpImagePoint(350, 600));
-  polygon.push_back(vpImagePoint(450, 500));
-  polygon.push_back(vpImagePoint(350, 400));
+  std::vector<vpImagePoint> vip;
+  vip.push_back(vpImagePoint(250, 500));
+  vip.push_back(vpImagePoint(350, 600));
+  vip.push_back(vpImagePoint(450, 500));
+  vip.push_back(vpImagePoint(350, 400));
+  vpDisplay::displayPolygon(I, vip, vpColor::green, 3);
+
+  vip.clear();
+  vip.push_back(vpImagePoint(300, 500));
+  vip.push_back(vpImagePoint(350, 550));
+  vip.push_back(vpImagePoint(400, 500));
+  vip.push_back(vpImagePoint(350, 450));
+  vpDisplay::displayPolygon(I, vip, vpColor::cyan, 3, false);
+
+  vip.clear();
+  vip.push_back(vpImagePoint(250, 300));
+  vip.push_back(vpImagePoint(350, 400));
+  vip.push_back(vpImagePoint(450, 300));
+  vip.push_back(vpImagePoint(350, 200));
+  vpPolygon polygon(vip);
   vpDisplay::displayPolygon(I, polygon, vpColor::green, 3);
 
-  polygon.clear();
-  polygon.push_back(vpImagePoint(300, 500));
-  polygon.push_back(vpImagePoint(350, 550));
-  polygon.push_back(vpImagePoint(400, 500));
-  polygon.push_back(vpImagePoint(350, 450));
+  vip.clear();
+  vip.push_back(vpImagePoint(300, 300));
+  vip.push_back(vpImagePoint(350, 350));
+  vip.push_back(vpImagePoint(400, 300));
+  vip.push_back(vpImagePoint(350, 250));
+  polygon.buildFrom(vip);
   vpDisplay::displayPolygon(I, polygon, vpColor::cyan, 3, false);
 }
 
@@ -271,7 +286,7 @@ template <typename Type> static void runTest(bool opt_display, bool opt_click_al
   vpImage<Type> Igdi;
   vpImage<Type> Id3d;
 
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
   vpDisplayX *displayX = new vpDisplayX;
   Ix.init(480, 640, 255);
   if (opt_display) {
@@ -284,7 +299,7 @@ template <typename Type> static void runTest(bool opt_display, bool opt_click_al
   }
 #endif
 
-#if defined(VISP_HAVE_OPENCV)
+#if defined(HAVE_OPENCV_HIGHGUI)
   vpDisplayOpenCV *displayCv = new vpDisplayOpenCV;
   Icv.init(480, 640, 255);
   if (opt_display) {
@@ -297,7 +312,7 @@ template <typename Type> static void runTest(bool opt_display, bool opt_click_al
   }
 #endif
 
-#if defined VISP_HAVE_GTK
+#if defined(VISP_HAVE_GTK)
   vpDisplayGTK *displayGtk = new vpDisplayGTK;
   Igtk.init(480, 640, 255);
   if (opt_display) {
@@ -310,7 +325,8 @@ template <typename Type> static void runTest(bool opt_display, bool opt_click_al
   }
 #endif
 
-#if defined VISP_HAVE_GDI
+#if defined(VISP_HAVE_GDI)
+
   vpDisplayGDI *displayGdi = new vpDisplayGDI;
   Igdi.init(480, 640, 255);
   if (opt_display) {
@@ -323,7 +339,7 @@ template <typename Type> static void runTest(bool opt_display, bool opt_click_al
   }
 #endif
 
-#if defined VISP_HAVE_D3D9
+#if defined(VISP_HAVE_D3D9)
   vpDisplayD3D *displayD3d = new vpDisplayD3D;
   Id3d.init(480, 640, 255);
   if (opt_display) {
@@ -336,23 +352,24 @@ template <typename Type> static void runTest(bool opt_display, bool opt_click_al
   }
 #endif
 
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
   delete displayX;
 #endif
 
-#if defined VISP_HAVE_GTK
+#if defined(VISP_HAVE_GTK)
   delete displayGtk;
 #endif
 
-#if defined(VISP_HAVE_OPENCV)
+#if defined(HAVE_OPENCV_HIGHGUI)
   delete displayCv;
 #endif
 
-#if defined VISP_HAVE_GDI
+#if defined(VISP_HAVE_GDI)
+
   delete displayGdi;
 #endif
 
-#if defined VISP_HAVE_D3D9
+#if defined(VISP_HAVE_D3D9)
   delete displayD3d;
 #endif
 }
@@ -373,19 +390,20 @@ int main(int argc, const char **argv)
     if (opt_list) {
       unsigned nbDevices = 0;
       std::cout << "List of video-devices available: \n";
-#if defined VISP_HAVE_GTK
+#if defined(VISP_HAVE_GTK)
       std::cout << "  GTK\n";
       nbDevices++;
 #endif
-#if defined VISP_HAVE_X11
+#if defined(VISP_HAVE_X11)
       std::cout << "  X11\n";
       nbDevices++;
 #endif
-#if defined VISP_HAVE_GDI
+#if defined(VISP_HAVE_GDI)
+
       std::cout << "  GDI\n";
       nbDevices++;
 #endif
-#if defined VISP_HAVE_D3D9
+#if defined(VISP_HAVE_D3D9)
       std::cout << "  D3D\n";
       nbDevices++;
 #endif
@@ -406,7 +424,8 @@ int main(int argc, const char **argv)
     runTest<unsigned char>(opt_display, opt_click_allowed);
 
     return EXIT_SUCCESS;
-  } catch (const vpException &e) {
+  }
+  catch (const vpException &e) {
     std::cout << "Catch an exception: " << e.getMessage() << std::endl;
     return EXIT_FAILURE;
   }

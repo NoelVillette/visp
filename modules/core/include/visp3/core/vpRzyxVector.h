@@ -1,7 +1,6 @@
-/****************************************************************************
- *
+/*
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +13,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,15 +30,10 @@
  * Description:
  * Rzyx angle parameterization for the rotation.
  * Rzyx(phi,theta,psi) = Rot(z,phi)Rot(y,theta)Rot(x,psi)
- *
- * Authors:
- * Eric Marchand
- * Fabien Spindler
- *
- *****************************************************************************/
+ */
 
-#ifndef vpRzyxVector_h
-#define vpRzyxVector_h
+#ifndef _vpRzyxVector_h_
+#define _vpRzyxVector_h_
 
 /*!
   \file vpRzyxVector.h
@@ -130,9 +124,7 @@ class vpThetaUVector;
   \endcode
   Or you can also initialize the vector from a list of doubles if ViSP is build with c++11 enabled:
   \code
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   rzyx = {M_PI_4, M_PI_2, M_PI};
-#endif
   \endcode
 
   To get the values [rad] use:
@@ -143,8 +135,8 @@ class vpThetaUVector;
   \endcode
 
   The code below shows first how to initialize this representation of
-  Euler angles, than how to contruct a rotation matrix from a
-  vpRzyxVector and finaly how to extract the vpRzyxVector Euler angles
+  Euler angles, than how to construct a rotation matrix from a
+  vpRzyxVector and finally how to extract the vpRzyxVector Euler angles
   from the build rotation matrix.
 
   \code
@@ -181,7 +173,6 @@ int main()
   \endcode
 
 */
-
 class VISP_EXPORT vpRzyxVector : public vpRotationVector
 {
 public:
@@ -197,9 +188,6 @@ public:
   explicit vpRzyxVector(const vpColVector &rzyx);
   explicit vpRzyxVector(const std::vector<double> &rzyx);
 
-  //! Destructor.
-  virtual ~vpRzyxVector(){};
-
   // convert a rotation matrix into Rzyx vector
   vpRzyxVector buildFrom(const vpRotationMatrix &R);
 
@@ -212,10 +200,8 @@ public:
 
   vpRzyxVector &operator=(const vpColVector &rzyx);
   vpRzyxVector &operator=(double x);
-#if (VISP_CXX_STANDARD >= VISP_CXX_STANDARD_11)
   vpRzyxVector &operator=(const vpRzyxVector &rzyx) = default;
   vpRzyxVector &operator=(const std::initializer_list<double> &list);
-#endif
 };
 
 #endif

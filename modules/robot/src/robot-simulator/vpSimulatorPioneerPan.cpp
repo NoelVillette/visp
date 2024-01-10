@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Pioneer mobile robot equipped with a pan head simulator without display.
  *
- * Authors:
- * Fabien Spindler
- *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpSimulatorPioneerPan.cpp
@@ -80,17 +77,11 @@ void vpSimulatorPioneerPan::init()
   eJeAvailable = true;
   fJeAvailable = false;
   areJointLimitsAvailable = false;
-  qmin = NULL;
-  qmax = NULL;
+  qmin = nullptr;
+  qmax = nullptr;
 
   wMc_ = wMm_ * mMp_ * pMe_ * cMe_.inverse();
 }
-
-/*!
-  Destructor.
-
-*/
-vpSimulatorPioneerPan::~vpSimulatorPioneerPan() {}
 
 /*!
   Get the robot jacobian expressed in the end-effector frame.
@@ -214,8 +205,8 @@ void vpSimulatorPioneerPan::getPosition(const vpRobot::vpControlFrameType frame,
 
   case vpRobot::ARTICULAR_FRAME:
     std::cout << "ARTICULAR_FRAME is not implemented in "
-                 "vpSimulatorPioneer::getPosition()"
-              << std::endl;
+      "vpSimulatorPioneer::getPosition()"
+      << std::endl;
     break;
   case vpRobot::REFERENCE_FRAME: {
     // Convert wMc_ to a position

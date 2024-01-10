@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -31,10 +31,7 @@
  * Description:
  * Sphere feature.
  *
- * Authors:
- * Eric Marchand
- *
- *****************************************************************************/
+*****************************************************************************/
 
 #include <visp3/core/vpFeatureDisplay.h>
 #include <visp3/core/vpSphere.h>
@@ -113,11 +110,6 @@ vpSphere::vpSphere(double oX, double oY, double oZ, double R)
 }
 
 /*!
- * Destructor that does nothing.
- */
-vpSphere::~vpSphere() {}
-
-/*!
  * Perspective projection of the sphere.
  * This method updates internal parameters (cP and p).
  *
@@ -175,12 +167,14 @@ void vpSphere::projection(const vpColVector &cP_, vpColVector &p_) const
       E = e;
       A = a;
       B = b;
-    } else {
+    }
+    else {
       E = -1.0 / e;
       A = b;
       B = a;
     }
-  } else {
+  }
+  else {
     E = 0.0;
     A = r / sqrt(s);
     B = r * sqrt(y0 * y0 + z0 * z0 - r * r) / s;

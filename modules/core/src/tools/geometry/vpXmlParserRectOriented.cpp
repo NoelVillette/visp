@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * ViSP, open source Visual Servoing Platform software.
- * Copyright (C) 2005 - 2019 by Inria. All rights reserved.
+ * Copyright (C) 2005 - 2023 by Inria. All rights reserved.
  *
  * This software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GPL, please contact Inria about acquiring a ViSP Professional
  * Edition License.
  *
- * See http://visp.inria.fr for more information.
+ * See https://visp.inria.fr for more information.
  *
  * This software was developed at:
  * Inria Rennes - Bretagne Atlantique
@@ -34,7 +34,7 @@
  * Authors:
  * Marc Pouliquen
  *
- *****************************************************************************/
+*****************************************************************************/
 
 /*!
   \file vpXmlParserRectOriented.cpp
@@ -44,14 +44,18 @@
 #include <visp3/core/vpXmlParserRectOriented.h>
 
 #include <map>
+
+#if defined(VISP_HAVE_PUGIXML)
 #include <pugixml.hpp>
+
 #include <visp3/core/vpIoTools.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 class vpXmlParserRectOriented::Impl
 {
 private:
-  enum vpXmlCodeType {
+  enum vpXmlCodeType
+  {
     CODE_XML_BAD = -1,
     CODE_XML_OTHER,
     CODE_XML_CENTER_I,
@@ -127,7 +131,8 @@ public:
       root_node = doc.append_child(pugi::node_declaration);
       root_node.append_attribute("version") = "1.0";
       root_node = doc.append_child("config");
-    } else if (!append) {
+    }
+    else if (!append) {
       if (!vpIoTools::remove(filename))
         throw vpException(vpException::ioError, "Cannot remove existing xml file");
 
@@ -168,7 +173,7 @@ private:
 };
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
-vpXmlParserRectOriented::vpXmlParserRectOriented() : m_impl(new Impl()) {}
+vpXmlParserRectOriented::vpXmlParserRectOriented() : m_impl(new Impl()) { }
 
 vpXmlParserRectOriented::~vpXmlParserRectOriented() { delete m_impl; }
 
@@ -197,3 +202,9 @@ void vpXmlParserRectOriented::save(const std::string &filename, bool append) { m
 vpRectOriented vpXmlParserRectOriented::getRectangle() const { return m_impl->getRectangle(); }
 
 void vpXmlParserRectOriented::setRectangle(const vpRectOriented &rectangle) { m_impl->setRectangle(rectangle); }
+
+#elif !defined(VISP_BUILD_SHARED_LIBS)
+// Work around to avoid warning: libvisp_core.a(vpXmlParserRectOriented.cpp.o) has no symbols
+void dummy_vpXmlParserRectOriented() { };
+
+#endif
